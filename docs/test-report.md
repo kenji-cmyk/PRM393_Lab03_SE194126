@@ -1,6 +1,44 @@
 # Test report
 
-Status: not executed. This is the evidence template for future implementation. No passing tests, device runs, service checks, or exploratory sessions are claimed.
+Status: Flow 1 local verification executed on 2026-11-03. **39 Flutter unit/widget
+tests passed**, analyzer passed, preview web and Android debug APK built.
+The ARTEMIS/Firebase tables below remain templates for the later full Lab 3 run.
+No Firebase project, native Google picker, device E2E, or ARTEMIS run is claimed.
+
+## Flow 1 executed checks
+
+Environment: Windows, Flutter 3.47.4 / Dart 3.13.3; Provider 6.1.5+1;
+Android app ID `vn.edu.fpt.nep_lanh`. Preview uses its own local preference key.
+
+| Command / check | Actual result | Evidence |
+| --- | --- | --- |
+| `flutter analyze --no-pub` | Exit 0, no issues | [analyzer log](../evidence/builds/flutter-analyze.log) |
+| `flutter test --no-pub --reporter expanded` | Exit 0, 39 tests passed | [test log](../evidence/builds/flutter-tests.log) |
+| `flutter build web --dart-define=APP_MODE=preview --no-pub --no-wasm-dry-run` | Exit 0 | [web build log](../evidence/builds/web-preview.log); `build/web` (generated/ignored) |
+| `flutter build apk --debug --dart-define=APP_MODE=preview --no-pub` | Exit 0 after Kotlin cache fix | [Android build log](../evidence/builds/android-debug.log); `build/app/outputs/flutter-apk/app-debug.apk` |
+| Live preview on local HTTP server | Entered invalid then valid profile, selected readDaily, saved, reloaded and observed same name/goal; logout cleared preview across reload; no browser console errors | [screenshots](../evidence/screenshots/) |
+| Independent review | One confirmed P2 account-switch recovery issue fixed and regression tested | [review record](code-review.md) |
+
+Coverage: 14 onboarding ViewModel cases; 6 calendar/profile cases; 5 local storage
+cases; 5 auth ViewModel cases; 7 flow widget cases; 2 startup/recovery widget cases.
+Widget scenarios cover 360/412 widths, actual form input/validation, comma decimals,
+read-only derived age, back/draft retention, save error/retry, duplicate save locks,
+load failure, 1.5 text scaling, 300 px keyboard inset, and cancelling the date picker.
+
+The first Android build exposed Kotlin incremental cache paths spanning C:/D:.
+`kotlin.incremental=false` in `android/gradle.properties` fixed it; this trades
+incremental Kotlin build speed for a working build on this layout. See
+[Kotlin's compiler/cache settings](https://kotlinlang.org/docs/gradle-compilation-and-caches.html).
+Build still emits plugin compatibility warnings about Flutter's future built-in
+Kotlin transition, plus upstream Java warnings. No Android device is attached;
+APK compilation is not native runtime evidence.
+
+The in-app browser connection was unavailable in this session, so the browser
+preview was verified with the available standalone Playwright connector. This
+local interaction check is separate from the required ARTEMIS Android suite.
+
+The original ARTEMIS execution template follows; its pending entries describe
+that unexecuted suite and do not negate the local checks above.
 
 ## Run environment
 

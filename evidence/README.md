@@ -1,6 +1,11 @@
 # Evidence
 
-Status: directories only. No Firebase behavior, test result, or code review finding is evidenced yet.
+Status: flow-1 browser captures are in `screenshots/`; actual test and Android
+build logs are in `builds/`. Captured 2026-11-03 on local web preview at 360/412×800.
+Names/dates/measurements in captures are synthetic test input. See
+[test report](../docs/test-report.md) and [review record](../docs/code-review.md).
+Firebase/device/ARTEMIS evidence remains pending; the folders below describe the
+wider assignment evidence plan.
 
 | Directory | Evidence to capture during implementation |
 | --- | --- |
