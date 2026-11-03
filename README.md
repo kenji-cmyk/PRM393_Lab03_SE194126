@@ -2,10 +2,37 @@
 
 Repository: <https://github.com/kenji-cmyk/PRM393_Lab03_SE194126>.
 
-Status: **folder and documentation scaffold only**. No Flutter application,
-Firebase connection, implemented E2E suite, or execution evidence exists yet.
+Status: **Flow 1 implemented in Flutter**: Chào mừng → Thông tin của bạn →
+Thiết lập mục tiêu → Trang chủ. Includes validation, derived age, draft retention,
+save/retry, local preview persistence, edit/sign-out, and cloud Auth/Firestore code.
+Firebase has not been configured: the user will create the project after coding.
+Flows 2/3 and the remaining Lab 3 integrations are still pending.
 Confirmed baseline: **Cloud-Enabled Mobile App + Preparation Guide v5**,
 using **Google ARTEMIS** for Android E2E testing.
+
+## Run flow 1
+
+```powershell
+flutter pub get
+flutter run --dart-define=APP_MODE=preview
+```
+
+For browser preview: `flutter run -d chrome --dart-define=APP_MODE=preview`.
+Preview is the default; its visible label identifies device-only storage.
+No hard-coded user or completed meal data is supplied. Home shows your saved
+name and goal, and an empty meal state. Meal/progress/learning actions explain
+their pending flow scope.
+
+After creating Firebase, follow [the setup guide](docs/firebase-setup.md), then
+run `flutter run --dart-define=APP_MODE=cloud`. Cloud mode requires real config
+and never falls back silently to preview. Android ID: `vn.edu.fpt.nep_lanh`.
+
+Toolchain used: Flutter **3.47.4**, Dart **3.13.3**, Provider **6.1.5+1**;
+all direct dependencies are pinned in `pubspec.yaml` and `pubspec.lock`.
+Run `flutter analyze` and `flutter test` for local validation. See
+[the test report](docs/test-report.md) for executed checks and limitations.
+
+Firebase/ARTEMIS setup, other flows, and final submission evidence remain future work.
 
 ## Repository layout
 
@@ -13,8 +40,8 @@ using **Google ARTEMIS** for Android E2E testing.
 vetalife/                         # Local root; GitHub name may differ
 ├── README.md
 ├── .gitignore
-├── design/DESIGN.md              # Approved Lab 2 specification to import
-├── handoff/flutter-handoff.md    # Approved Lab 2 handoff to import
+├── design/DESIGN.md              # Figma-derived design specification
+├── handoff/flutter-handoff.md    # Design-derived Flutter handoff
 ├── lib/
 │   ├── models/                  # Plain Dart data models
 │   ├── services/                # App services / external data access
@@ -25,7 +52,8 @@ vetalife/                         # Local root; GitHub name may differ
 │   ├── theme/                   # Lab 2 tokens and ThemeData
 │   └── utils/                   # Small shared helpers
 ├── android/                     # Android build project reserved for setup
-├── assets/{images,icons,fonts}/  # Runtime assets only
+├── assets/                     # Runtime asset folders and lesson metadata
+│   └── content/lesson-catalog.json  # Book outline with source references
 ├── firebase/                    # Rules, indexes, Remote Config defaults
 ├── test/{unit,widget}/          # Future Flutter tests
 ├── e2e_test/                    # Future ARTEMIS pytest suite
@@ -39,35 +67,41 @@ vetalife/                         # Local root; GitHub name may differ
 See [architecture](docs/architecture.md) for folder responsibilities and diagrams,
 and [requirements](docs/lab3-requirements.md) for source differences and scope.
 
-## Before implementation
+The requested Lab 2 profile and book-catalogue amendments are complete in Figma.
+Static reactions and 360/412 dp screenshots were reviewed; see
+`docs/design-change-log.md` for node references and prototype
+limitations. This does not represent implemented Flutter or live interaction tests.
 
-1. Import approved Lab 2 materials: Figma URL, persona, success criterion,
-   all screens (at least eight), three flows, tokens, components, and handoff.
-2. Complete [traceability](docs/design-traceability.md) and
-   [architecture](docs/architecture.md); choose **one** of Provider or Riverpod.
-3. Confirm the Android application ID and initialize Flutter **at this root**,
-   preserving this scaffold. This will generate `pubspec.yaml`, `lib/main.dart`,
-   Android build files, and Flutter metadata; none are fabricated here.
-4. Configure the student's Firebase project using FlutterFire. Generate
-   `lib/firebase_options.dart` and `android/app/google-services.json`,
-   then add real Firebase CLI project configuration.
-5. Integrate features and the six Firebase services; instrument, test,
+## Next implementation stages
+
+1. Review the supplied [Lab 2 Figma design](https://www.figma.com/design/Cc2O3xSmxgjfvDI2hrsY3Q?node-id=0-1),
+   [design specification](design/DESIGN.md), and [handoff](handoff/flutter-handoff.md).
+   The user's amendments add personal information to flow 1 and book-chapter
+   learning to flow 3; confirm any separate original written Lab 2 deliverables.
+2. Continue [traceability](docs/design-traceability.md) and
+   [architecture](docs/architecture.md) for flows 2/3 using the selected Provider
+   setup. Root Flutter/Android/web initialization and flow 1 are complete.
+3. Configure your Firebase project using [the setup guide](docs/firebase-setup.md).
+   Replace the options stub, generate `android/app/google-services.json`, and
+   verify owner rules and Google Sign-In with the real project.
+4. Implement the remaining flows and Firebase services; instrument, test,
    review, and produce actual submission evidence in that order.
 
-No app or E2E command is runnable yet. See
-[Firebase preparation](firebase/README.md) and [E2E preparation](e2e_test/README.md).
-Record exact commands and tool versions when setup is actually performed.
+The app and local Flutter checks are runnable now. Android ARTEMIS E2E remains
+pending; see [E2E preparation](e2e_test/README.md).
 
 ## Project details to complete
 
 | Item | Current value |
 | --- | --- |
 | Student ID | SE194126 |
-| Topic, persona, success criterion / Figma URL | Pending approved Lab 2 materials |
-| Real data source/API | Pending Lab 2; Firestore when storing user data |
-| Flutter/Dart versions and package pins | Pending project initialization |
-| State management | Provider or Riverpod; decision pending |
-| Firebase project / Android application ID | Pending; use the student's own project |
+| Topic / brand | Ăn gì không chết / Nếp Lành |
+| Persona / success criteria | Vinh, 25, office worker; quick meal logging, visible weekly frequency, preserved draft on network failure |
+| Figma URL / design amendments | Linked above; flow 1 profile and flow 3 book catalogue recorded in the design change log |
+| Real data source/API | Preview: device storage; cloud profile: users/{uid} in Firestore after configuration |
+| Flutter/Dart versions and package pins | Flutter 3.47.4 / Dart 3.13.3; exact pins in pubspec.yaml/lock |
+| State management | Provider 6.1.5+1 |
+| Firebase project / Android application ID | Project pending user creation; vn.edu.fpt.nep_lanh |
 | ARTEMIS commit and model profile | Pending installation; record exact commit |
 | Python / uv / ADB versions | Python 3.12+ required; exact versions pending setup |
 | Demo video | Pending; 5-10 minutes |
@@ -76,7 +110,7 @@ Record exact commands and tool versions when setup is actually performed.
 
 - Planning: [requirements](docs/lab3-requirements.md),
   [traceability](docs/design-traceability.md), [architecture](docs/architecture.md),
-  [analytics plan](docs/analytics-plan.md).
+  [analytics plan](docs/analytics-plan.md), [book curriculum](docs/book-curriculum.md).
 - Verification: [test plan](docs/test-plan.md), [test report](docs/test-report.md),
   [code review](docs/code-review.md), and [evidence](evidence/README.md).
 - Supporting records: [handoff gaps](docs/handoff-gaps.md),
@@ -84,8 +118,9 @@ Record exact commands and tool versions when setup is actually performed.
   [implementation AI log](docs/implementation-ai-log.md).
 - Submission: `report/Lab03_SE194126.pdf` (8-12 pages),
   `slides/Lab03_SE194126_slides.pdf` (12-15 slides), demo video link above.
-- Codex assisted with reading all four PDFs, comparing requirements, and preparing
-  this scaffold. This does not replace the later required AI pull-request review.
+- Codex assisted with reading the four lab PDFs, comparing requirements, preparing
+  this scaffold, inspecting the supplied Figma design, and documenting the requested
+  profile and book-catalogue amendments. This does not replace the later required AI pull-request review.
 
 The original requirement PDFs are excluded by `.gitignore`. Never commit
 credentials, model API keys, service-account keys, or signing keystores.
@@ -94,7 +129,7 @@ Generated Firebase client identifiers may be tracked; Security Rules enforce acc
 Local Git setup is complete: this folder is the repository root, `origin` points
 to the repository above, and `main` tracks `origin/main` with its existing history.
 The legacy `docs/.git` was moved to the ignored `.local-backup/` directory.
-All four requirement PDFs are confirmed ignored. See the
+The lab requirement PDFs and source book remain local and Git-ignored. See the
 [validation record](docs/lab3-requirements.md#scaffold-validation-record).
-This repository currently contains preparation scaffolding; application features
-and execution evidence will be added during the lab.
+This repository now includes flow 1 and its local execution evidence; other
+flows and full Firebase/ARTEMIS evidence will be added during the lab.

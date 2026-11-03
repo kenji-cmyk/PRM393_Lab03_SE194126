@@ -1,0 +1,356 @@
+{
+  "schemaVersion": 1,
+  "status": "source_mapped_outline_only",
+  "book": {
+    "title": "Ăn gì không chết",
+    "subtitle": "Sức mạnh chữa lành của thực phẩm",
+    "authors": [
+      "Michael Greger",
+      "Gene Stone"
+    ],
+    "language": "vi",
+    "sourceLocation": "docs/requirements/An-Gi-*.pdf",
+    "pdfPageCount": 774,
+    "tocPdfPages": [
+      7,
+      8
+    ],
+    "pdfPageNumberOffset": 2
+  },
+  "contentPolicy": {
+    "lessonBodies": "Not authored",
+    "chapterTitles": "Source titles preserve the scanned table of contents; display titles are shortened navigation labels",
+    "clinicalUse": "Educational navigation; no diagnostic or treatment recommendations are encoded",
+    "progress": "Per-user progress is separate from this catalogue; no sample completion data"
+  },
+  "counts": {
+    "coreLessons": 27,
+    "part1Chapters": 15,
+    "part2DailyDozenCategories": 12,
+    "part2SupplementaryEntries": 3
+  },
+  "parts": [
+    {
+      "id": "part-1",
+      "sourceTitle": "PHẦN 1",
+      "displayTitle": "Phần 1",
+      "units": [
+        {
+          "id": "p1-ch01",
+          "sourceTitle": "Để không chết vì bệnh tim",
+          "displayTitle": "Bệnh tim",
+          "printedPage": 37,
+          "pdfPage": 39,
+          "kind": "chapter"
+        },
+        {
+          "id": "p1-ch02",
+          "sourceTitle": "Để không chết vì các bệnh liên quan đến phổi",
+          "displayTitle": "Các bệnh liên quan đến phổi",
+          "printedPage": 54,
+          "pdfPage": 56,
+          "kind": "chapter"
+        },
+        {
+          "id": "p1-ch03",
+          "sourceTitle": "Để không chết vì các bệnh về não",
+          "displayTitle": "Các bệnh về não",
+          "printedPage": 70,
+          "pdfPage": 72,
+          "kind": "chapter"
+        },
+        {
+          "id": "p1-ch04",
+          "sourceTitle": "Để không chết vì ung thư đường tiêu hóa",
+          "displayTitle": "Ung thư đường tiêu hóa",
+          "printedPage": 96,
+          "pdfPage": 98,
+          "kind": "chapter"
+        },
+        {
+          "id": "p1-ch05",
+          "sourceTitle": "Để không chết vì bệnh nhiễm trùng",
+          "displayTitle": "Bệnh nhiễm trùng",
+          "printedPage": 117,
+          "pdfPage": 119,
+          "kind": "chapter"
+        },
+        {
+          "id": "p1-ch06",
+          "sourceTitle": "Để không chết vì bệnh tiểu đường",
+          "displayTitle": "Bệnh tiểu đường",
+          "printedPage": 146,
+          "pdfPage": 148,
+          "kind": "chapter"
+        },
+        {
+          "id": "p1-ch07",
+          "sourceTitle": "Để không chết vì bệnh cao huyết áp",
+          "displayTitle": "Bệnh cao huyết áp",
+          "printedPage": 175,
+          "pdfPage": 177,
+          "kind": "chapter"
+        },
+        {
+          "id": "p1-ch08",
+          "sourceTitle": "Để không chết vì bệnh gan",
+          "displayTitle": "Bệnh gan",
+          "printedPage": 200,
+          "pdfPage": 202,
+          "kind": "chapter"
+        },
+        {
+          "id": "p1-ch09",
+          "sourceTitle": "Để không chết vì các bệnh ung thư máu",
+          "displayTitle": "Các bệnh ung thư máu",
+          "printedPage": 217,
+          "pdfPage": 219,
+          "kind": "chapter"
+        },
+        {
+          "id": "p1-ch10",
+          "sourceTitle": "Để không chết vì bệnh thận",
+          "displayTitle": "Bệnh thận",
+          "printedPage": 230,
+          "pdfPage": 232,
+          "kind": "chapter"
+        },
+        {
+          "id": "p1-ch11",
+          "sourceTitle": "Để không chết vì bệnh ung thư vú",
+          "displayTitle": "Bệnh ung thư vú",
+          "printedPage": 248,
+          "pdfPage": 250,
+          "kind": "chapter"
+        },
+        {
+          "id": "p1-ch12",
+          "sourceTitle": "Để không chết vì tự tử do trầm cảm",
+          "displayTitle": "Tự tử do trầm cảm",
+          "printedPage": 273,
+          "pdfPage": 275,
+          "kind": "chapter"
+        },
+        {
+          "id": "p1-ch13",
+          "sourceTitle": "Để không chết vì ung thư tuyến tiền liệt",
+          "displayTitle": "Ung thư tuyến tiền liệt",
+          "printedPage": 291,
+          "pdfPage": 293,
+          "kind": "chapter"
+        },
+        {
+          "id": "p1-ch14",
+          "sourceTitle": "Để không chết vì bệnh Parkinson",
+          "displayTitle": "Bệnh Parkinson",
+          "printedPage": 309,
+          "pdfPage": 311,
+          "kind": "chapter"
+        },
+        {
+          "id": "p1-ch15",
+          "sourceTitle": "Để không chết vì các nguyên nhân do khám và điều trị (hoặc, Để không chết vì bác sĩ)",
+          "displayTitle": "Các nguyên nhân do khám và điều trị",
+          "printedPage": 326,
+          "pdfPage": 328,
+          "kind": "chapter"
+        }
+      ]
+    },
+    {
+      "id": "part-2",
+      "sourceTitle": "PHẦN 2",
+      "displayTitle": "Phần 2",
+      "units": [
+        {
+          "id": "p2-introduction",
+          "sourceTitle": "Giới thiệu",
+          "displayTitle": "Giới thiệu phần 2",
+          "printedPage": 345,
+          "pdfPage": 347,
+          "kind": "overview"
+        },
+        {
+          "id": "p2-daily-dozen",
+          "sourceTitle": "Lượng cần ăn hằng ngày của bác sĩ Greger",
+          "displayTitle": "Lượng cần ăn hằng ngày của bác sĩ Greger",
+          "printedPage": 367,
+          "pdfPage": 369,
+          "kind": "overview",
+          "children": [
+            {
+              "id": "p2-dd01",
+              "sourceTitle": "Đậu",
+              "displayTitle": "Đậu",
+              "printedPage": 373,
+              "pdfPage": 375,
+              "kind": "daily_dozen_category"
+            },
+            {
+              "id": "p2-dd02",
+              "sourceTitle": "Quả mọng",
+              "displayTitle": "Quả mọng",
+              "printedPage": 389,
+              "pdfPage": 391,
+              "kind": "daily_dozen_category"
+            },
+            {
+              "id": "p2-dd03",
+              "sourceTitle": "Các loại trái cây khác",
+              "displayTitle": "Các loại trái cây khác",
+              "printedPage": 399,
+              "pdfPage": 401,
+              "kind": "daily_dozen_category"
+            },
+            {
+              "id": "p2-dd04",
+              "sourceTitle": "Rau củ họ cải",
+              "displayTitle": "Rau củ họ cải",
+              "printedPage": 410,
+              "pdfPage": 412,
+              "kind": "daily_dozen_category"
+            },
+            {
+              "id": "p2-dd05",
+              "sourceTitle": "Rau xanh",
+              "displayTitle": "Rau xanh",
+              "printedPage": 418,
+              "pdfPage": 420,
+              "kind": "daily_dozen_category"
+            },
+            {
+              "id": "p2-dd06",
+              "sourceTitle": "Các loại rau củ khác",
+              "displayTitle": "Các loại rau củ khác",
+              "printedPage": 431,
+              "pdfPage": 433,
+              "kind": "daily_dozen_category"
+            },
+            {
+              "id": "p2-dd07",
+              "sourceTitle": "Hạt lanh",
+              "displayTitle": "Hạt lanh",
+              "printedPage": 453,
+              "pdfPage": 455,
+              "kind": "daily_dozen_category"
+            },
+            {
+              "id": "p2-dd08",
+              "sourceTitle": "Quả hạch và các loại hạt",
+              "displayTitle": "Quả hạch và các loại hạt",
+              "printedPage": 458,
+              "pdfPage": 460,
+              "kind": "daily_dozen_category"
+            },
+            {
+              "id": "p2-dd09",
+              "sourceTitle": "Các loại thảo mộc và gia vị",
+              "displayTitle": "Các loại thảo mộc và gia vị",
+              "printedPage": 468,
+              "pdfPage": 470,
+              "kind": "daily_dozen_category"
+            },
+            {
+              "id": "p2-dd10",
+              "sourceTitle": "Ngũ cốc nguyên cám",
+              "displayTitle": "Ngũ cốc nguyên cám",
+              "printedPage": 493,
+              "pdfPage": 495,
+              "kind": "daily_dozen_category"
+            },
+            {
+              "id": "p2-dd11",
+              "sourceTitle": "Thức uống",
+              "displayTitle": "Thức uống",
+              "printedPage": 505,
+              "pdfPage": 507,
+              "kind": "daily_dozen_category"
+            },
+            {
+              "id": "p2-dd12",
+              "sourceTitle": "Thể dục",
+              "displayTitle": "Thể dục",
+              "printedPage": 522,
+              "pdfPage": 524,
+              "kind": "daily_dozen_category"
+            }
+          ]
+        },
+        {
+          "id": "p2-conclusion",
+          "sourceTitle": "Kết luận",
+          "displayTitle": "Kết luận",
+          "printedPage": 531,
+          "pdfPage": 533,
+          "kind": "conclusion"
+        }
+      ]
+    }
+  ],
+  "referenceMatter": [
+    {
+      "id": "front-publisher",
+      "sourceTitle": "Lời Nhà xuất bản",
+      "displayTitle": "Lời Nhà xuất bản",
+      "printedPage": 7,
+      "pdfPage": 9,
+      "kind": "front_matter"
+    },
+    {
+      "id": "front-preface",
+      "sourceTitle": "Lời nói đầu",
+      "displayTitle": "Lời nói đầu",
+      "printedPage": 9,
+      "pdfPage": 11,
+      "kind": "front_matter"
+    },
+    {
+      "id": "front-introduction",
+      "sourceTitle": "Giới thiệu",
+      "displayTitle": "Giới thiệu chung",
+      "printedPage": 15,
+      "pdfPage": 17,
+      "kind": "front_matter"
+    },
+    {
+      "id": "back-acknowledgments",
+      "sourceTitle": "Lời cảm ơn",
+      "displayTitle": "Lời cảm ơn",
+      "printedPage": 538,
+      "pdfPage": 540,
+      "kind": "back_matter"
+    },
+    {
+      "id": "back-appendix",
+      "sourceTitle": "Phụ lục",
+      "displayTitle": "Phụ lục",
+      "printedPage": 539,
+      "pdfPage": 541,
+      "kind": "back_matter"
+    },
+    {
+      "id": "back-supplements",
+      "sourceTitle": "Viên uống bổ sung",
+      "displayTitle": "Viên uống bổ sung",
+      "printedPage": 539,
+      "pdfPage": 541,
+      "kind": "appendix"
+    },
+    {
+      "id": "back-notes",
+      "sourceTitle": "Chú thích",
+      "displayTitle": "Chú thích",
+      "printedPage": 546,
+      "pdfPage": 548,
+      "kind": "back_matter"
+    },
+    {
+      "id": "back-index",
+      "sourceTitle": "Bảng chỉ mục",
+      "displayTitle": "Bảng chỉ mục",
+      "printedPage": 749,
+      "pdfPage": 751,
+      "kind": "back_matter"
+    }
+  ]
+}

@@ -1,6 +1,7 @@
 # Flutter source structure
 
-This is a folder scaffold for Lab 3. The app and Firebase integration are not implemented yet.
+Flow 1 is implemented. `main.dart` starts `NepLanhApp`; default preview mode uses
+local data. Cloud adapters are implemented and await Firebase project setup.
 
 | Folder | Responsibility |
 | --- | --- |
@@ -13,6 +14,9 @@ This is a folder scaffold for Lab 3. The app and Firebase integration are not im
 | `theme/` | Lab 2 design tokens, `ThemeData`, typography, spacing, and radius constants. |
 | `utils/` | Small shared helpers that do not depend on screens or ViewModels. |
 
-Choose either Provider or Riverpod during implementation and use it consistently. Widgets must not call Firebase or external APIs directly. Data-loading screens will expose loading, data, empty, and error states through their ViewModels.
+Provider 6.1.5+1 is used consistently. Widgets delegate state and external operations
+to ViewModels/services. Data-loading state and recoverable failures belong to the ViewModels.
 
-Create `main.dart`, generate the real Firebase configuration, and initialize the Android Flutter project when implementation starts. No placeholder Firebase project identifiers or feature screens are supplied here. See [architecture](../docs/architecture.md) for the planned dependency rules and source requirements.
+Replace the explicit Firebase setup stub using `flutterfire configure` after
+creating your project. See [architecture](../docs/architecture.md) and
+[Firebase setup](../docs/firebase-setup.md). Flows 2/3 remain pending.

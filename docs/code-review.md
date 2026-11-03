@@ -1,6 +1,30 @@
 # Code review
 
-Status: review template only. No pull request review, findings, or fixes have been recorded yet.
+Status: Flow 1 received an independent Codex review on 2026-11-03. One confirmed
+finding was fixed and tested. This local review is separate from the required
+GitHub PR review with at least five findings and linked fix commits; no PR/commit
+has been created in this implementation task.
+
+## Flow 1 independent review
+
+- Tool: Codex `wf_reviewer`, separate read-only agent from the implementation agents.
+- Scope: app/bootstrap/auth, owner-bound Firestore adapter and rules, profile/date
+  validation, lifecycle/disposal, preview storage, screen state and tests.
+- Finding F1 (P2, recovery): `lib/screens/flow_screen.dart`, error stage originally
+  exposed only retry. An authenticated user facing persistent permission/network
+  errors could not sign out or switch accounts before reaching Home.
+- Decision: accepted. Cloud-only sign-out now remains available during loading,
+  welcome, profile, goals and error. It is disabled during profile saving. Preview
+  retains its local-only behavior.
+- Evidence: `test/widget_test.dart` verifies error-stage retry plus sign-out;
+  `test/unit/auth_view_model_test.dart` covers auth routing, cancellation/retry,
+  duplicate sign-in prevention, failure visibility and sign-out failure recovery.
+- Re-review: finding resolved; no additional confirmed defect introduced by the fix.
+  Focused reviewer run passed 7 tests; coordinator's complete suite passed 39.
+- Remaining validation: real Firebase setup/rules emulator, native account picker
+  and device behavior. No cloud/live-account result is inferred from fake-service tests.
+
+The full-assignment PR-review template remains below for future execution.
 
 ## Review scope
 

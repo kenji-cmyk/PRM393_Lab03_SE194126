@@ -4,6 +4,7 @@
 # Local PDF extraction tools and preserved Git metadata.
 /tmp/
 /.local-backup/
+/.playwright-mcp/
 # Flutter/Dart generated output.
 .dart_tool/
 .flutter-plugins
@@ -36,6 +37,7 @@ key.properties
 firebase-debug.log*
 firestore-debug.log*
 ui-debug.log*
+firebase.local.json
 # Editor and OS metadata.
 .idea/
 *.iml

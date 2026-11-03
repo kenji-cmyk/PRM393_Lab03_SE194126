@@ -1,6 +1,58 @@
 # Architecture
 
-Status: planned Lab 3 architecture and folder scaffold. There is no implemented Flutter app, Firebase connection, or tested user flow yet.
+Status: Flow 1 implemented with Flutter 3.47.4, Dart 3.13.3 and Provider 6.1.5+1.
+Firebase adapters are implemented but the user's project setup is pending.
+The sections below retain the wider Lab 3 plan; flow 1 implementation is described here.
+
+## Implemented flow 1
+
+- `lib/app.dart` composes Provider dependencies, preview/cloud startup and auth routing.
+- `lib/screens/flow_screen.dart` renders four Figma-derived screens and delegates actions.
+- `lib/viewmodels/onboarding_view_model.dart` owns loading/welcome/profile/goals/home/error,
+  draft validation, derived age, saving, retry and lifecycle guards.
+- `lib/viewmodels/auth_view_model.dart` owns Google sign-in cancellation/failure and session state.
+- `lib/services/onboarding_repository.dart` is the injected profile contract.
+- `LocalOnboardingRepository` persists only explicit preview data via SharedPreferencesAsync.
+- `FirestoreOnboardingRepository` is bound to a UID and reads/writes `users/{uid}`.
+- `FirebaseAuthService` encapsulates native Google Sign-In and Firebase web popup.
+- `lib/firebase/` and `lib/firebase_options.dart` contain bootstrap and the setup stub,
+  which is replaced by `flutterfire configure` after the user creates Firebase.
+- `lib/theme/` and `lib/widgets/` centralize verified Figma tokens and components.
+
+| ViewModel | Injected service | Observable state |
+| --- | --- | --- |
+| OnboardingViewModel | OnboardingRepository | stage, draft/errors, selectedGoal, isSaving, profile |
+| AuthViewModel | AuthService | loading, busy, uid, errorMessage |
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Screen as Profile / Goal screen
+    participant VM as OnboardingViewModel
+    participant Repo as OnboardingRepository
+    participant Store as Preview storage or owner Firestore document
+    User->>Screen: Enter profile and select goal
+    Screen->>VM: continueToGoals / selectGoal / save
+    VM->>VM: Validate date and positive measurements
+    VM-->>Screen: Saving; prevent duplicate submission
+    VM->>Repo: save(profile with selected goal)
+    Repo->>Store: Persist complete profile
+    alt Save succeeds
+        Store-->>Repo: Success
+        Repo-->>VM: Complete
+        VM-->>Screen: Home with saved profile
+    else Save fails
+        Store-->>Repo: Error
+        Repo-->>VM: Failure
+        VM-->>Screen: Keep draft and goal; offer retry
+    end
+```
+
+Cloud mode disposes the UID-keyed profile Provider on sign-out/account change.
+Firestore disk persistence is disabled; pending callbacks cannot repopulate a
+disposed/reset ViewModel. Cloud sign-out preserves the server profile. Explicit
+preview sign-out clears only its own preferences key, then resets the draft.
+No profile values are sent to Analytics. See [Firebase setup](firebase-setup.md).
 
 ## Source requirements and current scope
 

@@ -8,10 +8,12 @@ Crashlytics, and Remote Config. Use the student's own Firebase project.
 | --- | --- |
 | `storage.rules` | Existing deny-all placeholder; define owner-scoped `reports/{uid}/...` rules and verify before deployment |
 | `remote-config-defaults.json` | Empty placeholder; define at least two behavior-changing parameters after Lab 2 scope is known |
-| `firestore.rules` | Deny-all placeholder for a topic that stores user data in Firestore |
+| `firestore.rules` | Owner-only get/create/update for users/{uid}; field allowlist; everything else denied; not deployed/emulator-tested |
 | `firestore.indexes.json` | Empty index definition; add indexes needed by actual queries |
 
 No rules are deployed and no Firebase project or cloud resource is configured.
+The user will create the project after implementation. See
+[Firebase setup](../docs/firebase-setup.md) for configuration and cloud-mode commands.
 Confirm Cloud Storage availability/billing during integration; substitution needs
 lecturer approval under the selected handout.
 

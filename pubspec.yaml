@@ -1,0 +1,39 @@
+﻿name: nep_lanh
+description: Nếp Lành - Flow 1 onboarding for PRM393 Lab 3.
+publish_to: none
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.13.3
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  provider: 6.1.5+1
+  firebase_core: 4.15.0
+  firebase_auth: 6.7.0
+  cloud_firestore: 6.10.0
+  google_sign_in: 7.2.0
+  shared_preferences: 2.5.6
+  flutter_svg: 2.3.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: 6.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/icons/
+  fonts:
+    - family: Roboto
+      fonts:
+        - asset: assets/fonts/Roboto-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Roboto-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Roboto-Bold.ttf
+          weight: 700
