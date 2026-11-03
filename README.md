@@ -13,4 +13,4 @@ Flutter and Firebase lab project scaffold with an MVVM app layout, ARTEMIS pytes
 - `report/` — final `Lab03_<StudentID>.pdf` report.
 - `slides/` — final `Lab03_<StudentID>_slides.pdf` presentation.
 
-The assignment reference PDFs are retained under `docs/requirement/`.
+Add assignment reference PDFs under `docs/requirement/` when needed.
