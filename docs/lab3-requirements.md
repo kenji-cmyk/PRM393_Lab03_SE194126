@@ -1,12 +1,14 @@
 # Lab 3 requirements and scaffold decisions
 
-Status: **preparation only**. The user selected Cloud-Enabled + Preparation Guide
-v5 as the primary baseline. Reserved paths do not imply completed features/tests.
+Status: **flow 1 implemented**, with local verification in [test-report.md](test-report.md).
+The user selected Cloud-Enabled + Preparation Guide v5 as primary baseline and
+will create Firebase after coding. The wider checklist below remains the complete
+Lab 3 plan; completing flow 1 does not complete the whole assignment.
 
 ## Source inventory
 
-All four original PDFs were read in full (69 pages). They stay local in the
-Git-ignored `docs/requirements/` directory.
+The four assignment handouts were read in full (69 pages). They stay local in
+the Git-ignored `docs/requirements/` directory.
 
 | Local PDF | Pages | Role |
 | --- | --- | --- |
@@ -14,6 +16,12 @@ Git-ignored `docs/requirements/` directory.
 | `PRM393_Lab3_Preparation_Guide_v5_ToiUu.pdf` | 25 | Preparation guide consistent with ARTEMIS |
 | `PRM393 - Lab 3 From Design to Working App with Flutter and Firebase.pdf` | 17 | Alternate handout; supporting templates retained, conflicting tool requirements deferred |
 | `PRM393 - Final Assignment One Complete System on Firebase.pdf` | 9 | Future assignment context, outside current implementation scope |
+
+The user subsequently supplied a fifth PDF: the 774-page scanned Vietnamese
+book *Ăn gì không chết*. Its table of contents (PDF pages 7-8) and selected
+source-page offsets were inspected for the Lab 2 flow-3 amendment; a full reading
+of the 774 pages is not claimed. See [book curriculum](book-curriculum.md).
+The book stays in the same ignored local directory.
 
 ## Decisions across handouts
 
@@ -85,7 +93,8 @@ Local Git setup is **complete**, verified after the user performed the repair:
 - `docs/.git` no longer exists; the original metadata is preserved under ignored
   `.local-backup/docs-git-original/`. The earlier byte-verified 28-file ZIP backup
   remains at `.local-backup/docs-git-before-root-setup.zip`.
-- All four actual requirement PDF paths pass `git check-ignore --no-index`.
+- All five current PDF paths (four handouts and the book) pass
+  `git check-ignore --no-index`.
   Root `.gitignore` and `docs/.gitignore` keep these local references excluded.
 - Temporary extraction tools/files and Git backups remain ignored.
 
