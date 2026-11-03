@@ -2,7 +2,7 @@
 name = "prm393-lab3-e2e"
 version = "0.1.0"
 description = "ARTEMIS end-to-end tests for the PRM393 Lab 3 app"
-requires-python = ">=3.10"
+requires-python = ">=3.12"
 dependencies = ["pytest>=8.0"]
 
 [tool.pytest.ini_options]

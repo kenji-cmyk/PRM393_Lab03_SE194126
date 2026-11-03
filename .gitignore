@@ -1,0 +1,43 @@
+# Local assignment references (do not publish).
+/docs/requirements/
+/requirements/
+# Local PDF extraction tools and preserved Git metadata.
+/tmp/
+/.local-backup/
+# Flutter/Dart generated output.
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+build/
+coverage/
+android/.gradle/
+android/.kotlin/
+android/captures/
+android/local.properties
+# Python environments/caches.
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+# Local credentials and signing files.
+.env
+.env.*
+!.env.example
+*-firebase-adminsdk-*.json
+*service-account*.json
+serviceAccountKey.json
+*.jks
+*.keystore
+key.properties
+.firebase/
+firebase-debug.log*
+firestore-debug.log*
+ui-debug.log*
+# Editor and OS metadata.
+.idea/
+*.iml
+.DS_Store
+Thumbs.db
