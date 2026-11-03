@@ -1,0 +1,10 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Replace with rules derived from the app's authentication and data model.
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
