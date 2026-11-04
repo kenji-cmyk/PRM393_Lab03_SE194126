@@ -11,17 +11,26 @@ class LocalOnboardingRepository implements OnboardingRepository {
     : _preferences = preferences ?? SharedPreferencesAsync();
 
   final SharedPreferencesAsync _preferences;
-  static const storageKey = 'nep_lanh.preview.profile.v1';
+  static const storageKey = 'vetalife.preview.profile.v1';
+  static const _legacyStorageKey = 'nep_lanh.preview.profile.v1';
 
   @override
   Future<UserProfile?> load() async {
-    final value = await _preferences.getString(storageKey);
+    final currentValue = await _preferences.getString(storageKey);
+    final value =
+        currentValue ?? await _preferences.getString(_legacyStorageKey);
     if (value == null) return null;
     final json = jsonDecode(value);
     if (json is! Map<String, dynamic>) {
       throw const FormatException('Invalid stored profile');
     }
-    return UserProfile.fromJson(json);
+    final profile = UserProfile.fromJson(json);
+    if (currentValue == null) {
+      // Validate and copy before removing the old brand's stored profile.
+      await _preferences.setString(storageKey, value);
+      await _preferences.remove(_legacyStorageKey);
+    }
+    return profile;
   }
 
   @override
@@ -29,5 +38,8 @@ class LocalOnboardingRepository implements OnboardingRepository {
       _preferences.setString(storageKey, jsonEncode(profile.toJson()));
 
   @override
-  Future<void> clear() => _preferences.remove(storageKey);
+  Future<void> clear() async {
+    await _preferences.remove(storageKey);
+    await _preferences.remove(_legacyStorageKey);
+  }
 }

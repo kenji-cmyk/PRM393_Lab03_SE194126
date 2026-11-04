@@ -61,7 +61,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyDtdAKzQ7HaFZnTl9hwpjH1TPy39izcaoM',
-    appId: '1:455537300059:android:213b5ad4c2b0cfb991257e',
+    appId: '1:455537300059:android:6bf4a62f2e23bb6b91257e',
     messagingSenderId: '455537300059',
     projectId: 'vetalife-24f03',
     storageBucket: 'vetalife-24f03.firebasestorage.app',

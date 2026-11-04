@@ -5,12 +5,12 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 
-import 'package:nep_lanh/models/habit_goal.dart';
-import 'package:nep_lanh/models/user_profile.dart';
-import 'package:nep_lanh/screens/flow_screen.dart';
-import 'package:nep_lanh/services/onboarding_repository.dart';
-import 'package:nep_lanh/theme/app_theme.dart';
-import 'package:nep_lanh/viewmodels/onboarding_view_model.dart';
+import 'package:vetalife/models/habit_goal.dart';
+import 'package:vetalife/models/user_profile.dart';
+import 'package:vetalife/screens/flow_screen.dart';
+import 'package:vetalife/services/onboarding_repository.dart';
+import 'package:vetalife/theme/app_theme.dart';
+import 'package:vetalife/viewmodels/onboarding_view_model.dart';
 
 class _Repository implements OnboardingRepository {
   UserProfile? stored;

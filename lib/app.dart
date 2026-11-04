@@ -6,18 +6,22 @@ import 'screens/flow_screen.dart';
 import 'services/app_dependencies.dart';
 import 'services/auth_service.dart';
 import 'services/local_onboarding_repository.dart';
+import 'services/book_meal_intelligence.dart';
+import 'services/local_meal_repository.dart';
+import 'services/meal_photo_picker.dart';
 import 'theme/app_theme.dart';
 import 'viewmodels/auth_view_model.dart';
 import 'viewmodels/onboarding_view_model.dart';
+import 'viewmodels/meal_view_model.dart';
 import 'widgets/app_components.dart';
 
-class NepLanhApp extends StatelessWidget {
-  const NepLanhApp({super.key, this.isPreview = true});
+class VetaLifeApp extends StatelessWidget {
+  const VetaLifeApp({super.key, this.isPreview = true});
   final bool isPreview;
 
   @override
   Widget build(BuildContext context) => MaterialApp(
-    title: 'Nếp Lành',
+    title: 'VetaLife',
     debugShowCheckedModeBanner: false,
     theme: AppTheme.light,
     locale: const Locale('vi'),
@@ -31,12 +35,42 @@ class _PreviewFlow extends StatelessWidget {
   const _PreviewFlow();
 
   @override
-  Widget build(BuildContext context) => ChangeNotifierProvider(
-    create: (_) => OnboardingViewModel(LocalOnboardingRepository())..init(),
+  Widget build(BuildContext context) => MultiProvider(
+    providers: [
+      ChangeNotifierProvider(
+        create: (_) => OnboardingViewModel(LocalOnboardingRepository())..init(),
+      ),
+      ChangeNotifierProvider(
+        create: (context) => MealViewModel(
+          repository: LocalMealRepository(),
+          intelligence: BookMealIntelligence(),
+          photoPicker: DeviceMealPhotoPicker(),
+          profile: () => context.read<OnboardingViewModel>().profile,
+        )..initialize(),
+      ),
+    ],
     child: Builder(
       builder: (context) => FlowScreen(
         isPreview: true,
-        onSignOut: context.read<OnboardingViewModel>().clearPreviewSession,
+        onSignOut: () async {
+          final meals = context.read<MealViewModel>();
+          final onboarding = context.read<OnboardingViewModel>();
+          if (meals.isSaving) return;
+          try {
+            await meals.clearPreviewSession();
+            await onboarding.clearPreviewSession();
+          } catch (_) {
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text(
+                    'Chưa xóa được dữ liệu xem thử. Hãy thử đăng xuất lại.',
+                  ),
+                ),
+              );
+            }
+          }
+        },
       ),
     ),
   );
@@ -98,10 +132,22 @@ class _AuthGate extends StatelessWidget {
     }
     final uid = auth.uid;
     if (uid == null) return const _SignInScreen();
-    return ChangeNotifierProvider(
+    return MultiProvider(
       key: ValueKey(uid),
-      create: (_) =>
-          OnboardingViewModel(AppDependencies.repositoryFor(uid))..init(),
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) =>
+              OnboardingViewModel(AppDependencies.repositoryFor(uid))..init(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => MealViewModel(
+            repository: AppDependencies.mealsFor(uid),
+            intelligence: AppDependencies.mealIntelligence(),
+            photoPicker: DeviceMealPhotoPicker(sessionOwner: 'cloud:$uid'),
+            profile: () => context.read<OnboardingViewModel>().profile,
+          )..initialize(),
+        ),
+      ],
       child: Column(
         children: [
           if (auth.errorMessage != null)
@@ -141,7 +187,7 @@ class _SignInScreen extends StatelessWidget {
                   const Center(child: BrandMark()),
                   const SizedBox(height: AppTokens.space24),
                   Text(
-                    'Chào mừng đến Nếp Lành',
+                    'Chào mừng đến VetaLife',
                     style: theme.textTheme.headlineSmall,
                     textAlign: TextAlign.center,
                   ),

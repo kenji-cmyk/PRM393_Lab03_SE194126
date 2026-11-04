@@ -7,17 +7,17 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:455537300059:android:213b5ad4c2b0cfb991257e",
+        "mobilesdk_app_id": "1:455537300059:android:6bf4a62f2e23bb6b91257e",
         "android_client_info": {
-          "package_name": "vn.edu.fpt.nep_lanh"
+          "package_name": "vn.edu.fpt.vetalife"
         }
       },
       "oauth_client": [
         {
-          "client_id": "455537300059-ild31nmc7hcstt7245pgtbatvv5ho99n.apps.googleusercontent.com",
+          "client_id": "455537300059-fe357bf0lunenl2vegdce84beibmoc9k.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "vn.edu.fpt.nep_lanh",
+            "package_name": "vn.edu.fpt.vetalife",
             "certificate_hash": "f6533ce08da113e5137e780652a0c8b149ae5997"
           }
         },

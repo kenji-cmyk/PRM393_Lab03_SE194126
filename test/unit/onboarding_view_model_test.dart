@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:nep_lanh/models/habit_goal.dart';
-import 'package:nep_lanh/models/user_profile.dart';
-import 'package:nep_lanh/services/onboarding_repository.dart';
-import 'package:nep_lanh/viewmodels/onboarding_view_model.dart';
+import 'package:vetalife/models/habit_goal.dart';
+import 'package:vetalife/models/user_profile.dart';
+import 'package:vetalife/services/onboarding_repository.dart';
+import 'package:vetalife/viewmodels/onboarding_view_model.dart';
 
 class FakeOnboardingRepository implements OnboardingRepository {
   UserProfile? stored;

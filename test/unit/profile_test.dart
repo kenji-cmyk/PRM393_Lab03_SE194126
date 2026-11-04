@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:nep_lanh/models/habit_goal.dart';
-import 'package:nep_lanh/models/user_profile.dart';
-import 'package:nep_lanh/utils/calendar_date.dart';
+import 'package:vetalife/models/habit_goal.dart';
+import 'package:vetalife/models/user_profile.dart';
+import 'package:vetalife/utils/calendar_date.dart';
 
 void main() {
   UserProfile profile({DateTime? birthDate}) => UserProfile(

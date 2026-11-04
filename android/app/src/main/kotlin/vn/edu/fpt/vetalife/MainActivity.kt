@@ -1,4 +1,4 @@
-package vn.edu.fpt.nep_lanh
+package vn.edu.fpt.vetalife
 
 import io.flutter.embedding.android.FlutterActivity
 

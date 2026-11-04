@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:nep_lanh/services/auth_service.dart';
-import 'package:nep_lanh/viewmodels/auth_view_model.dart';
+import 'package:vetalife/services/auth_service.dart';
+import 'package:vetalife/viewmodels/auth_view_model.dart';
 
 class _Auth implements AuthService {
   final changes = StreamController<String?>.broadcast(sync: true);

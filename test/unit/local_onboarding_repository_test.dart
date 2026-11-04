@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:nep_lanh/models/habit_goal.dart';
-import 'package:nep_lanh/models/user_profile.dart';
-import 'package:nep_lanh/services/local_onboarding_repository.dart';
+import 'package:vetalife/models/habit_goal.dart';
+import 'package:vetalife/models/user_profile.dart';
+import 'package:vetalife/services/local_onboarding_repository.dart';
 
 class _Preferences implements SharedPreferencesAsync {
   final values = <String, String>{};
@@ -48,6 +48,55 @@ void main() {
 
   test('new preview has no saved profile', () async {
     expect(await repository.load(), isNull);
+  });
+
+  test('existing preview profile migrates to VetaLife storage', () async {
+    const legacyKey = 'nep_lanh.preview.profile.v1';
+    final storedProfile = jsonEncode(profile.toJson());
+    preferences.values[legacyKey] = storedProfile;
+
+    expect((await repository.load())!.toJson(), profile.toJson());
+    expect(
+      preferences.values[LocalOnboardingRepository.storageKey],
+      storedProfile,
+    );
+    expect(preferences.values.containsKey(legacyKey), isFalse);
+  });
+
+  test(
+    'current profile takes priority over an older branded profile',
+    () async {
+      const legacyKey = 'nep_lanh.preview.profile.v1';
+      preferences.values[legacyKey] = '{broken';
+      await repository.save(profile);
+
+      expect((await repository.load())!.toJson(), profile.toJson());
+    },
+  );
+
+  test('failed migration preserves the original preview profile', () async {
+    const legacyKey = 'nep_lanh.preview.profile.v1';
+    final storedProfile = jsonEncode(profile.toJson());
+    preferences.values[legacyKey] = storedProfile;
+    preferences.failures.add('write');
+
+    await expectLater(repository.load(), throwsStateError);
+    expect(preferences.values[legacyKey], storedProfile);
+    expect(
+      preferences.values.containsKey(LocalOnboardingRepository.storageKey),
+      isFalse,
+    );
+  });
+
+  test('clear removes both profiles so legacy data cannot reappear', () async {
+    const legacyKey = 'nep_lanh.preview.profile.v1';
+    preferences.values[legacyKey] = jsonEncode(profile.toJson());
+    await repository.save(profile);
+
+    await repository.clear();
+
+    expect(await repository.load(), isNull);
+    expect(preferences.values.containsKey(legacyKey), isFalse);
   });
 
   test(

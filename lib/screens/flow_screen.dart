@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 import '../models/habit_goal.dart';
+import 'meal_flow_screen.dart';
 import '../theme/app_theme.dart';
 import '../viewmodels/onboarding_view_model.dart';
+import '../viewmodels/meal_view_model.dart';
 import '../widgets/app_components.dart';
+import '../widgets/meal_navigation.dart';
 
 /// Flow 1: welcome → personal information → goal → persisted home.
 class FlowScreen extends StatelessWidget {
@@ -21,6 +23,12 @@ class FlowScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final vm = context.watch<OnboardingViewModel>();
+    final meals = context.watch<MealViewModel?>();
+    if (vm.stage == OnboardingStage.home &&
+        meals != null &&
+        meals.stage != MealStage.home) {
+      return MealFlowScreen(onHome: meals.showHome);
+    }
     final interceptBack =
         vm.stage == OnboardingStage.profile ||
         vm.stage == OnboardingStage.goals;
@@ -109,7 +117,7 @@ class WelcomeScreen extends StatelessWidget {
             children: [
               const BrandMark(),
               const SizedBox(width: AppTokens.space12),
-              Text('Nếp Lành', style: theme.textTheme.titleLarge),
+              Text('VetaLife', style: theme.textTheme.titleLarge),
             ],
           ),
           const SizedBox(height: AppTokens.space32),
@@ -557,6 +565,8 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final vm = context.watch<OnboardingViewModel>();
+    final meals = context.watch<MealViewModel?>();
+    final mealCount = meals?.todayCount ?? 0;
     final theme = Theme.of(context);
     final profile = vm.profile;
     if (profile == null) {
@@ -570,7 +580,7 @@ class HomeScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           AppTopBar(
-            title: 'Nếp Lành',
+            title: 'VetaLife',
             trailing: PopupMenuButton<String>(
               tooltip: 'Hồ sơ của bạn',
               enabled: !vm.isSaving,
@@ -605,7 +615,7 @@ class HomeScreen extends StatelessWidget {
           ),
           const SizedBox(height: AppTokens.space4),
           Text(
-            'Một ngày mới, một bước nhỏ.',
+            MaterialLocalizations.of(context).formatFullDate(vm.today),
             style: theme.textTheme.bodyLarge?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
             ),
@@ -617,29 +627,35 @@ class HomeScreen extends StatelessWidget {
             selected: true,
           ),
           const SizedBox(height: AppTokens.space16),
+          if (meals?.journalError != null) ...[
+            AppInlineError(message: meals!.journalError!),
+            const SizedBox(height: AppTokens.space12),
+          ],
           Text(
-            'Chưa có bữa ăn nào được ghi lại',
+            meals?.isLoadingJournal == true
+                ? 'Đang tải nhật ký…'
+                : meals?.journalError != null
+                ? 'Chưa tải được số bữa hôm nay'
+                : mealCount == 0
+                ? 'Chưa có bữa ăn nào được ghi lại'
+                : '$mealCount bữa ăn đã ghi hôm nay',
             style: theme.textTheme.labelMedium,
           ),
           const SizedBox(height: AppTokens.space12),
-          const LinearProgressIndicator(
-            value: 0,
+          LinearProgressIndicator(
+            value: mealCount > 0 ? 1 : 0,
+            semanticsLabel: mealCount > 0
+                ? 'Đã có ghi chép hôm nay'
+                : 'Chưa có ghi chép hôm nay',
             minHeight: AppTokens.progressHeight,
-            borderRadius: BorderRadius.all(
+            borderRadius: const BorderRadius.all(
               Radius.circular(AppTokens.pillRadius),
             ),
           ),
           const SizedBox(height: AppTokens.space24),
           AppCard(title: 'Gợi ý hôm nay', body: profile.goal.suggestion),
           const SizedBox(height: AppTokens.space24),
-          AppButton(
-            label: 'Ghi bữa ăn',
-            onPressed: () => showUpcomingFlow(
-              context,
-              title: 'Ghi bữa ăn',
-              message: 'Ghi bữa ăn sẽ có trong luồng 2. Hồ sơ và mục tiêu của bạn đã được lưu.',
-            ),
-          ),
+          AppButton(label: 'Ghi bữa ăn', onPressed: meals?.startNew),
           const SizedBox(height: AppTokens.space16),
           TextButton(
             onPressed: () => showUpcomingFlow(
@@ -679,93 +695,19 @@ class _HomeNavigation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const destinations = [
-      ('Trang chủ', 'home'),
-      ('Nhật ký', 'journal'),
-      ('Tiến trình', 'progress'),
-      ('Học', 'learn'),
-    ];
-    final theme = Theme.of(context);
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        border: const Border(top: BorderSide(color: AppTokens.border)),
-      ),
-      child: SafeArea(
-        top: false,
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(minHeight: AppTokens.navHeight),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppTokens.space16,
-              vertical: AppTokens.space8,
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                for (final (index, destination) in destinations.indexed)
-                  Expanded(
-                    child: Semantics(
-                      selected: index == 0,
-                      button: true,
-                      child: Material(
-                        color: index == 0
-                            ? theme.colorScheme.primaryContainer
-                            : theme.colorScheme.surface,
-                        borderRadius: BorderRadius.circular(
-                          AppTokens.mediumRadius,
-                        ),
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(
-                            AppTokens.mediumRadius,
-                          ),
-                          onTap: index == 0
-                              ? () {}
-                              : () => showUpcomingFlow(
-                                  context,
-                                  title: destination.$1,
-                                  message: index == 1
-                                      ? 'Nhật ký bữa ăn sẽ có trong luồng 2.'
-                                      : 'Theo dõi và học sẽ có trong luồng 3.',
-                                ),
-                          child: ConstrainedBox(
-                            constraints: const BoxConstraints(
-                              minHeight: AppTokens.navItemHeight,
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: AppTokens.space4,
-                              ),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  SvgPicture.asset(
-                                    'assets/icons/${destination.$2}.svg',
-                                    excludeFromSemantics: true,
-                                  ),
-                                  const SizedBox(height: AppTokens.space4),
-                                  Text(
-                                    destination.$1,
-                                    style: theme.textTheme.bodySmall?.copyWith(
-                                      color: index == 0
-                                          ? theme.colorScheme.onPrimaryContainer
-                                          : theme.colorScheme.onSurfaceVariant,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        ),
-      ),
+    final meals = context.watch<MealViewModel?>();
+    return MealNavigation(
+      selectedIndex: 0,
+      onSelected: (index) {
+        if (index == 1) meals?.openJournal();
+        if (index > 1) {
+          showUpcomingFlow(
+            context,
+            title: index == 2 ? 'Tiến trình tuần' : 'Bài học nhỏ',
+            message: 'Theo dõi và học sẽ có trong luồng 3.',
+          );
+        }
+      },
     );
   }
 }

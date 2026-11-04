@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Tokens read from the Nếp Lành Figma design system.
+/// Tokens read from the supplied Figma design system.
 abstract final class AppTokens {
   static const primary = Color(0xFF2F6B4F);
   static const primaryContainer = Color(0xFFE1F1E6);

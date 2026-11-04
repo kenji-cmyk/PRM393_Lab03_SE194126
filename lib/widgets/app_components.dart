@@ -277,7 +277,7 @@ class BrandMark extends StatelessWidget {
         shape: BoxShape.circle,
       ),
       child: Text(
-        'NL',
+        'VL',
         style: Theme.of(context).textTheme.labelMedium?.copyWith(
           color: AppTokens.onPrimaryContainer,
           fontWeight: FontWeight.w700,
