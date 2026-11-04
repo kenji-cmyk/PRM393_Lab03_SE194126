@@ -1,16 +1,39 @@
-# PRM393 Lab 3 - SE194126
+# VetaLife - PRM393 Lab 3 - SE194126
 
 Repository: <https://github.com/kenji-cmyk/PRM393_Lab03_SE194126>.
 
-Status: **Flow 1 implemented in Flutter**: Chào mừng → Thông tin của bạn →
+Status: **Flows 1 and 2 implemented in Flutter**. Flow 1: Chào mừng → Thông tin của bạn →
 Thiết lập mục tiêu → Trang chủ. Includes validation, derived age, draft retention,
 save/retry, local preview persistence, edit/sign-out, and cloud Auth/Firestore code.
-Firebase has not been configured: the user will create the project after coding.
-Flows 2/3 and the remaining Lab 3 integrations are still pending.
+Firebase client configuration targets project `vetalife-24f03`. The VetaLife
+Android app is registered for `vn.edu.fpt.vetalife`; Google Sign-In and the full
+cloud profile/journal flow still need live verification. On 2026-11-04, the nine
+Firestore rules emulator checks passed, rules were deployed to `vetalife-24f03`,
+and production readback matched the local rules, including meal ownership rules.
+Indexes, stored data and billing were unchanged.
+Flow 2: ghi bữa ăn → optional camera/gallery recognition and OCR → editable
+ingredient confirmation → book-grounded feedback → explicit journal save.
+Local preview matches 15 verified book passages. Cloud AI now uses Firebase AI
+Logic with the Gemini Developer API through the Flutter `firebase_ai` SDK,
+targeting the Spark free tier for supported models and quotas. CLI setup has
+enabled `gemini-developer-api` for the Android/web apps and confirmed AI Logic
+App Check enforcement as `ENFORCED`, without changing billing. A temporary
+App Check token exchange and a non-personal `gemini-3.6-flash` connectivity
+request both returned HTTP 200. On 2026-11-04, live RPC/adapter analysis also
+returned HTTP 200 with four validated book citations and health connections;
+synthetic text-card OCR passed separately without inventing ingredients.
+Temporary debug tokens were revoked and JWT files removed. These checks use
+synthetic data and do not verify device SDK attestation, UI, native camera or
+real-meal accuracy. See [the test report](docs/test-report.md) for the observed
+HTTP 500 failure before the successful controlled analysis run.
+Device debug tokens and web reCAPTCHA provider/site key still need configuration.
+Native camera and real-meal analysis accuracy remain unverified. No Gemini
+secret or Functions deployment is required for this path.
+Flow 3 remains pending.
 Confirmed baseline: **Cloud-Enabled Mobile App + Preparation Guide v5**,
 using **Google ARTEMIS** for Android E2E testing.
 
-## Run flow 1
+## Run flows 1 and 2
 
 ```powershell
 flutter pub get
@@ -20,12 +43,27 @@ flutter run --dart-define=APP_MODE=preview
 For browser preview: `flutter run -d chrome --dart-define=APP_MODE=preview`.
 Preview is the default; its visible label identifies device-only storage.
 No hard-coded user or completed meal data is supplied. Home shows your saved
-name and goal, and an empty meal state. Meal/progress/learning actions explain
-their pending flow scope.
+name, goal and actual meal count; the journal has real empty and saved states.
+Follow [Flow 2 setup](docs/flow2-setup.md) for preview, Gemini configuration,
+camera/OCR confirmation, source references and journal behavior.
 
-After creating Firebase, follow [the setup guide](docs/firebase-setup.md), then
+Complete [the Firebase setup guide](docs/firebase-setup.md), then
 run `flutter run --dart-define=APP_MODE=cloud`. Cloud mode requires real config
-and never falls back silently to preview. Android ID: `vn.edu.fpt.nep_lanh`.
+and never falls back silently to preview. Android ID: `vn.edu.fpt.vetalife`.
+
+For Android development, run the cloud debug app, copy its App Check debug UUID
+from the log, then run `& .\tool\register_app_check_debug.ps1 -Platform android`
+in another PowerShell window. Paste the UUID into the hidden prompt and restart
+the app after registration. Use `-Platform web` for the browser's token; web also
+requires its public reCAPTCHA site key and the debug flag described in
+[the App Check steps](docs/flow2-setup.md#đăng-ký-debug-token-bằng-powershell).
+Do not paste debug tokens into chat or commit them. Google Sign-In and the full
+save/reload flow still need live verification with the deployed rules.
+
+VetaLife installs as a separate Android app after the application ID change;
+device-only data from the previous Android app is not transferred automatically.
+On the same web origin, existing preview profiles migrate to the VetaLife
+storage key. Cloud profiles remain associated with their Firebase user UID.
 
 Toolchain used: Flutter **3.47.4**, Dart **3.13.3**, Provider **6.1.5+1**;
 all direct dependencies are pinned in `pubspec.yaml` and `pubspec.lock`.
@@ -79,11 +117,11 @@ limitations. This does not represent implemented Flutter or live interaction tes
    The user's amendments add personal information to flow 1 and book-chapter
    learning to flow 3; confirm any separate original written Lab 2 deliverables.
 2. Continue [traceability](docs/design-traceability.md) and
-   [architecture](docs/architecture.md) for flows 2/3 using the selected Provider
-   setup. Root Flutter/Android/web initialization and flow 1 are complete.
+   [architecture](docs/architecture.md) for flow 3 using the selected Provider
+   setup. Root Flutter/Android/web initialization and flows 1/2 are complete.
 3. Configure your Firebase project using [the setup guide](docs/firebase-setup.md).
-   Replace the options stub, generate `android/app/google-services.json`, and
-   verify owner rules and Google Sign-In with the real project.
+   Verify the renamed Android app's signing fingerprints, owner rules, and
+   Google Sign-In with the real project.
 4. Implement the remaining flows and Firebase services; instrument, test,
    review, and produce actual submission evidence in that order.
 
@@ -95,13 +133,13 @@ pending; see [E2E preparation](e2e_test/README.md).
 | Item | Current value |
 | --- | --- |
 | Student ID | SE194126 |
-| Topic / brand | Ăn gì không chết / Nếp Lành |
+| Topic / brand | Ăn gì không chết / VetaLife |
 | Persona / success criteria | Vinh, 25, office worker; quick meal logging, visible weekly frequency, preserved draft on network failure |
 | Figma URL / design amendments | Linked above; flow 1 profile and flow 3 book catalogue recorded in the design change log |
 | Real data source/API | Preview: device storage; cloud profile: users/{uid} in Firestore after configuration |
 | Flutter/Dart versions and package pins | Flutter 3.47.4 / Dart 3.13.3; exact pins in pubspec.yaml/lock |
 | State management | Provider 6.1.5+1 |
-| Firebase project / Android application ID | Project pending user creation; vn.edu.fpt.nep_lanh |
+| Firebase project / Android application ID | vetalife-24f03 / vn.edu.fpt.vetalife; Android app registered, cloud behavior unverified |
 | ARTEMIS commit and model profile | Pending installation; record exact commit |
 | Python / uv / ADB versions | Python 3.12+ required; exact versions pending setup |
 | Demo video | Pending; 5-10 minutes |
@@ -131,5 +169,8 @@ to the repository above, and `main` tracks `origin/main` with its existing histo
 The legacy `docs/.git` was moved to the ignored `.local-backup/` directory.
 The lab requirement PDFs and source book remain local and Git-ignored. See the
 [validation record](docs/lab3-requirements.md#scaffold-validation-record).
-This repository now includes flow 1 and its local execution evidence; other
-flows and full Firebase/ARTEMIS evidence will be added during the lab.
+This repository includes flows 1/2 and their local execution evidence. Live AI
+connectivity has been checked; real-meal accuracy, flow 3 and full
+Firebase/ARTEMIS evidence remain to be completed. The previous
+`functions/` backend is retained as an optional legacy Blaze implementation;
+the app's default cloud AI path uses Firebase AI Logic on Spark.

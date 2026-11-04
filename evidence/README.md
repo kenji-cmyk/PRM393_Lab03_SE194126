@@ -1,11 +1,21 @@
 # Evidence
 
-Status: flow-1 browser captures are in `screenshots/`; actual test and Android
+Status: Flow 2 VetaLife browser captures are in `screenshots/flow2-*.png`.
+Local analyzer, Flutter/backend/rules checks and successful web/APK builds are
+recorded in [the test report](../docs/test-report.md). A
+[nonsecret cloud-check summary](cloud/flow2-spark-2026-11-04.json) records live
+Spark adapter analysis, synthetic-image OCR and production journal-rules readback.
+Native device/attestation and real-account sign-in/save/reload remain pending.
+
+Historical flow-1 browser captures are in `screenshots/`; original test and Android
 build logs are in `builds/`. Captured 2026-11-03 on local web preview at 360/412×800.
 Names/dates/measurements in captures are synthetic test input. See
 [test report](../docs/test-report.md) and [review record](../docs/code-review.md).
-Firebase/device/ARTEMIS evidence remains pending; the folders below describe the
+The wider Firebase/device/ARTEMIS evidence remains pending; the folders below describe the
 wider assignment evidence plan.
+
+The original flow-1 logs and screenshots predate the VetaLife rename and Android ID change.
+They remain records of those original runs and do not verify the renamed build.
 
 | Directory | Evidence to capture during implementation |
 | --- | --- |

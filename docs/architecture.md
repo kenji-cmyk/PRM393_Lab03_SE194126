@@ -1,8 +1,41 @@
 # Architecture
 
-Status: Flow 1 implemented with Flutter 3.47.4, Dart 3.13.3 and Provider 6.1.5+1.
-Firebase adapters are implemented but the user's project setup is pending.
-The sections below retain the wider Lab 3 plan; flow 1 implementation is described here.
+Status: Flows 1 and 2 implemented with Flutter 3.47.4, Dart 3.13.3 and Provider 6.1.5+1.
+Firebase client configuration exists. AI Logic CLI setup has enabled the Gemini
+Developer API provider for Android/web and confirmed App Check as `ENFORCED`
+without changing billing. App Check token exchange and a non-personal
+`gemini-3.6-flash` healthcheck returned HTTP 200; the temporary token was revoked.
+End-user App Check setup, real-meal accuracy/native camera and deployed rules
+remain unverified. The sections below retain the wider Lab 3 plan.
+
+## Implemented flow 2
+
+- `MealViewModel` owns entry, recognition, ingredient confirmation, analysis,
+  result, errors and dated journal states. Each authenticated UID gets its own
+  instance. Navigation stays inside that session, and async generation guards
+  discard responses after editing, sign-out or disposal.
+- `DeviceMealPhotoPicker` handles camera/gallery, size/type checks, and
+  owner-bound Android lost-photo recovery. Photos are transient.
+- `BookMealIntelligence` provides explicitly labelled local matching over 15
+  source-verified paraphrases. `AiLogicMealIntelligence` uses `firebase_ai` with
+  Firebase AI Logic's Gemini Developer API backend in the cloud path.
+- AI Logic initialization follows Firebase initialization and App Check setup.
+  The Spark provider is activated for this project; device/web App Check setup
+  and an available free-tier model are still needed. It does not require Cloud
+  Functions, Secret Manager or a Gemini key in Flutter.
+- The AI adapter derives minimal metadata from the signed-in session's loaded
+  profile, retrieves verified source entries and validates structured model
+  output/source IDs locally. Prompts/validators are client code, not a trusted
+  server boundary. App Check and provider/AI Logic quotas protect API access.
+- `functions/` retains the earlier Node 22 backend as an optional legacy Blaze
+  implementation. Its authoritative profile lookup and 40/day, 6/minute quota
+  are not used by the default Spark path.
+- `LocalMealRepository` serializes preview journal writes. Cloud records live at
+  `users/{uid}/meals/{id}` behind owner rules. Stable IDs make save retries update
+  one record. Preview sign-out clears local meals; cloud sign-out retains history.
+
+See [data contract](flow2-contract.md), [source grounding](meal-book-grounding.md)
+and [setup](flow2-setup.md) for the implemented boundary.
 
 ## Implemented flow 1
 
@@ -15,8 +48,8 @@ The sections below retain the wider Lab 3 plan; flow 1 implementation is describ
 - `LocalOnboardingRepository` persists only explicit preview data via SharedPreferencesAsync.
 - `FirestoreOnboardingRepository` is bound to a UID and reads/writes `users/{uid}`.
 - `FirebaseAuthService` encapsulates native Google Sign-In and Firebase web popup.
-- `lib/firebase/` and `lib/firebase_options.dart` contain bootstrap and the setup stub,
-  which is replaced by `flutterfire configure` after the user creates Firebase.
+- `lib/firebase/` and `lib/firebase_options.dart` contain bootstrap and generated
+  client configuration for the registered VetaLife app.
 - `lib/theme/` and `lib/widgets/` centralize verified Figma tokens and components.
 
 | ViewModel | Injected service | Observable state |

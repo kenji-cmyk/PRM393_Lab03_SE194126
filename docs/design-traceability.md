@@ -1,15 +1,16 @@
 # Design traceability
 
-Status: Flow 1 implemented and tested in Flutter; see [test report](test-report.md).
+Status: Flows 1 and 2 implemented and tested in Flutter; see [test report](test-report.md).
 Figma amendments for flows 1/3 remain the design baseline. The Flutter browser
 preview has live interaction and screenshot evidence; cloud/native interaction
-and flows 2/3 remain pending. Source:
+and flow 3 remain pending. Gemini/cloud execution requires configuration. Source:
 [Lab 2 design](../design/DESIGN.md),
 [handoff](../handoff/flutter-handoff.md), and
 [Figma Final UI](https://www.figma.com/design/Cc2O3xSmxgjfvDI2hrsY3Q?node-id=2-3).
 
 Flow 1 uses `OnboardingStage` in `FlowScreen` rather than URL deep links; route
-paths below retain the proposed information architecture. Other flow classes are
+paths below retain the proposed information architecture. Flow 2 uses
+`MealStage` and `MealFlowScreen` in the same user session; flow 3 classes are
 still proposed. Existing
 Figma IDs identify actual design nodes; amendment links and prototype limits are in
 [the change log](design-change-log.md).
@@ -22,19 +23,20 @@ Figma IDs identify actual design nodes; amendment links and prototype limits are
 | 01A Thông tin của bạn - flow 1 | `166:426` | profile / UserProfileScreen | OnboardingViewModel / retained private draft | Required fields, strict date validation, derived age, comma-decimal measures; unit/widget tests and browser captures |
 | 02 Thiết lập mục tiêu - flow 1 | `6:19` | goals / GoalSetupScreen | OnboardingViewModel / HabitGoal | Single selection, back retention, duplicate guard, save/retry tested |
 | 03 Trang chủ - flow 1 destination | `6:42` | home / HomeScreen | OnboardingViewModel / persisted UserProfile | Actual saved name and goal; edit/sign-out; browser reload restores preview profile; future-flow links explicitly pending |
-| 04 Ghi bữa ăn - flow 2 | `6:76` | `/meals/new` / MealEntryScreen | MealEntryViewModel / meal draft | Keep fast entry and draft on failure; pending implementation |
-| 05 Đang phân tích - flow 2 | `6:101` | Meal-analysis state | MealAnalysisViewModel / service | Explicit processing state; pending implementation |
-| 06 Kết quả - flow 2 | `6:118` | `/meals/result` / MealResultScreen | MealResultViewModel / actual service result | Result and save confirmation; pending implementation |
-| 07 Lỗi kết nối - flow 2 | `6:138` | Recoverable meal-error state | Same meal draft/service | Retry or edit without data loss; pending implementation |
-| 08 Nhật ký bữa ăn - flow 2 | `6:155` | `/journal` / MealJournalScreen | MealJournalViewModel / user records | List/detail and real states; pending implementation |
-| 09 Nhật ký trống - flow 2 | `6:186` | Journal empty state | MealJournalViewModel | Real empty result, add-meal action; pending implementation |
+| 04 Ghi bữa ăn - flow 2 | `6:76` | entry / MealFlowScreen | MealViewModel / MealDraft | Manual input, meal time, camera/gallery, explicit upload consent; draft retained |
+| Added recognition/confirmation | User-requested runtime extension | recognizing / confirm | MealViewModel / MealRecognition | Separate OCR and provisional ingredients; edit/add/remove and explicit confirmation before analysis |
+| 05 Đang phân tích - flow 2 | `6:101` | analyzing | MealViewModel / MealIntelligence | Cancel/edit ignores late results; local book matching or authenticated Gemini callable |
+| 06 Kết quả - flow 2 | `6:118` | result | MealViewModel / MealAnalysis | Highlight and suggestion cards, save/edit, profile context, sourced book topics/pages |
+| 07 Lỗi kết nối - flow 2 | `6:138` | error | Same draft/service | Retry recognition/analysis without losing input; save failure retains result |
+| 08 Nhật ký bữa ăn - flow 2 | `6:155` | journal | MealViewModel / MealRepository | Owner records, date selection, notes/detail, same-ID update; local and emulator rules tests |
+| 09 Nhật ký trống - flow 2 | `6:186` | journal empty date | MealViewModel | Genuine empty state and add-meal action; no sample meals |
 | 10 Tiến trình tuần - flow 3 | `6:213` | `/progress` / WeeklyProgressScreen | WeeklyProgressViewModel / user records + lesson progress | Recording frequency and lesson entry; pending implementation |
 | 11 Bài học nhỏ - Phần 1 - flow 3 | `6:257` | `/learn?part=1` / LessonCatalogScreen | LessonCatalogViewModel / source-mapped catalogue | 15 source chapters; pending implementation |
 | 12 Bài học nhỏ - Phần 2 - flow 3 | `166:470` | `/learn?part=2` / LessonCatalogScreen | LessonCatalogViewModel / source-mapped catalogue | 12 categories and 3 supplementary entries; pending implementation |
 | 13 Chi tiết bài học - flow 3 | `166:628` | `/learn/:lessonId` / LessonDetailScreen | LessonDetailViewModel / chapter + private read status | Correct chapter/source, mark selected lesson read, return; pending implementation |
 
 Auth routing and ownership adapters are implemented for flow 1, awaiting the
-user's Firebase project. Notifications, export and the Firebase demo area remain
+completion of real Google sign-in configuration. Notifications, export and the Firebase demo area remain
 future integration work. See [Firebase setup](firebase-setup.md).
 
 ## Runtime adaptations recorded for flow 1
@@ -46,7 +48,9 @@ future integration work. See [Firebase setup](firebase-setup.md).
 | RT-03 | One flow ViewModel retains profile and goal across back navigation and atomically saves the completed profile | Unit/widget save/retry/dedup tests; avoids independent form/goal lifetime loss |
 | RT-04 | Home shows actual name/selected goal and a zero-meal initial state instead of the design's sample Minh and 1/2 meals | Live browser capture and persistence reload; meal storage is flow 2 |
 | RT-05 | Explicit preview label, profile edit/sign-out menu, cloud Google sign-in and pre-home sign-out recovery added with existing tokens | Preview live-tested; auth VM/recovery widget tests pass; cloud requires setup |
-| RT-06 | Out-of-scope meal/progress/learning links open a clear scope dialog; no fabricated service data or completed future flow | Flow 2/3 implementation remains pending |
+| RT-06 | Meal and journal actions now open Flow 2; progress/learning actions explain their pending scope | Flow 2 implemented; flow 3 pending |
+| RT-07 | Camera/gallery and editable recognition confirmation extend the original entry screen; no prototype simulation buttons | Widget checks at 360/412 dp and large text; no native camera evidence claimed |
+| RT-08 | Result keeps primary save/edit after summary cards; optional deeper book sources follow below | 15 curated page-mapped passages; Gemini output references are validated by the server |
 
 These runtime adaptations are documented here. No Figma source file was changed
 in this implementation session; corresponding Figma additions remain to be synced

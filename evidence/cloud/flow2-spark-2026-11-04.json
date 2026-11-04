@@ -1,0 +1,47 @@
+{
+  "kind": "coordinator-summary-of-observed-tool-results",
+  "date": "2026-11-04",
+  "projectId": "vetalife-24f03",
+  "provider": "gemini-developer-api",
+  "model": "gemini-3.6-flash",
+  "billingPlanChanged": false,
+  "checks": {
+    "flutterDefault": {"passed": 115, "liveSkipped": 2},
+    "flutterAnalyzer": "no issues",
+    "legacyBackendUnit": {"passed": 22},
+    "firestoreEmulatorRules": {"passed": 9},
+    "realAnalysis": {
+      "command": "node tool/run_meal_ai_live_check.cjs",
+      "passed": true,
+      "syntheticProfile": true,
+      "printedPagesValidatedAgainstCorpus": [410, 374, 494, 499],
+      "sourceCount": 4,
+      "healthConnectionCount": 4
+    },
+    "realSyntheticOcr": {
+      "command": "node tool/run_meal_ai_live_check.cjs --ocr-only",
+      "passed": true,
+      "fixture": "test/fixtures/meal_ocr_synthetic.png",
+      "expectedOcrMarkers": ["SAMPLE", "31415"],
+      "ingredientCount": 0,
+      "warningsPresent": true
+    },
+    "firestoreDeployment": {
+      "rulesOnly": true,
+      "normalizedReadbackMatchesLocal": true,
+      "hasMealRules": true,
+      "hasOwnerBoundary": true
+    },
+    "temporaryAppCheckDebugRegistrationsRevoked": true,
+    "temporaryAppCheckJwtFilesRemaining": 0
+  },
+  "observedFailure": "An initial structured analysis returned HTTP 500. A later controlled invocation with the unchanged protocol passed. Root cause is unknown; there is no automatic retry.",
+  "notVerified": [
+    "Native or web Firebase plugin attestation",
+    "Native camera or gallery",
+    "Google Sign-In on device",
+    "Real-user cloud save and reload",
+    "Recognition of real meal photographs",
+    "Nutritional accuracy or clinical outcomes"
+  ]
+}

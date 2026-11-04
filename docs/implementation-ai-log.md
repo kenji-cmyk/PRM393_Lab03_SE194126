@@ -4,6 +4,9 @@ This records actual assistance, not the later required AI pull-request review.
 Supporting source: From Design section 9 / Appendix A, which asks for six entries
 over implementation. Do not fabricate entries before work occurs.
 
+The historical entries below describe work before the VetaLife rename. Existing
+test/build logs and screenshots remain records of those original runs.
+
 ## SETUP-01 - Folder scaffold (2026-11-03)
 
 - Tool: Codex with specialized Flutter and QA agents.
@@ -28,7 +31,7 @@ over implementation. Do not fabricate entries before work occurs.
   and the local scanned source book's table of contents.
 - Output: design/handoff/traceability amendments for a personal-information step
   in flow 1 and source-mapped book-part/chapter learning in flow 3.
-- Decision: reuse the existing Nếp Lành design system. Name/DOB/weight/height
+- Decision: reuse the existing VetaLife design system. Name/DOB/weight/height
   are entered; age is derived from DOB. Preserve source chapter identity and
   keep read progress separate from static lesson metadata.
 - Figma output: 01A profile (`166:426`), part-1 catalogue (`6:257`), part-2
@@ -75,6 +78,52 @@ over implementation. Do not fabricate entries before work occurs.
   recorded but not written back to the source design in this session.
 - Files: `lib/`, `android/`, `web/`, runtime assets, manifests, tests, rules and
   implementation docs. No commit/push/publication was requested or performed.
+
+## IMPLEMENT-04 - Firebase AI Logic on Spark (2026-11-03)
+
+- Tool: Codex with Flutter implementation, setup/documentation and independent
+  review agents; Firebase CLI and official Firebase/FlutterFire documentation.
+- User prompt, verbatim:
+
+> hãy thực hiện phương án firebase AI logic trên spark
+
+- Output: cloud meal adapter now uses `firebase_ai` with App Check instead of
+  Functions. It sends image bytes for recognition/OCR and confirmed ingredients,
+  minimal profile metadata and selected book passages for analysis. The app
+  validates source IDs and uses corpus page numbers. Legacy Functions remains
+  optional through a separate config file.
+- Project setup: enabled Gemini Developer API for the existing Android/web
+  registrations, enabled Firebase App Check API, and confirmed AI Logic App Check
+  enforcement. No billing upgrade or Gemini secret was used.
+- Verification: analyzer clean, 113 Flutter tests pass, cloud web and Android
+  debug builds pass. A nonpersonal text request to `gemini-3.6-flash` through
+  Firebase AI Logic returned HTTP 200 and `READY`. Temporary debug tokens were
+  revoked. Reviewer finding about web debug initialization order was fixed and
+  regression-tested.
+- Limits: device-specific App Check token registration, web reCAPTCHA provider
+  setup, native camera/sign-in, complete cloud journal flow and real meal
+  recognition accuracy remain unverified. This is not ARTEMIS evidence.
+- Files: `lib/services/ai_logic_meal_intelligence.dart`, meal grounding and
+  App Check bootstrap, dependency locks, Firebase configs, tests and setup docs.
+
+## VERIFY-05 - Live Spark adapter and split commits (2026-11-04)
+
+- User prompt: `tiếp tục thực hiện task`; retained earlier authorization to split
+  commits and push `main`.
+- Output: hidden-input PowerShell App Check registration helper, bounded live
+  test runner with automatic temporary-token cleanup, opt-in analysis/OCR tests,
+  and a synthetic text-only image fixture. Normal tests never call Gemini.
+- Verification: 115 Flutter tests pass with 2 live skips; analyzer clean; legacy
+  backend 22/22 and rules emulator 9/9. Real grounded analysis passed with 4
+  validated corpus citations, followed by a separate synthetic OCR pass.
+  An initial HTTP 500 was observed; its cause is unknown. No automatic retry or
+  relaxation of validation was introduced.
+- Cloud: deployed only owner-scoped Firestore rules to `vetalife-24f03` and
+  verified the deployed contents match local. Indexes/data/billing unchanged.
+  Temporary App Check debug registrations were revoked and JWT files removed.
+- Review: fixed and rechecked a native stderr disclosure issue on PowerShell
+  5.1. No Android device was attached; native camera, SDK attestation, Google
+  Sign-In and real-user cloud persistence remain unverified.
 
 ## Further entries
 

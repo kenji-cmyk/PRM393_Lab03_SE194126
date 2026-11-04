@@ -1,5 +1,58 @@
 # Code review
 
+## App Check tooling review — 2026-11-04
+
+An independent reviewer reproduced a P2 issue in the PowerShell registration
+helper: with `ErrorActionPreference=Stop`, native stderr can throw before exit
+code handling and expose raw CLI output. The invocation is now caught locally
+and rethrows a fixed message without the native ErrorRecord. Mocked CLI runs on
+Windows PowerShell 5.1 verified stderr redaction, suppressed stdout, a display
+name containing spaces and restored experiment settings. The reviewer confirmed
+the fix and found no additional blocker in the bounded live runner/test.
+
+Live model checks subsequently passed for synthetic grounded analysis and
+text-image OCR. They are separate from device UI/attestation evidence; see the
+[test report](test-report.md).
+
+## Firebase AI Logic / Spark review — 2026-11-03
+
+An independent reviewer inspected the integrated AI Logic adapter, App Check
+bootstrap, dependency/config changes and their tests. One confirmed P2 issue
+was fixed: Firebase Core Web can restore a cached App Check provider during
+initialization, so setting the debug flag only before explicit activation was
+too late. The bootstrap now sets the opt-in debug flag before initializing
+Firebase. A regression checks the order: debug flag, Firebase initialization,
+App Check activation. The reviewer confirmed the fix without additional
+confirmed findings. Final analyzer and all 113 Flutter tests passed.
+
+The review does not turn client-side prompt/citation checks into server-side
+enforcement. AI Logic access relies on App Check and provider quotas; Firestore
+owner rules continue to govern the journal. Real device attestation and meal
+recognition accuracy require separate runtime validation.
+
+## Flow 2 review and fixes — 2026-11-03
+
+An independent read-only review covered Flutter state/session boundaries,
+Gemini contracts, source retrieval, image recovery and Firestore owner rules.
+
+- F2 (P2): removing Vietnamese accents could map `nước me` to sesame (`mè`).
+  Fixed matching in Dart and Node to preserve accented distinctions, with
+  conservative fallback for unaccented multiword aliases. Regressions check
+  tamarind/sesame and butter/beef distinctions.
+- F3 (P2): native lost-image recovery is app-wide and could expose account A's
+  pending photo to account B. Added a pending owner marker, discard-on-mismatch,
+  and preview sign-out cleanup. Six recovery tests cover account/preview
+  isolation, missing ownership and matching recovery.
+- QA additionally reproduced sign-out during pending initialization restoring
+  an old photo. Capturing the operation generation before the journal await
+  prevents the stale initialization from recovering it afterward.
+
+These findings were fixed and regression-tested. The final source review was
+completed locally; the assignment's separate GitHub PR review remains pending.
+No live Gemini/native-device safety or accuracy claim follows from these tests.
+
+## Historical Flow 1 review
+
 Status: Flow 1 received an independent Codex review on 2026-11-03. One confirmed
 finding was fixed and tested. This local review is separate from the required
 GitHub PR review with at least five findings and linked fix commits; no PR/commit

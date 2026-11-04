@@ -1,7 +1,25 @@
 # Design change log
 
+## Flow 2 runtime extension — 2026-11-03
+
+Implemented the existing meal-entry/loading/result/error/journal/empty screens
+from nodes `6:76`, `6:101`, `6:118`, `6:138`, `6:155`, `6:186`. The user's new
+camera/gallery feature adds provisional image recognition, separate OCR text,
+editable ingredient confirmation, upload consent, profile-aware Gemini service
+integration and book-page references. The result retains summary cards followed
+by primary save/edit; detailed sources follow below. Figma loading/empty SVGs
+were downloaded and the existing icons/tokens reused.
+
+These additions are implemented in code. The external Figma file was not
+modified in this task. See [traceability](design-traceability.md),
+[setup](flow2-setup.md) and [verification](test-report.md).
+
 These changes are explicitly requested by the user. They extend the Lab 2
 design before Flutter implementation. The existing meal-entry flow is retained.
+
+The repository now uses the VetaLife brand. This rename updates application
+branding and handoff text; the linked source Figma file and its existing captures
+retain their original labels and are not claimed to have been renamed.
 
 | ID/date | Area | Original design | Requested amendment | Reason | Figma delivery / status |
 | --- | --- | --- | --- | --- | --- |
@@ -9,7 +27,7 @@ design before Flutter implementation. The existing meal-entry flow is retained.
 | DC-02 / 2026-11-03 | Flow 3, Bài học nhỏ | One generic article about varied plant eating | Book catalogue organized by the source book's two parts and chapter order, selected-lesson detail, and read feedback | User requested close alignment with the book's table of contents | [Part 1](https://www.figma.com/design/Cc2O3xSmxgjfvDI2hrsY3Q?node-id=6-257), [Part 2](https://www.figma.com/design/Cc2O3xSmxgjfvDI2hrsY3Q?node-id=166-470), [reader](https://www.figma.com/design/Cc2O3xSmxgjfvDI2hrsY3Q?node-id=166-628) complete; static selection wiring and screenshots reviewed |
 
 Source file:
-[Figma - Nếp Lành / Ăn gì không chết](https://www.figma.com/design/Cc2O3xSmxgjfvDI2hrsY3Q?node-id=0-1).
+[Figma - VetaLife / Ăn gì không chết](https://www.figma.com/design/Cc2O3xSmxgjfvDI2hrsY3Q?node-id=0-1).
 
 Content references:
 [book curriculum](book-curriculum.md), [design specification](../design/DESIGN.md),

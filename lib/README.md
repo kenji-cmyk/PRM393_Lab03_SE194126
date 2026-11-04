@@ -1,7 +1,8 @@
 # Flutter source structure
 
-Flow 1 is implemented. `main.dart` starts `NepLanhApp`; default preview mode uses
-local data. Cloud adapters are implemented and await Firebase project setup.
+Flows 1 and 2 are implemented. `main.dart` starts `VetaLifeApp`; default preview mode uses
+local data. Cloud adapters and Firebase client configuration are implemented;
+cloud behavior remains unverified.
 
 | Folder | Responsibility |
 | --- | --- |
@@ -17,6 +18,18 @@ local data. Cloud adapters are implemented and await Firebase project setup.
 Provider 6.1.5+1 is used consistently. Widgets delegate state and external operations
 to ViewModels/services. Data-loading state and recoverable failures belong to the ViewModels.
 
-Replace the explicit Firebase setup stub using `flutterfire configure` after
-creating your project. See [architecture](../docs/architecture.md) and
-[Firebase setup](../docs/firebase-setup.md). Flows 2/3 remain pending.
+The VetaLife Android app is registered in project `vetalife-24f03`. Complete
+Google Sign-In and rules verification before cloud use. See [architecture](../docs/architecture.md) and
+[Firebase setup](../docs/firebase-setup.md). Flow 2 uses `MealViewModel`,
+`MealFlowScreen` and injected meal repositories/intelligence adapters.
+`AiLogicMealIntelligence` uses the `firebase_ai` SDK with the Gemini Developer
+API backend. [Its setup guide](../docs/flow2-setup.md) describes the Spark console
+setup and App Check; this path requires neither a Gemini key in Flutter nor
+Functions deployment. Source references and minimal profile metadata are
+prepared/validated in the client. The old `functions/` backend is optional legacy.
+AI Logic provider activation and service App Check enforcement are confirmed
+for the Android/web apps. Token exchange and a non-personal model connectivity
+check returned HTTP 200, with the temporary token revoked afterward. Runtime
+App Check registration and real-meal/native-camera validation remain. No billing
+plan change was made.
+Flow 3 remains pending.

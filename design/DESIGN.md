@@ -1,19 +1,22 @@
-# Nếp Lành - Lab 2 design specification
+# VetaLife - Lab 2 design specification
 
-Status: Flow 1 now has a Flutter implementation; see
+Status: Flows 1 and 2 now have Flutter implementations; see
 [runtime traceability](../docs/design-traceability.md) and
 [verification](../docs/test-report.md). The statements below describe the Lab 2
 design delivery. The requested profile, book-catalogue, and reader amendments are complete
 in Figma's user-flow, wireframe, Final UI, and prototype pages. Static reactions
 have been validated and screenshots reviewed at 360/412 dp. Application
-implementation has not started; no live browser/prototype interaction run is claimed.
+implementation details are recorded separately; these historical design records
+do not constitute a live Figma prototype interaction run.
 Figma delivery references are recorded in
 [the change log](../docs/design-change-log.md).
 
 ## Source and product
 
 - [Figma file](https://www.figma.com/design/Cc2O3xSmxgjfvDI2hrsY3Q?node-id=0-1).
-- Brand in the file: **Nếp Lành**. Topic: **Ăn gì không chết**.
+- Current application brand: **VetaLife**. Topic: **Ăn gì không chết**.
+  The supplied Figma file predates the repository rebrand; its original labels
+  have not been updated by this repository change.
 - Product purpose: help busy people record meals, observe habits, and learn about
   varied plant-based eating. The existing design does not diagnose disease.
 - Persona: Vinh, 25, office worker; busy, sits for long periods, eats irregularly,

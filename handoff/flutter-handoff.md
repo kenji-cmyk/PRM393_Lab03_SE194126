@@ -1,7 +1,9 @@
-# Nếp Lành - Flutter handoff
+# VetaLife - Flutter handoff
 
-Status: flow 1 is implemented in Flutter using Provider, local preview storage,
-and cloud Auth/Firestore adapters awaiting project configuration. Named flow-1
+Status: flows 1 and 2 are implemented in Flutter using Provider, local preview storage,
+and cloud Auth/Firestore/Functions adapters awaiting live verification. Flow 2
+adds image/OCR confirmation and sourced meal feedback; see [setup](../docs/flow2-setup.md).
+Named flow-1
 screens are state-routed within `FlowScreen`; proposed path URLs below are not
 deep links. Flow 3 remains a design-derived specification. References:
 [design specification](../design/DESIGN.md),

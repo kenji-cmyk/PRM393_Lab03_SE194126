@@ -1,14 +1,170 @@
 # Test report
 
-Status: Flow 1 local verification executed on 2026-11-03. **39 Flutter unit/widget
+## Live Spark adapter and journal rules — 2026-11-04
+
+The final default Flutter suite passed **115 tests**, with **2 live tests
+explicitly skipped**. The added offline checks exercise real SDK request/schema
+serialization and bounded diagnostic redaction. Analyzer passed without issues.
+Legacy Node tests passed **22/22** and the Firestore emulator owner-rules suite
+passed **9/9** again.
+
+| Check | Observed result |
+| --- | --- |
+| `node tool/run_meal_ai_live_check.cjs` | 3 passed, including 2 offline checks and 1 real analysis; 1 OCR test skipped |
+| Actual grounded analysis | About 21 seconds; 4 validated source IDs with printed pages 410, 374, 494 and 499; 4 supported topic connections |
+| `node tool/run_meal_ai_live_check.cjs --ocr-only` | 1 passed; real image transport and OCR of a synthetic text-only PNG |
+| Synthetic OCR result | Read `SAMPLE` and `31415` into OCR; no guessed ingredients; warnings present |
+| `firebase deploy --only firestore:rules --project vetalife-24f03` | Exit 0; only rules deployed, not indexes, document data, billing or Functions |
+| Production rules readback | Exact normalized match with local rules; meal collection and owner boundary present |
+| Temporary credentials | Debug registrations revoked; generated App Check JWT files removed |
+
+An earlier structured analysis request returned **HTTP 500** and the transport
+stopped without retries. The later controlled diagnostic invocation passed with
+the same protocol/schema. The cause of the first failure is unknown; a passing
+follow-up is not proof of error-free service availability. No production model
+prompt or validator was relaxed to get a pass. A Windows command quoting problem
+in the OCR-only runner was fixed before that invocation reached Gemini; the
+final fixed filter ran successfully.
+
+These checks use real Firebase AI Logic HTTP calls with the installed SDK's
+serializers and the application's actual recognition/analysis parsers. They do
+not exercise native/web Firebase plugin attestation, camera/gallery, Google
+Sign-In, real-user save/reload or food-recognition/nutritional accuracy. The
+profile and text image are synthetic. Per-device debug registration and web
+reCAPTCHA configuration remain necessary. Reproduce the bounded live checks
+through [setup](flow2-setup.md); a nonsecret result summary is recorded in
+[cloud evidence](../evidence/cloud/flow2-spark-2026-11-04.json).
+
+## Firebase AI Logic / Spark migration — 2026-11-03
+
+The final integrated Flutter suite passed **113 tests** and
+`flutter analyze --no-pub` reported no issues. New adapter tests use injected
+generators to exercise actual image request contents, minimal profile metadata,
+book source validation, session changes, malformed model responses and sanitized
+service errors. App Check tests cover Android debug/release providers, missing
+web configuration, debug restrictions, initialization order, shared activation
+and retry after a transient failure.
+
+| Check | Result |
+| --- | --- |
+| `flutter test --no-pub` | Exit 0, 113 passed |
+| `flutter analyze --no-pub` | Exit 0, no issues |
+| `flutter build web --dart-define=APP_MODE=cloud --no-pub --no-wasm-dry-run` | Exit 0 |
+| `flutter build apk --debug --dart-define=APP_MODE=cloud --no-pub` | Exit 0 |
+| Firebase AI Logic provisioning | Completed for existing Android and web apps in `vetalife-24f03` |
+| AI Logic providers readback | `gemini-developer-api` enabled |
+| App Check AI Logic service readback | `firebaseml.googleapis.com`: `ENFORCED` |
+| App Check API | `firebaseappcheck.googleapis.com` enabled; debug-token exchange returned HTTP 200 |
+| Live AI Logic text health check | `gemini-3.6-flash`: HTTP 200, reply `READY` |
+
+No billing-plan upgrade, Functions deployment or Gemini secret was needed.
+The live check sent only a fixed text prompt, without personal data or an image.
+Its temporary App Check debug token was revoked afterward. It verifies service
+connectivity, not the accuracy of meal recognition, nutritional interpretation
+or the complete Flutter device flow.
+The default configuration no longer includes Functions; the previous backend
+is retained only through `firebase.functions.legacy.json`. Model prompts,
+retrieval and validators now run in the app. The previous Functions-specific
+40/day and 6/minute limits do not govern AI Logic SDK requests.
+
+Android devices still need their own registered App Check debug token, or Play
+Integrity for release. Web needs a registered reCAPTCHA v3 provider/site key
+and a registered debug token for localhost. Native camera/gallery, native Google
+Sign-In and real-user cloud journal persistence remain unverified. Successful
+builds are not native-device runtime evidence. See [setup](flow2-setup.md).
+
+## Historical Flow 2 / Functions verification — 2026-11-03
+
+The integrated Flutter suite passed **88 tests**. After shortening local-result
+cards and moving save/edit before extended details, the six Flow 2 widget tests
+passed again, including editing a saved entry at 360/412 dp without duplicating
+it. The analyzer reported no issues. Backend tests passed **22/22** and the
+Firestore emulator rules suite passed **9/9** against `demo-vetalife-rules`.
+
+| Check | Result |
+| --- | --- |
+| `flutter analyze --no-pub` | Exit 0, no issues |
+| `flutter test --no-pub` | Exit 0, 88 passed |
+| `flutter test --no-pub test/widget/meal_flow_test.dart` after final UI adjustments | Exit 0, 6 passed |
+| `npm --prefix functions run build`, `run check`, `test`, `run gcp-build` | Exit 0; 15 source records copied, syntax/build checks passed, 22 tests passed |
+| `firebase emulators:exec --only firestore --project demo-vetalife-rules "npm --prefix functions run test:rules"` | Exit 0, 9 tests passed |
+| `npm audit --json` in `functions` | Exit 0, 0 vulnerabilities after compatible dependency overrides |
+| `flutter build web --dart-define=APP_MODE=preview --no-pub --no-wasm-dry-run` | Exit 0 |
+| `flutter build apk --debug --dart-define=APP_MODE=preview --no-pub` | Exit 0; minimum SDK 24 |
+
+The actual compiled web preview at `http://127.0.0.1:8232` was exercised at
+360/412 × 800: complete a synthetic profile, enter a meal, add three ingredients,
+explicitly confirm, inspect four matching sources, save, reload, reopen/edit,
+confirm again and save the same entry. The count remained one. Selecting the
+previous day showed the genuine empty state. Preview sign-out and another reload
+returned to welcome; no browser console errors were observed. Eleven new
+`flow2-*.png` screenshots record the entry, confirmation, result, journal,
+empty date and source panel. They are separate from the historical Flow 1 images.
+
+The in-app browser could not connect because its runtime reported missing
+sandbox metadata. The available standalone Playwright connector was used for
+this local visual check. Browser caching was bypassed before final captures.
+These checks are not ARTEMIS or native-device evidence.
+
+Regression coverage includes required confirmation/consent, separate OCR text,
+no guessed ingredients on recognition failure, stale response cancellation,
+idempotent journal saves and date grouping, corruption/write failures, source-ID
+validation, accent-sensitive food matching and owner-bound Android image
+recovery. Firestore tests cover owner reads/writes, cross-user and anonymous
+denial, malformed records, stable IDs and server-only AI quotas.
+
+No Gemini key was supplied, as agreed with the user. **No live model call,
+Functions deployment, native camera/gallery, native Google picker, or real-user
+cloud persistence has been verified.** Model tests inject stubs; the local
+preview explicitly uses book matching. See [setup](flow2-setup.md) and
+[source grounding](meal-book-grounding.md).
+
+Builds still report upstream Kotlin plugin compatibility warnings and a web
+Cupertino font-family warning. Both builds succeed; neither warning is treated
+as device runtime validation. Generated APK/web files remain Git-ignored.
+
+## VetaLife rename verification — 2026-11-03
+
+The renamed build passed `flutter analyze --no-pub` with no issues and
+`flutter test --no-pub` with **44 tests passed**. Coverage now includes the
+VetaLife welcome name/VL mark, legacy preview-profile migration, current-key
+priority, failed migration retention, and clearing both storage keys.
+
+Both `flutter build web --no-pub --dart-define=APP_MODE=preview` and
+`flutter build apk --debug --no-pub --dart-define=APP_MODE=preview` exited 0.
+The generated Android manifest identifies `vn.edu.fpt.vetalife`, label
+`VetaLife`, and `vn.edu.fpt.vetalife.MainActivity`. Built web metadata and all
+five favicon/launcher images match the renamed source files. Launcher icons
+use the VL mark; regenerate them with `python tool/generate_brand_icons.py`
+(requires Pillow). Generated builds remain Git-ignored.
+
+Firebase registered Android app `1:455537300059:android:6bf4a62f2e23bb6b91257e`
+in `vetalife-24f03`, with the existing debug SHA-1. The downloaded configuration
+matches the new package and includes Android/web OAuth clients. This verifies
+client configuration consistency, not Google Sign-In or Firestore behavior on
+a real device. Android's new application ID creates a separate local-data
+sandbox; legacy storage migration applies only where the same storage is
+accessible, such as the same web origin.
+
+An independent review identified the old NL mark; it was fixed and covered by
+the welcome assertion. The final review found no remaining actionable issues.
+Verification output was observed in this session; the linked logs and
+screenshots below are preserved historical evidence from before the rename.
+
+## Original verification before the rename
+
+Flow 1 local verification executed on 2026-11-03. **39 Flutter unit/widget
 tests passed**, analyzer passed, preview web and Android debug APK built.
 The ARTEMIS/Firebase tables below remain templates for the later full Lab 3 run.
-No Firebase project, native Google picker, device E2E, or ARTEMIS run is claimed.
+No Firebase cloud verification, native Google picker, device E2E, or ARTEMIS run
+is claimed. These checks and their linked logs/screenshots predate the VetaLife
+rename and Android application ID change. They do not verify the renamed build.
 
 ## Flow 1 executed checks
 
 Environment: Windows, Flutter 3.47.4 / Dart 3.13.3; Provider 6.1.5+1;
-Android app ID `vn.edu.fpt.nep_lanh`. Preview uses its own local preference key.
+The logs record the Android app ID used for that run; the current app ID is
+`vn.edu.fpt.vetalife`. Preview uses its own local preference key.
 
 | Command / check | Actual result | Evidence |
 | --- | --- | --- |
