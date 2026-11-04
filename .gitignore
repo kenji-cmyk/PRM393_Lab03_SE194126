@@ -12,6 +12,7 @@
 .packages
 build/
 coverage/
+/flutter_*.log
 android/.gradle/
 android/.kotlin/
 android/captures/
@@ -38,6 +39,8 @@ firebase-debug.log*
 firestore-debug.log*
 ui-debug.log*
 firebase.local.json
+.secret.local
+node_modules/
 # Editor and OS metadata.
 .idea/
 *.iml

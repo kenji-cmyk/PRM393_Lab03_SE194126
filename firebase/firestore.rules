@@ -25,6 +25,44 @@ service cloud.firestore {
       allow get: if owns(uid);
       allow create, update: if owns(uid) && validProfile(request.resource.data);
       // No list or delete operation is exposed by flow 1.
+
+      match /meals/{mealId} {
+        function validMeal(data) {
+          return data.keys().hasAll(['id', 'draft', 'analysis', 'savedAt', 'updatedAt'])
+            && data.keys().hasOnly(['id', 'draft', 'analysis', 'savedAt', 'updatedAt'])
+            && mealId.matches('^[A-Za-z0-9_-]{1,100}$')
+            && data.id == mealId
+            && data.draft is map
+            && data.draft.keys().hasAll(['id', 'name', 'mealType', 'eatenAt', 'ingredients', 'notes'])
+            && data.draft.keys().hasOnly(['id', 'name', 'mealType', 'eatenAt', 'ingredients', 'notes'])
+            && data.draft.id == mealId
+            && data.draft.name is string && data.draft.name.size() > 0 && data.draft.name.size() <= 160
+            && data.draft.mealType in ['breakfast', 'lunch', 'dinner', 'snack']
+            && data.draft.eatenAt is string && data.draft.eatenAt.size() <= 40
+            && data.draft.ingredients is list && data.draft.ingredients.size() > 0 && data.draft.ingredients.size() <= 30
+            && data.draft.notes is string && data.draft.notes.size() <= 1000
+            && data.analysis is map
+            && data.analysis.keys().hasAll(['title', 'summary', 'highlights', 'improvements', 'profileNote', 'limitations', 'references', 'healthConnections', 'mode'])
+            && data.analysis.keys().hasOnly(['title', 'summary', 'highlights', 'improvements', 'profileNote', 'limitations', 'references', 'healthConnections', 'mode'])
+            && data.analysis.title is string && data.analysis.title.size() <= 300
+            && data.analysis.summary is string && data.analysis.summary.size() <= 3000
+            && data.analysis.profileNote is string && data.analysis.profileNote.size() <= 3000
+            && data.analysis.highlights is list && data.analysis.highlights.size() <= 12
+            && data.analysis.improvements is list && data.analysis.improvements.size() <= 12
+            && data.analysis.limitations is list && data.analysis.limitations.size() <= 12
+            && data.analysis.references is list && data.analysis.references.size() <= 12
+            && data.analysis.healthConnections is list && data.analysis.healthConnections.size() <= 8
+            && data.analysis.mode in ['gemini', 'localBook']
+            && data.savedAt is string && data.savedAt.size() <= 40
+            && data.updatedAt == request.time;
+        }
+
+        allow read: if owns(uid);
+        allow create, update: if owns(uid)
+          && exists(/databases/$(database)/documents/users/$(uid))
+          && validMeal(request.resource.data);
+        // Cloud entries survive sign-out; no client delete is exposed.
+      }
     }
 
     match /{document=**} {

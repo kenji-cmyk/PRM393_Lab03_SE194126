@@ -1,0 +1,190 @@
+{
+  "schemaVersion": 1,
+  "book": {
+    "title": "Ăn gì không chết - Sức mạnh chữa lành của thực phẩm",
+    "authors": ["Michael Greger", "Gene Stone"],
+    "pdfPageOffset": 2
+  },
+  "entries": [
+    {
+      "id": "beans-protein-fibre",
+      "chapterId": "p2-dd01",
+      "title": "Đậu: nguồn đạm thực vật và chất xơ",
+      "printedPage": 374,
+      "pdfPage": 376,
+      "keywords": ["đậu", "đậu hũ", "đậu phụ", "đậu nành", "đậu đen", "đậu đỏ", "đậu gà", "đậu lăng", "đậu hà lan", "đậu trắng", "edamame", "tempeh", "hummus"],
+      "summary": "Sách mô tả họ đậu cung cấp protein cùng các thành phần thường gặp trong thực vật như chất xơ, folate và kali. Tác giả đưa ra nhiều cách kết hợp đậu vào bữa ăn thay vì chỉ xem chúng là món ăn kèm.",
+      "mealRelevance": "Nếu người dùng xác nhận có đậu hoặc món từ đậu, có thể ghi nhận sự hiện diện của nhóm đạm thực vật; chưa suy ra lượng protein hay chất xơ khi chưa biết khẩu phần và cách chế biến.",
+      "suggestion": "Thử luân phiên đậu nấu chín, đậu hũ hoặc đậu lăng trong các bữa phù hợp với sở thích; ghi thêm cách nấu để nhận xét sát bữa ăn hơn.",
+      "healthTopics": ["Đạm thực vật", "Chất xơ", "Đa dạng thực phẩm"]
+    },
+    {
+      "id": "cruciferous-variety",
+      "chapterId": "p2-dd04",
+      "title": "Rau củ họ cải trong nhóm thực phẩm hằng ngày",
+      "printedPage": 410,
+      "pdfPage": 412,
+      "keywords": ["bông cải xanh", "bông cải trắng", "súp lơ", "cải thìa", "bắp cải", "cải xoăn", "cải rổ", "cải bẹ xanh", "cải xoong", "broccoli", "cải brussels"],
+      "summary": "Phần rau củ họ cải liệt kê bông cải, bắp cải, cải thìa, cải xoăn và một số loại cải khác như một nhóm riêng trong danh mục thực phẩm hằng ngày của tác giả.",
+      "mealRelevance": "Có thể đối chiếu loại rau được xác nhận với nhóm họ cải. Tên chung như rau cải hoặc ảnh một phần món ăn chưa đủ để xác định chính xác loại rau.",
+      "suggestion": "Luân phiên một loại rau họ cải quen thuộc trong các bữa; xác nhận đúng loại rau thay vì để hệ thống tự đoán từ ảnh.",
+      "healthTopics": ["Rau củ họ cải", "Đa dạng thực phẩm thực vật"]
+    },
+    {
+      "id": "leafy-greens",
+      "chapterId": "p2-dd05",
+      "title": "Rau xanh và sự đa dạng của rau lá",
+      "printedPage": 418,
+      "pdfPage": 420,
+      "keywords": ["rau xanh", "rau lá", "rau dền", "cải bó xôi", "rau bina", "spinach", "xà lách", "salad", "cải xoăn", "cải bẹ xanh", "rau arugula"],
+      "summary": "Sách dành một nhóm riêng cho rau lá xanh, với các ví dụ như rau dền, cải bó xôi, xà lách và cải xoăn. Trang này nhấn mạnh việc đưa rau lá vào chế độ ăn thường xuyên.",
+      "mealRelevance": "Rau lá do người dùng xác nhận là một điểm để liên hệ với nhóm rau xanh trong sách; sự hiện diện của rau không chứng minh rằng bữa ăn đã đáp ứng nhu cầu cả ngày.",
+      "suggestion": "Nếu bữa ăn chưa có rau, cân nhắc thêm một món rau phù hợp; nếu đã có, thử đổi loại rau ở bữa khác để tăng sự đa dạng.",
+      "healthTopics": ["Rau xanh", "Đa dạng thực phẩm"]
+    },
+    {
+      "id": "whole-fruit",
+      "chapterId": "p2-dd03",
+      "title": "Trái cây nguyên quả và nước ép",
+      "printedPage": 400,
+      "pdfPage": 402,
+      "keywords": ["trái cây", "hoa quả", "táo", "cam", "chuối", "đu đủ", "xoài", "ổi", "lê", "dưa hấu", "quýt", "bưởi", "nước ép", "nước trái cây", "sinh tố"],
+      "summary": "Tác giả phân biệt trái cây nguyên quả với nước ép: ép bỏ đi chất xơ và một số thành phần đi kèm. Trang này cũng bàn về khác biệt giữa thói quen ăn trái cây nguyên quả và uống nhiều nước ép trong nghiên cứu về tiểu đường loại 2.",
+      "mealRelevance": "Hỏi rõ món được xác nhận là trái cây nguyên quả, sinh tố hay nước ép. Không dùng sự khác biệt này để kết luận đường huyết hay nguy cơ bệnh của một người từ một bữa ăn.",
+      "suggestion": "Khi phù hợp, chọn trái cây nguyên quả như một lựa chọn tiện lợi thay cho nước ép; ghi thêm nếu đồ uống có đường bổ sung.",
+      "healthTopics": ["Chất xơ", "Thói quen ăn uống và tiểu đường loại 2"]
+    },
+    {
+      "id": "whole-grains",
+      "chapterId": "p2-dd10",
+      "title": "Ngũ cốc nguyên cám và chế độ ăn lâu dài",
+      "printedPage": 494,
+      "pdfPage": 496,
+      "keywords": ["ngũ cốc nguyên cám", "ngũ cốc nguyên hạt", "gạo lứt", "cơm gạo lứt", "yến mạch", "bánh mì nguyên cám", "lúa mạch", "kiều mạch", "diêm mạch", "quinoa", "mì nguyên cám"],
+      "summary": "Sách trình bày các nghiên cứu liên hệ thói quen ăn ngũ cốc nguyên cám với sức khỏe tim mạch, tiểu đường loại 2 và các chỉ dấu viêm. Đây là nội dung về chế độ ăn và nghiên cứu dài hạn, không phải phép đo tác dụng của một bữa ăn.",
+      "mealRelevance": "Chỉ ghi nhận ngũ cốc nguyên cám khi loại thực phẩm đã được xác nhận. Từ cơm hoặc bánh mì nói chung không thể suy ra rằng đó là gạo lứt hay bột nguyên cám.",
+      "suggestion": "Nếu thường dùng ngũ cốc tinh chế, có thể thử thay một phần bằng lựa chọn nguyên cám phù hợp với khẩu vị và khả năng dung nạp.",
+      "healthTopics": ["Sức khỏe tim mạch", "Tiểu đường loại 2", "Chất xơ"]
+    },
+    {
+      "id": "ground-flax",
+      "chapterId": "p2-dd07",
+      "title": "Cách kết hợp hạt lanh xay vào món ăn",
+      "printedPage": 454,
+      "pdfPage": 456,
+      "keywords": ["hạt lanh", "hạt lanh xay", "bột hạt lanh", "flaxseed"],
+      "summary": "Sách hướng dẫn dùng hạt lanh đã xay và gợi ý rắc vào yến mạch, salad hoặc súp. Tác giả phân biệt việc sử dụng hạt lanh với dầu hạt lanh khi bàn về chế biến.",
+      "mealRelevance": "Nếu món có hạt lanh, nên xác nhận dạng nguyên hạt, đã xay hay dầu; không coi ba dạng này là tương đương và không suy ra lượng omega-3 từ ảnh.",
+      "suggestion": "Nếu muốn dùng hạt lanh, cân nhắc dạng đã xay trong món phù hợp; không tự chuyển gợi ý thực phẩm thành liều bổ sung để điều trị bệnh.",
+      "healthTopics": ["Cách chế biến hạt", "Đa dạng thực phẩm"]
+    },
+    {
+      "id": "nuts-seeds",
+      "chapterId": "p2-dd08",
+      "title": "Quả hạch và các loại hạt trong món ăn",
+      "printedPage": 459,
+      "pdfPage": 461,
+      "keywords": ["quả hạch", "hạnh nhân", "hạt điều", "hạt chia", "hạt bí", "hạt vừng", "mè", "hạt hướng dương", "óc chó", "đậu phộng", "lạc", "bơ đậu phộng", "tahini"],
+      "summary": "Tác giả đưa ra những cách dùng quả hạch và hạt trong sốt trộn, súp hoặc ăn kèm rau và trái cây, thay vì chỉ xem chúng như món ăn vặt riêng lẻ.",
+      "mealRelevance": "Nhóm hạt có thể xuất hiện trong sốt hoặc món trộn nhưng không nhìn rõ trên ảnh, nên chỉ ghi nhận khi người dùng xác nhận. Không suy ra món không có chất gây dị ứng chỉ từ ảnh.",
+      "suggestion": "Có thể thử một loại hạt hoặc sốt từ hạt trong món phù hợp với sở thích và các hạn chế ăn uống đã biết; không thêm nếu người dùng có dị ứng với thành phần đó.",
+      "healthTopics": ["Đa dạng thực phẩm", "Thành phần trong sốt"]
+    },
+    {
+      "id": "vegetable-variety",
+      "chapterId": "p2-dd06",
+      "title": "Đa dạng các loại rau củ",
+      "printedPage": 432,
+      "pdfPage": 434,
+      "keywords": ["rau củ", "cà rốt", "cà chua", "ớt chuông", "bí đỏ", "bí ngô", "bí ngòi", "khoai lang", "nấm", "hành tây", "măng tây", "củ dền", "đậu bắp"],
+      "summary": "Sách giải thích rằng các loại rau củ khác nhau mang các thành phần thực vật khác nhau. Vì vậy, tác giả khuyến khích thay đổi loại rau thay vì chỉ tập trung vào một loại hoặc chỉ dựa vào màu sắc.",
+      "mealRelevance": "Có thể nêu các loại rau đã được xác nhận và gợi ý sự đa dạng giữa các bữa. Một món ít màu không tự động là kém dinh dưỡng; nấm và bông cải trắng cũng được sách dùng làm ví dụ.",
+      "suggestion": "Giữ món rau quen thuộc và thử thêm hoặc luân phiên một loại rau củ khác trong những bữa kế tiếp.",
+      "healthTopics": ["Đa dạng thực phẩm thực vật", "Rau củ"]
+    },
+    {
+      "id": "salt-pressure",
+      "chapterId": "p1-ch07",
+      "title": "Muối, gia vị và chủ đề huyết áp",
+      "printedPage": 183,
+      "pdfPage": 185,
+      "keywords": ["muối", "mặn", "nước mắm", "nước tương", "xì dầu", "bột nêm", "hạt nêm", "sốt", "nước chấm", "canh", "súp"],
+      "summary": "Trong chương về cao huyết áp, sách gợi ý giảm muối thêm vào món ăn và dùng các gia vị như tiêu, hành, tỏi, thảo mộc hoặc chanh để tạo vị. Tác giả cũng khuyến khích chú ý thực phẩm chế biến sẵn.",
+      "mealRelevance": "Cần hỏi về nước chấm và gia vị vì ảnh không cho biết lượng muối. Chỉ liên hệ với chủ đề huyết áp trong sách, không chẩn đoán cao huyết áp hay ước tính natri khi thiếu dữ liệu.",
+      "suggestion": "Thử nếm trước khi thêm nước chấm, để sốt riêng hoặc tăng hương vị bằng gia vị và thảo mộc phù hợp thay vì luôn thêm muối.",
+      "healthTopics": ["Cao huyết áp", "Natri và thói quen nêm nếm"]
+    },
+    {
+      "id": "processed-sodium",
+      "chapterId": "p1-ch07",
+      "title": "Natri trong thực phẩm chế biến sẵn",
+      "printedPage": 182,
+      "pdfPage": 184,
+      "keywords": ["thực phẩm chế biến sẵn", "đồ hộp", "mì ăn liền", "mì gói", "xúc xích", "thịt nguội", "thịt xông khói", "pizza", "snack", "bánh quy mặn", "gà chế biến sẵn"],
+      "summary": "Sách nhắc rằng natri có thể đến từ thực phẩm chế biến sẵn, không chỉ từ lọ muối trên bàn. Ví dụ được nêu gồm món thịt được thêm nước muối trong quá trình sản xuất và pizza.",
+      "mealRelevance": "Sự có mặt của thực phẩm chế biến sẵn là lý do hỏi thêm nhãn hoặc cách chế biến. Không gán một hàm lượng natri cố định cho mọi sản phẩm cùng tên.",
+      "suggestion": "Nếu có nhãn, xem lượng natri theo khẩu phần thực tế; khi có lựa chọn, cân nhắc món ít chế biến hơn hoặc phiên bản ít muối hơn.",
+      "healthTopics": ["Cao huyết áp", "Đọc nhãn thực phẩm", "Natri"]
+    },
+    {
+      "id": "meat-plant-balance",
+      "chapterId": "p1-ch04",
+      "title": "Cân đối bữa có thịt với thực phẩm thực vật",
+      "printedPage": 102,
+      "pdfPage": 104,
+      "keywords": ["thịt", "thịt gà", "gà luộc", "gà hấp", "gà nướng", "gà kho", "gà chiên", "gà rán", "gà xé", "cơm gà", "thịt heo", "thịt lợn", "thịt bò", "bò xào", "bò nướng", "bò kho", "sườn", "thịt kho", "thịt nướng"],
+      "summary": "Trong phần ung thư đại trực tràng, tác giả bàn về các nghiên cứu quan sát liên hệ thói quen ăn thịt với kết quả sức khỏe, đồng thời nhấn mạnh vai trò của đậu và thực phẩm thực vật trong toàn bộ chế độ ăn. Tác giả khuyến khích không chỉ bớt thịt mà còn tăng thực phẩm thực vật.",
+      "mealRelevance": "Món thịt do người dùng xác nhận có thể được đối chiếu với cách cân đối các nhóm thực phẩm trong sách. Không quy kết một món thịt hoặc một bữa ăn gây ung thư, không áp số liệu nghiên cứu cho cá nhân.",
+      "suggestion": "Xem bữa ăn đã có rau, đậu hoặc ngũ cốc nguyên cám chưa; nếu phù hợp, thêm một món thực vật thay vì chỉ bỏ thịt mà không bổ sung nhóm thực phẩm khác.",
+      "healthTopics": ["Chế độ ăn và chủ đề đại trực tràng", "Cân đối thực phẩm thực vật"]
+    },
+    {
+      "id": "red-processed-meat-context",
+      "chapterId": "p1-ch04",
+      "title": "Thịt đỏ, thịt chế biến và nghiên cứu dài hạn",
+      "printedPage": 106,
+      "pdfPage": 108,
+      "keywords": ["thịt đỏ", "thịt heo", "thịt lợn", "thịt bò", "bò xào", "bò nướng", "bò kho", "thịt dê", "thịt cừu", "sườn heo", "sườn lợn", "xúc xích", "thịt nguội", "thịt xông khói", "giăm bông", "thịt chế biến"],
+      "summary": "Sách thuật lại các nghiên cứu theo dõi dài hạn về thịt đỏ, thịt chế biến và các kết quả sức khỏe tim mạch, ung thư cùng tử vong. Nội dung này mô tả mối liên hệ trong quần thể và bối cảnh chế độ ăn lâu dài.",
+      "mealRelevance": "Cần xác nhận loại thịt và việc thịt có được ướp muối, hun khói hoặc chế biến sẵn hay không. Thịt heo tươi và xúc xích không nên tự động được xem là cùng một dạng chế biến; ảnh không đủ để đánh giá rủi ro cá nhân.",
+      "suggestion": "Nếu những món này xuất hiện thường xuyên, thử luân phiên một số bữa với món từ đậu và rau phù hợp; giữ nhận xét ở mức thay đổi thói quen, không hứa mức giảm bệnh.",
+      "healthTopics": ["Sức khỏe tim mạch", "Chế độ ăn và chủ đề ung thư", "Thói quen ăn uống lâu dài"]
+    },
+    {
+      "id": "refined-grain-choice",
+      "chapterId": "p2-dd10",
+      "title": "Từ cơm và bánh mì đến lựa chọn ngũ cốc đa dạng",
+      "printedPage": 499,
+      "pdfPage": 501,
+      "keywords": ["cơm", "gạo", "cơm trắng", "gạo trắng", "cơm tấm", "bánh mì", "bánh mì trắng", "bún", "phở", "mì", "mì xào", "bánh phở", "ngũ cốc tinh chế"],
+      "summary": "Tác giả lấy việc thay bánh mì trắng bằng bánh mì nguyên cám, gạo trắng bằng gạo lứt làm ví dụ và khuyến khích tìm hiểu thêm các loại ngũ cốc khác như yến mạch, lúa mạch hoặc diêm mạch.",
+      "mealRelevance": "Tên cơm, bún, phở hoặc bánh mì chỉ gợi ý cần hỏi loại nguyên liệu, không chứng minh thực phẩm là tinh chế hay nguyên cám. Đối chiếu này không phải kết luận rằng người dùng cần tránh mọi tinh bột.",
+      "suggestion": "Nếu xác nhận đang dùng ngũ cốc tinh chế, thử thay một phần bằng loại nguyên cám phù hợp với món ăn và khẩu vị; không cần loại bỏ hoàn toàn món quen thuộc.",
+      "healthTopics": ["Lựa chọn ngũ cốc", "Đa dạng thực phẩm"]
+    },
+    {
+      "id": "sweetened-drink-choice",
+      "chapterId": "p2-dd11",
+      "title": "Nước uống và thành phần tạo ngọt",
+      "printedPage": 506,
+      "pdfPage": 508,
+      "keywords": ["nước ngọt", "nước có ga", "nước giải khát", "trà sữa", "trà đào", "trà chanh", "cà phê sữa", "cà phê đường", "đồ uống có đường", "đường bổ sung", "soda"],
+      "summary": "Trong phần thức uống, sách trình bày lựa chọn nước ở vị trí ưu tiên và bàn về trà, cà phê tốt nhất khi không thêm sữa hoặc chất tạo ngọt. Đây là thảo luận về lựa chọn thức uống trong thói quen ăn uống.",
+      "mealRelevance": "Hỏi rõ đồ uống có đường hoặc thành phần thêm vào hay không; tên trà hay cà phê và ảnh chiếc cốc không cho biết công thức, lượng đường hoặc tổng năng lượng.",
+      "suggestion": "Nếu đồ uống được xác nhận có đường thêm vào, cân nhắc giảm phần tạo ngọt hoặc chọn nước; không coi một lần thay đồ uống là bằng chứng phòng hay điều trị bệnh.",
+      "healthTopics": ["Lựa chọn thức uống", "Thành phần tạo ngọt"]
+    },
+    {
+      "id": "greens-warfarin",
+      "chapterId": "p2-dd05",
+      "title": "Lưu ý khi thay đổi rau xanh và dùng warfarin",
+      "printedPage": 419,
+      "pdfPage": 421,
+      "keywords": ["warfarin", "coumadin", "thuốc chống đông", "rau xanh", "cải bó xôi", "rau bina", "cải xoăn", "salad"],
+      "summary": "Sách có phần cảnh báo riêng về rau xanh và warfarin: thay đổi lớn lượng thực phẩm chứa vitamin K có thể ảnh hưởng việc dùng thuốc, nên người đang dùng warfarin cần trao đổi với bác sĩ khi thay đổi chế độ ăn.",
+      "mealRelevance": "Đây là lưu ý có điều kiện cho người thực sự đang dùng warfarin. Tuổi, cân nặng, chiều cao hoặc ảnh món ăn không cho biết người dùng có dùng thuốc này hay không.",
+      "suggestion": "Nếu đang dùng warfarin, trao đổi với nhân viên y tế trước khi tăng hoặc giảm mạnh lượng rau xanh; không tự ngừng thuốc hay tự loại bỏ rau theo kết quả ứng dụng.",
+      "healthTopics": ["Tương tác thực phẩm và thuốc", "Warfarin"]
+    }
+  ]
+}
