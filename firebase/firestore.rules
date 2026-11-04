@@ -26,6 +26,28 @@ service cloud.firestore {
       allow create, update: if owns(uid) && validProfile(request.resource.data);
       // No list or delete operation is exposed by flow 1.
 
+      match /lessonProgress/{lessonId} {
+        function knownLesson() {
+          return lessonId.matches('^p1-ch(0[1-9]|1[0-5])$')
+            || lessonId.matches('^p2-dd(0[1-9]|1[0-2])$')
+            || lessonId in ['p2-introduction', 'p2-daily-dozen', 'p2-conclusion'];
+        }
+        function validLessonProgress(data) {
+          return knownLesson()
+            && data.keys().hasAll(['lessonId', 'readAt', 'updatedAt'])
+            && data.keys().hasOnly(['lessonId', 'readAt', 'updatedAt'])
+            && data.lessonId == lessonId
+            && data.readAt is string
+            && data.readAt.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}([0-9]{3})?Z$')
+            && data.updatedAt == request.time;
+        }
+        allow read: if owns(uid);
+        allow create, update: if owns(uid)
+          && exists(/databases/$(database)/documents/users/$(uid))
+          && validLessonProgress(request.resource.data);
+        // Marking read uses one stable document; no client delete is exposed.
+      }
+
       match /meals/{mealId} {
         function validMeal(data) {
           return data.keys().hasAll(['id', 'draft', 'analysis', 'savedAt', 'updatedAt'])

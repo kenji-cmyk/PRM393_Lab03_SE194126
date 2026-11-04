@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "status": "source_mapped_outline_only",
+  "status": "source_mapped_with_authored_intro_lessons",
   "book": {
     "title": "Ăn gì không chết",
     "subtitle": "Sức mạnh chữa lành của thực phẩm",
@@ -18,7 +18,7 @@
     "pdfPageNumberOffset": 2
   },
   "contentPolicy": {
-    "lessonBodies": "Not authored",
+    "lessonBodies": "Short original Vietnamese introductory lessons in lesson-content.json, grounded in inspected printed/PDF pages; not full-chapter reproductions",
     "chapterTitles": "Source titles preserve the scanned table of contents; display titles are shortened navigation labels",
     "clinicalUse": "Educational navigation; no diagnostic or treatment recommendations are encoded",
     "progress": "Per-user progress is separate from this catalogue; no sample completion data"

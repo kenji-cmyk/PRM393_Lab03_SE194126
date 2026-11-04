@@ -153,3 +153,57 @@ test('AI quota documents remain server-only for every client identity', async ()
     await assertFails(deleteDoc(reference));
   }
 });
+
+const lessonProgress = (lessonId = 'p1-ch01') => ({
+  lessonId, readAt: '2026-11-04T03:30:00.000Z', updatedAt: serverTimestamp(),
+});
+const progressDoc = (db, uid = 'alice', id = 'p1-ch01') => doc(db, 'users', uid, 'lessonProgress', id);
+
+test('owner marks a lesson read, lists progress and retries without a duplicate', async () => {
+  const db = contextFor('alice').firestore();
+  await assertSucceeds(setDoc(progressDoc(db), lessonProgress()));
+  await assertSucceeds(setDoc(progressDoc(db), lessonProgress()));
+  await assertSucceeds(setDoc(progressDoc(db, 'alice', 'p2-introduction'), lessonProgress('p2-introduction')));
+  const stored = await assertSucceeds(getDoc(progressDoc(db)));
+  assert.equal(stored.data().lessonId, 'p1-ch01');
+  const listed = await assertSucceeds(getDocs(collection(db, 'users', 'alice', 'lessonProgress')));
+  assert.equal(listed.size, 2);
+});
+
+test('lesson progress isolates users, denies anonymous access and cloud deletion', async () => {
+  const owner = contextFor('alice').firestore();
+  await assertSucceeds(setDoc(progressDoc(owner), lessonProgress()));
+  for (const uid of ['bob', null]) {
+    const db = contextFor(uid).firestore();
+    await assertFails(getDoc(progressDoc(db)));
+    await assertFails(getDocs(collection(db, 'users', 'alice', 'lessonProgress')));
+    await assertFails(setDoc(progressDoc(db), lessonProgress()));
+    await assertFails(updateDoc(progressDoc(db), { readAt: '2026-11-04T04:00:00.000Z', updatedAt: serverTimestamp() }));
+  }
+  await assertFails(deleteDoc(progressDoc(owner)));
+  const noProfile = contextFor('new-user').firestore();
+  await assertFails(setDoc(progressDoc(noProfile, 'new-user'), lessonProgress()));
+});
+
+test('only all 30 known lesson IDs can be recorded, with strict identity and timestamps', async () => {
+  const db = contextFor('alice').firestore();
+  const ids = [
+    ...Array.from({length: 15}, (_, i) => `p1-ch${String(i + 1).padStart(2, '0')}`),
+    ...Array.from({length: 12}, (_, i) => `p2-dd${String(i + 1).padStart(2, '0')}`),
+    'p2-introduction', 'p2-daily-dozen', 'p2-conclusion',
+  ];
+  for (const id of ids) await assertSucceeds(setDoc(progressDoc(db, 'alice', id), lessonProgress(id)));
+  assert.equal((await getDocs(collection(db, 'users', 'alice', 'lessonProgress'))).size, 30);
+  for (const id of ['p1-ch00', 'p1-ch16', 'p2-dd00', 'p2-dd13', 'p2-dd99', 'invented', 'front-preface']) {
+    await assertFails(setDoc(progressDoc(db, 'alice', id), lessonProgress(id)));
+  }
+  for (const value of [
+    {...lessonProgress(), lessonId: 'p1-ch02'},
+    {...lessonProgress(), uid: 'alice'},
+    {...lessonProgress(), body: 'unwanted lesson copy'},
+    {...lessonProgress(), readAt: true},
+    {...lessonProgress(), readAt: '2026-11-04'},
+    {...lessonProgress(), readAt: '2026-11-04T03:30:00.000'},
+    {...lessonProgress(), updatedAt: '2026-11-04T03:30:00.000Z'},
+  ]) await assertFails(setDoc(progressDoc(db), value));
+});

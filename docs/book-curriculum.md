@@ -1,7 +1,9 @@
 # Chương trình bài học theo sách
 
-Trạng thái: cấu trúc nội dung phục vụ thiết kế luồng 3; chưa biên soạn nội dung
-bài học, chưa triển khai ứng dụng hoặc ghi nhận tiến trình người dùng.
+Trạng thái: danh mục nguồn đã có **30 bài nhập môn được biên soạn lại**, gồm 27
+bài chính và 3 mục bổ trợ, phục vụ triển khai luồng 3. Nội dung và các trang đã
+đọc trực quan được ghi tại [Flow 3 grounding](flow3-book-grounding.md). Kiểm thử
+ứng dụng/lưu tiến độ được ghi riêng trong [test report](test-report.md).
 
 ## Nguồn và cách đối chiếu
 
@@ -19,6 +21,9 @@ bài học, chưa triển khai ứng dụng hoặc ghi nhận tiến trình ngư
   hay nội dung y khoa được sao chép.
 
 Danh mục máy đọc được: [lesson-catalog.json](../assets/content/lesson-catalog.json).
+Nội dung nhập môn: [lesson-content.json](../assets/content/lesson-content.json).
+Loader ghép hai tệp theo ID; trang bắt đầu chương và trang nguồn của bài nhập
+môn được giữ thành hai trường riêng.
 
 ## Cấu trúc cho luồng 3
 
@@ -88,16 +93,17 @@ Giới thiệu chung (15), Lời cảm ơn (538), Phụ lục / Viên uống b�
 Chú thích (546), và Bảng chỉ mục (749). Chúng không trở thành bài học giả
 hoặc làm tăng bộ đếm hoàn thành 27 bài chính.
 
-## Hợp đồng nội dung cho thiết kế và triển khai sau
+## Hợp đồng nội dung cho thiết kế và triển khai
 
 - `id` ổn định dùng để lưu tiến trình riêng theo người dùng; đổi tên nhãn không
   được làm mất trạng thái đã đọc.
 - `sourceTitle` là tiêu đề nguồn; `displayTitle` là nhãn điều hướng.
 - `printedPage` và `pdfPage` là trang bắt đầu theo bản sách cục bộ này.
 - `kind` phân biệt chương, nhóm Daily Dozen, tổng quan, kết luận, và mục tham khảo.
-- Màn chi tiết có vị trí cho tóm tắt ngắn được biên soạn lại, nguồn, nút đánh dấu
-  đã đọc, và quay về danh mục. Danh mục hiện tại **không cung cấp** đoạn tóm tắt,
-  thời lượng đọc, khuyến nghị điều trị, hoặc trạng thái hoàn thành mẫu.
+- Màn chi tiết hiển thị tóm tắt ngắn được biên soạn lại, nguồn, nút đánh dấu đã
+  đọc và quay về danh mục. Tệp danh mục chỉ giữ metadata; tệp nội dung riêng cung
+  cấp các bài nhập môn, không có thời lượng đọc giả, khuyến nghị điều trị hoặc
+  trạng thái hoàn thành mẫu.
 - Chỉ tăng số bài đã hoàn thành khi người dùng thực sự đánh dấu một bài chính;
   tổng quan/kết luận không làm tăng tử số của bộ đếm 27 bài.
 - Việc triển khai luồng 3 vẫn cần tuân theo Lab 2 về điều hướng và thiết kế,
@@ -105,7 +111,10 @@ hoặc làm tăng bộ đếm hoàn thành 27 bài chính.
 
 ## Kiểm tra đã thực hiện
 
-Đã đọc trực quan hai trang mục lục và năm trang đối chiếu. Danh mục gồm đúng
+Đã đọc trực quan hai trang mục lục và năm trang đối chiếu khi dựng danh mục.
+Khi biên soạn bài nhập môn, đọc thêm 30 trang bắt đầu và 18 trang bổ sung;
+trang cụ thể và nội dung hỗ trợ nằm trong [grounding](flow3-book-grounding.md).
+Danh mục gồm đúng
 15 chương phần 1, 12 nhóm phần 2, ba mục bổ trợ phần 2; ID không trùng và
-mỗi tham chiếu PDF bằng trang in cộng 2. Không chạy kiểm thử ứng dụng vì
-chưa có mã ứng dụng trong phạm vi này.
+mỗi tham chiếu PDF bằng trang in cộng 2. Phần đối chiếu nguồn không được coi là
+bằng chứng rằng lưu tiến độ, giao diện hoặc tương tác thiết bị đã được kiểm thử.
