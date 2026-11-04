@@ -1,5 +1,20 @@
 # Design change log
 
+## Flow 3 runtime implementation — 2026-11-04
+
+Implemented weekly progress, both book parts and the selected reader from
+`6:213`, `6:257`, `166:470`, `166:628`. Existing Figma cards, buttons, navigation,
+Roboto and tokens are reused; exact selected/unselected SVG variants were
+downloaded for home/progress/learn. The app uses VetaLife/VL per the rename.
+
+Runtime adaptations: actual saved-meal counts replace sample bars; the weekly
+card reports recording days rather than nutritional compliance. The catalogue
+shows real read counts; 30 original introductory lesson bodies and their
+inspected source pages extend the reader template. Only 27 core lessons count
+toward completion. Content scrolls to accommodate text size and screen width.
+The external Figma source was read only. See [setup](flow3-setup.md),
+[grounding](flow3-book-grounding.md) and [test report](test-report.md).
+
 ## Flow 2 runtime extension — 2026-11-03
 
 Implemented the existing meal-entry/loading/result/error/journal/empty screens
@@ -36,8 +51,8 @@ Content references:
 
 The profile fields come from the user's request. Their addition does not create
 a medical scoring/personalized-advice feature. Lesson metadata preserves source
-titles and page references; complete lesson prose and user-progress persistence
-are later implementation work.
+titles and page references. The runtime now includes 30 original introductory
+bodies and per-user read-progress persistence; it does not reproduce full chapters.
 
 ## Created prototype nodes and limits
 

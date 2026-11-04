@@ -1,5 +1,23 @@
 # Browser captures
 
+## Flow 3 — VetaLife
+
+Captured 2026-11-04 from the compiled preview at `http://127.0.0.1:8233`,
+360/412 CSS px × 800. Synthetic profile input; actual empty meal data and
+explicit read actions. No user data or completion is hard-coded in the app.
+
+| Files | Observed state |
+| --- | --- |
+| `flow3-catalog-part1-360.png`, `flow3-catalog-part1-412.png` | First part, chapter order/source references; current core count |
+| `flow3-catalog-part2-360.png`, `flow3-catalog-part2-412.png` | Overview and Daily Dozen order; 412 capture after introduction/beans were marked read |
+| `flow3-reader-360.png`, `flow3-reader-412.png` | Selected beans reader, matching source title/pages and original introductory content |
+| `flow3-progress-empty-360.png` | Actual zero-record/zero-read state |
+| `flow3-progress-read-412.png` | After reload, 1/27 core and latest read beans; no meals recorded |
+
+The reader scrolls beyond the viewport to reflection/source/mark-read controls.
+Screenshots do not claim native device, live cloud account or ARTEMIS coverage.
+See [test report](../../docs/test-report.md) for actions, regressions and limits.
+
 ## Flow 2 — VetaLife
 
 Captured 2026-11-03 from the actual compiled Flutter web preview at

@@ -5,7 +5,7 @@ and cloud Auth/Firestore/Functions adapters awaiting live verification. Flow 2
 adds image/OCR confirmation and sourced meal feedback; see [setup](../docs/flow2-setup.md).
 Named flow-1
 screens are state-routed within `FlowScreen`; proposed path URLs below are not
-deep links. Flow 3 remains a design-derived specification. References:
+deep links. Flow 3 now uses `LearningViewModel` and state routing. References:
 [design specification](../design/DESIGN.md),
 [Figma Final UI](https://www.figma.com/design/Cc2O3xSmxgjfvDI2hrsY3Q?node-id=2-3),
 and [change log](../docs/design-change-log.md).
@@ -87,15 +87,17 @@ parameters. Any Analytics event added later records the action without these val
 
 ## Flow 3 - Book catalogue and reader
 
-Proposed routes: `/learn` and `/learn/:lessonId`; proposed
-`LessonCatalogViewModel` / `LessonDetailViewModel`. The design uses the book's
+Implemented states: progress, catalogue and detail in `LearningViewModel` /
+`LearningFlowScreen`; proposed URL paths are not deep links. The design uses the book's
 two parts rather than a single generic article.
 
 Use [the curriculum](../docs/book-curriculum.md) and
 `assets/content/lesson-catalog.json` as source-mapped planning metadata. Stable
 lesson IDs, source titles, short display titles, part/category ordering, and
 printed/PDF page references should remain separate from user progress.
-No runtime asset loading or lesson content delivery is implemented yet.
+`AssetLessonCatalog` joins the outline with 30 original introductory bodies from
+`lesson-content.json`; per-user progress remains separate. See
+[Flow 3 setup](../docs/flow3-setup.md) and [source notes](../docs/flow3-book-grounding.md).
 
 In the current Figma prototype, 30 entries set string variables before opening
 one shared reader; selection controls its title, exact source reference, and
@@ -109,12 +111,11 @@ A user selects a part, selects a chapter/category, opens its detail, and marks
 that selected lesson read. Returning to the catalogue/progress must retain the
 chosen lesson identity and selected part. Read progress must be keyed by user and
 lesson, rather than one global `lessonRead` flag. Catalogue loading, empty and
-error states and persistence behavior remain implementation work.
+error states and persistence are implemented with local and Firestore adapters.
 
 The book is a local source under ignored `docs/requirements/`. Do not bundle the
-774-page PDF or copy long passages into app assets. Lesson bodies require
-source-based editorial work; a source-mapped table of contents is not the full
-course.
+774-page PDF or copy long passages into app assets. The implemented 30 bodies
+are short source-based introductions, not a full course or whole-chapter text.
 
 ## Verification to perform during implementation
 
@@ -128,4 +129,5 @@ course.
 - Components, typography, 48 dp targets, 14 sp minimum body text, and layouts at
   360/412 dp match the design.
 
-These are pending implementation checks, not executed test results.
+This checklist describes the implementation criteria. Executed checks and
+remaining device/cloud limits are recorded in `docs/test-report.md`.

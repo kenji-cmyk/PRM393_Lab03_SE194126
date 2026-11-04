@@ -1,5 +1,24 @@
 # Code review
 
+## Flow 3 review — 2026-11-04
+
+An independent reviewer traced new models, both progress repositories,
+LearningViewModel, asset joins, catalogue/reader/progress UI, routing and owner
+rules against the actual integrated diff.
+
+- F4 (P2): preview sign-out cleared learning first, then awaited meal/profile
+  deletion while navigation could become active again. A new read could survive
+  sign-out. A delayed-storage reproduction confirmed the race.
+- Fix: a session-wide signing-out state blocks duplicate logout, pointer, focus,
+  semantics and back across all three stores, with loading feedback and finally
+  restoration. Actual-app regressions cover both slow meal and profile deletion.
+- Re-review: the reviewer confirmed the fix and reported no other confirmed
+  defect in scope. Coordinator regression tests passed 2/2; final full suite
+  passed 144 tests with 2 live skips, and analyzer was clean.
+
+This local review is separate from the wider assignment's later GitHub PR-review
+deliverable. It does not establish native-device or real-account cloud behavior.
+
 ## App Check tooling review — 2026-11-04
 
 An independent reviewer reproduced a P2 issue in the PowerShell registration

@@ -1,12 +1,35 @@
 # Architecture
 
-Status: Flows 1 and 2 implemented with Flutter 3.47.4, Dart 3.13.3 and Provider 6.1.5+1.
+Status: Flows 1, 2 and 3 implemented with Flutter 3.47.4, Dart 3.13.3 and Provider 6.1.5+1.
 Firebase client configuration exists. AI Logic CLI setup has enabled the Gemini
 Developer API provider for Android/web and confirmed App Check as `ENFORCED`
 without changing billing. App Check token exchange and a non-personal
 `gemini-3.6-flash` healthcheck returned HTTP 200; the temporary token was revoked.
-End-user App Check setup, real-meal accuracy/native camera and deployed rules
-remain unverified. The sections below retain the wider Lab 3 plan.
+End-user App Check setup and real-meal/native-device behavior remain unverified.
+Owner rules for profiles, meals and lesson progress are deployed and match
+local sources. The sections below retain the wider Lab 3 plan.
+
+## Implemented flow 3
+
+- `LearningViewModel` owns progress/catalogue/reader selection, read-state loading,
+  explicit saves, retry and cancellation. It is composed in the same UID-keyed
+  Provider tree as profiles/meals; sign-out/account changes dispose private state.
+- `AssetLessonCatalog` joins the source outline and 30 authored introductory
+  bodies. Stable identities and separate source-page metadata are validated;
+  only 27 core units contribute to the core completion counter.
+- `LearningFlowScreen` follows four Figma references and reuses existing cards,
+  app bars, buttons, fonts and navigation. Weekly counts derive from actual saved
+  meal records by local calendar week, without inferring vegetable compliance.
+- `LocalLessonProgressRepository` serializes preview writes/clear. Cloud progress
+  uses `users/{uid}/lessonProgress/{lessonId}`, validated by owner/profile/schema
+  rules. Repeated completion uses one document, never another counter event.
+- Preview sign-out locks pointer, focus, semantics and back navigation across all
+  three repositories, preventing new progress while other storage is clearing.
+- Book excerpts are short original paraphrases of inspected pages, not embedded
+  scans or complete chapter reproductions. This flow uses bundled content, not AI.
+
+See [Flow 3 contract](flow3-contract.md), [book grounding](flow3-book-grounding.md)
+and [setup](flow3-setup.md).
 
 ## Implemented flow 2
 
@@ -95,7 +118,9 @@ No profile values are sent to Analytics. See [Firebase setup](firebase-setup.md)
 
 The PDFs are local references under `docs/requirements/` and must not be committed. Both Lab 3 specifications place the Flutter application at repository root. The final assignment's `mobile/`, `web/`, and `packages/core/` layout belongs to a later phase; it is not introduced in this Lab 3 scaffold.
 
-Only the folder structure is prepared now. Application initialization (`main.dart`, `pubspec.yaml`, Android build files), real Firebase configuration, screens, services, and dependency selection are deferred until implementation. Provider versus Riverpod is **TBD**; choose one and use it throughout. No fake Firebase IDs or Lab 2 flows are invented.
+The earlier scaffold has been implemented as the Flutter application described
+above, using Provider consistently. Remaining lab-service plans below should
+not be read as verification of features outside the three implemented flows.
 
 ARTEMIS is the confirmed Android E2E tool, and Firebase Cloud Storage is the selected file-storage service under the primary Lab 3 baseline. Device/model setup for ARTEMIS and the actual Firebase project's Storage availability, configuration, and owner-scoped rules still need verification during implementation.
 

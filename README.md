@@ -2,7 +2,7 @@
 
 Repository: <https://github.com/kenji-cmyk/PRM393_Lab03_SE194126>.
 
-Status: **Flows 1 and 2 implemented in Flutter**. Flow 1: Chào mừng → Thông tin của bạn →
+Status: **Flows 1, 2 and 3 implemented in Flutter**. Flow 1: Chào mừng → Thông tin của bạn →
 Thiết lập mục tiêu → Trang chủ. Includes validation, derived age, draft retention,
 save/retry, local preview persistence, edit/sign-out, and cloud Auth/Firestore code.
 Firebase client configuration targets project `vetalife-24f03`. The VetaLife
@@ -29,11 +29,15 @@ HTTP 500 failure before the successful controlled analysis run.
 Device debug tokens and web reCAPTCHA provider/site key still need configuration.
 Native camera and real-meal analysis accuracy remain unverified. No Gemini
 secret or Functions deployment is required for this path.
-Flow 3 remains pending.
+Flow 3: real weekly meal-record counts → two-part book catalogue → selected
+lesson reader → explicit read progress. There are 30 sourced introductory
+lessons; 27 core lessons count toward completion, with 3 supplementary entries
+tracked separately. Preview progress persists locally and clears on sign-out;
+cloud progress is owner-scoped in Firestore. See [Flow 3 setup](docs/flow3-setup.md).
 Confirmed baseline: **Cloud-Enabled Mobile App + Preparation Guide v5**,
 using **Google ARTEMIS** for Android E2E testing.
 
-## Run flows 1 and 2
+## Run flows 1, 2 and 3
 
 ```powershell
 flutter pub get
@@ -70,7 +74,8 @@ all direct dependencies are pinned in `pubspec.yaml` and `pubspec.lock`.
 Run `flutter analyze` and `flutter test` for local validation. See
 [the test report](docs/test-report.md) for executed checks and limitations.
 
-Firebase/ARTEMIS setup, other flows, and final submission evidence remain future work.
+Device/ARTEMIS validation, the remaining Firebase lab services and final
+submission evidence remain future work.
 
 ## Repository layout
 

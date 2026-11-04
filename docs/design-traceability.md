@@ -1,17 +1,17 @@
 # Design traceability
 
-Status: Flows 1 and 2 implemented and tested in Flutter; see [test report](test-report.md).
+Status: Flows 1, 2 and 3 implemented and tested in Flutter; see [test report](test-report.md).
 Figma amendments for flows 1/3 remain the design baseline. The Flutter browser
 preview has live interaction and screenshot evidence; cloud/native interaction
-and flow 3 remain pending. Gemini/cloud execution requires configuration. Source:
+remain subject to the limits in the test report. Source:
 [Lab 2 design](../design/DESIGN.md),
 [handoff](../handoff/flutter-handoff.md), and
 [Figma Final UI](https://www.figma.com/design/Cc2O3xSmxgjfvDI2hrsY3Q?node-id=2-3).
 
 Flow 1 uses `OnboardingStage` in `FlowScreen` rather than URL deep links; route
 paths below retain the proposed information architecture. Flow 2 uses
-`MealStage` and `MealFlowScreen` in the same user session; flow 3 classes are
-still proposed. Existing
+`MealStage` and `MealFlowScreen` in the same user session. Flow 3 uses
+`LearningStage`, `LearningViewModel` and `LearningFlowScreen`. Existing
 Figma IDs identify actual design nodes; amendment links and prototype limits are in
 [the change log](design-change-log.md).
 
@@ -30,10 +30,10 @@ Figma IDs identify actual design nodes; amendment links and prototype limits are
 | 07 Lỗi kết nối - flow 2 | `6:138` | error | Same draft/service | Retry recognition/analysis without losing input; save failure retains result |
 | 08 Nhật ký bữa ăn - flow 2 | `6:155` | journal | MealViewModel / MealRepository | Owner records, date selection, notes/detail, same-ID update; local and emulator rules tests |
 | 09 Nhật ký trống - flow 2 | `6:186` | journal empty date | MealViewModel | Genuine empty state and add-meal action; no sample meals |
-| 10 Tiến trình tuần - flow 3 | `6:213` | `/progress` / WeeklyProgressScreen | WeeklyProgressViewModel / user records + lesson progress | Recording frequency and lesson entry; pending implementation |
-| 11 Bài học nhỏ - Phần 1 - flow 3 | `6:257` | `/learn?part=1` / LessonCatalogScreen | LessonCatalogViewModel / source-mapped catalogue | 15 source chapters; pending implementation |
-| 12 Bài học nhỏ - Phần 2 - flow 3 | `166:470` | `/learn?part=2` / LessonCatalogScreen | LessonCatalogViewModel / source-mapped catalogue | 12 categories and 3 supplementary entries; pending implementation |
-| 13 Chi tiết bài học - flow 3 | `166:628` | `/learn/:lessonId` / LessonDetailScreen | LessonDetailViewModel / chapter + private read status | Correct chapter/source, mark selected lesson read, return; pending implementation |
+| 10 Tiến trình tuần - flow 3 | `6:213` | progress / LearningFlowScreen | LearningViewModel + saved MealViewModel records | Actual local-week counts, zero state, accessible chart and last read |
+| 11 Bài học nhỏ - Phần 1 - flow 3 | `6:257` | catalog / LearningFlowScreen | LearningViewModel / validated source catalogue | 15 chapters, actual read counter, same-part return |
+| 12 Bài học nhỏ - Phần 2 - flow 3 | `166:470` | catalog / LearningFlowScreen | Same catalogue with separate part selection | 12 core categories + 3 supplementary entries; only core units count toward 27 |
+| 13 Chi tiết bài học - flow 3 | `166:628` | detail / LearningFlowScreen | Selected Lesson body + owner progress repository | 30 authored introductory bodies, source pages, explicit idempotent save/retry, reload and session cleanup tests |
 
 Auth routing and ownership adapters are implemented for flow 1, awaiting the
 completion of real Google sign-in configuration. Notifications, export and the Firebase demo area remain
@@ -48,9 +48,11 @@ future integration work. See [Firebase setup](firebase-setup.md).
 | RT-03 | One flow ViewModel retains profile and goal across back navigation and atomically saves the completed profile | Unit/widget save/retry/dedup tests; avoids independent form/goal lifetime loss |
 | RT-04 | Home shows actual name/selected goal and a zero-meal initial state instead of the design's sample Minh and 1/2 meals | Live browser capture and persistence reload; meal storage is flow 2 |
 | RT-05 | Explicit preview label, profile edit/sign-out menu, cloud Google sign-in and pre-home sign-out recovery added with existing tokens | Preview live-tested; auth VM/recovery widget tests pass; cloud requires setup |
-| RT-06 | Meal and journal actions now open Flow 2; progress/learning actions explain their pending scope | Flow 2 implemented; flow 3 pending |
+| RT-06 | All four navigation destinations now open their implemented flow inside the same session | Integration test covers Home → Progress → Learn → Journal → Learn → Home |
 | RT-07 | Camera/gallery and editable recognition confirmation extend the original entry screen; no prototype simulation buttons | Widget checks at 360/412 dp and large text; no native camera evidence claimed |
-| RT-08 | Result keeps primary save/edit after summary cards; optional deeper book sources follow below | 15 curated page-mapped passages; Gemini output references are validated by the server |
+| RT-08 | Result keeps primary save/edit after summary cards; optional deeper book sources follow below | 15 curated page-mapped passages; AI Logic output references validated in the client |
+| RT-09 | Weekly bars/counts use real saved meals instead of sample heights; the card says days recorded instead of implying vegetable compliance | Calendar/week/future-date/duplicate-ID tests; text alternatives share the same values |
+| RT-10 | Reader adds original introductory content and inspected source pages to the Figma reading template; catalogue adds the actual core read count | 30 bodies, 48 pages visually inspected; explicit completion and supplementary exclusions tested |
 
 These runtime adaptations are documented here. No Figma source file was changed
 in this implementation session; corresponding Figma additions remain to be synced
@@ -74,4 +76,5 @@ before claiming complete Lab 3 design/app parity.
   [book-curriculum.md](book-curriculum.md). Long source passages and the PDF itself
   are not app content assets.
 - See [design-change-log.md](design-change-log.md) for design status and Figma
-  delivery references. No Flutter fidelity or app test pass is claimed.
+  delivery references. Executed Flutter/browser checks and their limits are in
+  the test report; these are separate from device/ARTEMIS evidence.

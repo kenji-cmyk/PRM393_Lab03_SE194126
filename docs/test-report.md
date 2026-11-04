@@ -1,5 +1,48 @@
 # Test report
 
+## Flow 3 verification — 2026-11-04
+
+The final integrated suite passed **144 Flutter tests**, with the same **2 live
+AI tests explicitly skipped**. Analyzer reported no issues. The Firestore
+emulator suite passed **12/12**, including all 30 valid lesson IDs, owner-only
+access, anonymous/cross-user denial, malformed progress, missing profiles and
+client delete denial. Only Firestore rules were deployed to `vetalife-24f03`;
+production readback matched local with meal and lesson-progress rules present.
+No document data, indexes or billing were changed.
+
+Both builds exited 0: web preview (`flutter build web
+--dart-define=APP_MODE=preview --no-pub --no-wasm-dry-run`) and Android cloud debug
+(`flutter build apk --debug --dart-define=APP_MODE=cloud --no-pub`). Existing
+Cupertino-font/Kotlin/native-access build warnings remain; neither build is
+native-device runtime evidence.
+
+The compiled preview at `http://127.0.0.1:8233` was exercised at 360/412 × 800
+with a synthetic profile. Both catalogue parts and matching reader/source
+pages were inspected. Marking the supplementary introduction left the counter
+at 0/27; marking the core beans lesson changed it to 1/27. Browser reload
+retained both statuses and the last-read lesson. Reopening beans showed the
+disabled read button, not another completion. Học → Nhật ký → Trang chủ worked.
+Preview sign-out returned to welcome and left no preview keys in localStorage.
+Eight `flow3-*.png` captures record catalogue/reader widths and actual zero/read
+progress states; no browser application errors were observed.
+
+The in-app Browser could not start because its runtime lacked sandbox metadata;
+the available standalone Playwright connector was used for local verification.
+An interrupted browser session was reconnected before final captures; no blank
+or duplicate captures are retained as evidence. Widget checks additionally
+cover large text, keyboard insets, save/load retry, duplicate submission, back
+navigation and real navigation/persistence across all three flows.
+
+Independent review found a preview sign-out race across sequential repository
+clears. The session now blocks pointer, focus, semantics and back until all
+clears finish. Two regressions run the actual app with delayed meal/profile
+storage. Content validation joins all 30 authored bodies to unchanged source
+IDs and counts 27 core units; source editorial verification is recorded in
+[grounding](flow3-book-grounding.md).
+
+Native/device interaction, real-account Firebase sign-in/save/reload/switching
+and ARTEMIS remain unverified. See [Flow 3 setup](flow3-setup.md).
+
 ## Live Spark adapter and journal rules — 2026-11-04
 
 The final default Flutter suite passed **115 tests**, with **2 live tests

@@ -125,6 +125,27 @@ test/build logs and screenshots remain records of those original runs.
   5.1. No Android device was attached; native camera, SDK attestation, Google
   Sign-In and real-user cloud persistence remain unverified.
 
+## IMPLEMENT-06 - Flow 3 from Figma (2026-11-04)
+
+- User prompt: `tiếp tục triển khai flow 3 dựa trên figma`.
+- Tools: Figma design contexts/screenshots for `6:213`, `6:257`, `166:470`,
+  `166:628`; specialized domain/UI/book agents and independent review; Flutter
+  tooling, PDF rendering, Firebase rules emulator and local browser verification.
+- Output: actual weekly meal-record progress, two-part catalogue, 30 sourced
+  introductory lesson bodies, explicit owner read state, retry and session-safe
+  preview cleanup. Core completion excludes the three supplementary entries.
+- Editorial verification: 48 pages visually inspected; 46 cited in the bodies.
+  Book scans remain ignored and no full chapter text is reproduced.
+- Validation: 144 Flutter tests pass, 2 live AI skips, analyzer clean, 12 rules
+  tests pass, web preview and Android cloud debug builds pass. Browser tested
+  both widths, 0→1 core completion, supplementary exclusion, reload, repeat read,
+  navigation and preview sign-out; 8 screenshots retained.
+- Cloud: rules-only deployment and exact normalized readback for lesson progress
+  succeeded; data/indexes/billing unchanged. No live model calls needed for Flow 3.
+- Review: fixed a reproduced multi-store sign-out race and added actual-app
+  delayed-storage regressions. Native/ARTEMIS and real Firebase account flow
+  remain unverified. Figma source file was read only.
+
 ## Further entries
 
 | ID/date | Tool | Verbatim prompt or saved path | Output | Actual verification | Decision/reason | Files/commit |

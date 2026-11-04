@@ -1,5 +1,11 @@
 # Evidence
 
+Flow 3 captures are in `screenshots/flow3-*.png`: both catalogue parts and reader
+at 360/412 px, empty weekly records and persisted read state. The final Flutter
+suite passed 144 tests with 2 live skips, rules 12/12, and preview/cloud builds
+passed. See [test report](../docs/test-report.md) for exact commands and limits.
+These captures use synthetic input, not a real cloud account or Android device.
+
 Status: Flow 2 VetaLife browser captures are in `screenshots/flow2-*.png`.
 Local analyzer, Flutter/backend/rules checks and successful web/APK builds are
 recorded in [the test report](../docs/test-report.md). A

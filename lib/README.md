@@ -1,6 +1,6 @@
 # Flutter source structure
 
-Flows 1 and 2 are implemented. `main.dart` starts `VetaLifeApp`; default preview mode uses
+Flows 1, 2 and 3 are implemented. `main.dart` starts `VetaLifeApp`; default preview mode uses
 local data. Cloud adapters and Firebase client configuration are implemented;
 cloud behavior remains unverified.
 
@@ -32,4 +32,7 @@ for the Android/web apps. Token exchange and a non-personal model connectivity
 check returned HTTP 200, with the temporary token revoked afterward. Runtime
 App Check registration and real-meal/native-camera validation remain. No billing
 plan change was made.
-Flow 3 remains pending.
+Flow 3 uses `LearningViewModel`, `LearningFlowScreen`, a validated asset catalogue
+with 30 introductory lesson bodies, and injected local/Firestore read-progress
+repositories. Only 27 core units count toward completion. Preview sign-out locks
+the whole session while clearing all local stores. See [setup](../docs/flow3-setup.md).
