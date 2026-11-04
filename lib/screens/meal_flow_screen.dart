@@ -14,9 +14,16 @@ import '../widgets/meal_navigation.dart';
 /// Routing stays inside the authenticated session rather than pushing routes
 /// which could outlive sign-out or expose the previous account's meal draft.
 class MealFlowScreen extends StatelessWidget {
-  const MealFlowScreen({super.key, required this.onHome});
+  const MealFlowScreen({
+    super.key,
+    required this.onHome,
+    this.onProgress,
+    this.onLearn,
+  });
 
   final VoidCallback onHome;
+  final VoidCallback? onProgress;
+  final VoidCallback? onLearn;
 
   void _back(MealViewModel vm) {
     if (vm.isSaving) return;
@@ -66,13 +73,8 @@ class MealFlowScreen extends StatelessWidget {
                 selectedIndex: 1,
                 onSelected: (index) {
                   if (index == 0) onHome();
-                  if (index > 1) {
-                    showUpcomingFlow(
-                      context,
-                      title: index == 2 ? 'Tiến trình tuần' : 'Bài học nhỏ',
-                      message: 'Theo dõi và học sẽ có trong luồng 3.',
-                    );
-                  }
+                  if (index == 2) onProgress?.call();
+                  if (index == 3) onLearn?.call();
                 },
               )
             : null,

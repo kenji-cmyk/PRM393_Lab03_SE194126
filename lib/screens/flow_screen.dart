@@ -3,9 +3,11 @@ import 'package:provider/provider.dart';
 
 import '../models/habit_goal.dart';
 import 'meal_flow_screen.dart';
+import 'learning_flow_screen.dart';
 import '../theme/app_theme.dart';
 import '../viewmodels/onboarding_view_model.dart';
 import '../viewmodels/meal_view_model.dart';
+import '../viewmodels/learning_view_model.dart';
 import '../widgets/app_components.dart';
 import '../widgets/meal_navigation.dart';
 
@@ -24,10 +26,39 @@ class FlowScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final vm = context.watch<OnboardingViewModel>();
     final meals = context.watch<MealViewModel?>();
+    final learning = context.watch<LearningViewModel?>();
     if (vm.stage == OnboardingStage.home &&
         meals != null &&
         meals.stage != MealStage.home) {
-      return MealFlowScreen(onHome: meals.showHome);
+      return MealFlowScreen(
+        onHome: meals.showHome,
+        onProgress: learning == null
+            ? null
+            : () {
+                if (meals.isSaving) return;
+                meals.showHome();
+                learning.showProgress();
+              },
+        onLearn: learning == null
+            ? null
+            : () {
+                if (meals.isSaving) return;
+                meals.showHome();
+                learning.showCatalog();
+              },
+      );
+    }
+    if (vm.stage == OnboardingStage.home &&
+        learning != null &&
+        learning.stage != LearningStage.home) {
+      return LearningFlowScreen(
+        onHome: learning.showHome,
+        onJournal: () {
+          if (learning.isSaving) return;
+          learning.showHome();
+          meals?.openJournal();
+        },
+      );
     }
     final interceptBack =
         vm.stage == OnboardingStage.profile ||
@@ -566,6 +597,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final vm = context.watch<OnboardingViewModel>();
     final meals = context.watch<MealViewModel?>();
+    final learning = context.watch<LearningViewModel?>();
     final mealCount = meals?.todayCount ?? 0;
     final theme = Theme.of(context);
     final profile = vm.profile;
@@ -658,11 +690,7 @@ class HomeScreen extends StatelessWidget {
           AppButton(label: 'Ghi bữa ăn', onPressed: meals?.startNew),
           const SizedBox(height: AppTokens.space16),
           TextButton(
-            onPressed: () => showUpcomingFlow(
-              context,
-              title: 'Tiến trình tuần',
-              message: 'Theo dõi và học sẽ có trong luồng 3.',
-            ),
+            onPressed: learning?.showProgress,
             style: TextButton.styleFrom(
               minimumSize: const Size(double.infinity, AppTokens.touchTarget),
             ),
@@ -696,17 +724,13 @@ class _HomeNavigation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final meals = context.watch<MealViewModel?>();
+    final learning = context.watch<LearningViewModel?>();
     return MealNavigation(
       selectedIndex: 0,
       onSelected: (index) {
         if (index == 1) meals?.openJournal();
-        if (index > 1) {
-          showUpcomingFlow(
-            context,
-            title: index == 2 ? 'Tiến trình tuần' : 'Bài học nhỏ',
-            message: 'Theo dõi và học sẽ có trong luồng 3.',
-          );
-        }
+        if (index == 2) learning?.showProgress();
+        if (index == 3) learning?.showCatalog();
       },
     );
   }

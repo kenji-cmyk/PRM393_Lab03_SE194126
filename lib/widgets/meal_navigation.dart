@@ -69,7 +69,12 @@ class MealNavigation extends StatelessWidget {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   SvgPicture.asset(
-                                    'assets/icons/${destination.$2}.svg',
+                                    'assets/icons/${switch ((destination.$2, index == selectedIndex)) {
+                                      ('home', false) => 'home-unselected',
+                                      ('progress', true) => 'progress-selected',
+                                      ('learn', true) => 'learn-selected',
+                                      _ => destination.$2,
+                                    }}.svg',
                                     excludeFromSemantics: true,
                                   ),
                                   const SizedBox(height: AppTokens.space4),

@@ -10,6 +10,8 @@ import 'ai_logic_meal_intelligence.dart';
 import 'firestore_meal_repository.dart';
 import 'meal_intelligence.dart';
 import 'meal_repository.dart';
+import 'lesson_progress_repository.dart';
+import 'firestore_lesson_progress_repository.dart';
 
 /// Composition boundary; widgets never import Firebase SDKs.
 abstract final class AppDependencies {
@@ -31,6 +33,9 @@ abstract final class AppDependencies {
 
   static MealRepository mealsFor(String uid) =>
       FirestoreMealRepository(FirebaseFirestore.instance, uid);
+
+  static LessonProgressRepository lessonsFor(String uid) =>
+      FirestoreLessonProgressRepository(FirebaseFirestore.instance, uid);
 
   static MealIntelligence mealIntelligence() => AiLogicMealIntelligence(
     currentUserId: () => FirebaseAuth.instance.currentUser?.uid,
