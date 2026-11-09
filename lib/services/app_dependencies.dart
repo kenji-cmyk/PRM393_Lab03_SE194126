@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 
 import '../firebase/firebase_bootstrap.dart';
 import '../firebase/app_check_bootstrap.dart';
@@ -12,9 +15,18 @@ import 'meal_intelligence.dart';
 import 'meal_repository.dart';
 import 'lesson_progress_repository.dart';
 import 'firestore_lesson_progress_repository.dart';
+import 'app_telemetry.dart';
+import 'report_service.dart';
 
 /// Composition boundary; widgets never import Firebase SDKs.
 abstract final class AppDependencies {
+  static FirebaseAppTelemetry? _telemetry;
+  static AppTelemetry get telemetry => _telemetry ?? const NoopAppTelemetry();
+  static ReportService reportsFor(String uid) => PdfReportService(
+    uid: uid,
+    currentUserId: () => FirebaseAuth.instance.currentUser?.uid,
+  );
+
   static Future<AuthService> initializeCloud() async {
     await initializeFirebase();
     if (const bool.fromEnvironment('USE_FIREBASE_EMULATORS')) {
@@ -24,6 +36,14 @@ abstract final class AppDependencies {
       );
       await FirebaseAuth.instance.useAuthEmulator(host, 9099);
       FirebaseFirestore.instance.useFirestoreEmulator(host, 8080);
+      FirebaseFunctions.instanceFor(region: 'asia-southeast1')
+          .useFunctionsEmulator(host, 5001);
+    }
+    if (_telemetry == null) {
+      final telemetry = FirebaseAppTelemetry();
+      _telemetry = telemetry;
+      telemetry.installErrorHandlers();
+      unawaited(telemetry.initialize());
     }
     return FirebaseAuthService();
   }

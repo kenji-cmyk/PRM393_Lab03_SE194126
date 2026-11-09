@@ -73,6 +73,36 @@ SDK so the rules-test compat plugins share one app registry on Node 22.
 Overrides also pin patched gRPC/glob/minimatch transitive dependencies; verify
 unit and emulator rules tests when updating this dependency set.
 
+## Cloudinary private report uploads
+
+The report callables sign direct Cloudinary uploads and issue ten-minute
+download links only after checking the authenticated user's owner-bound public
+ID. Cloudinary stores reports as `raw` + `authenticated`; the API secret is
+available only to these callables through Firebase Secret Manager. Flutter
+uploads to the `raw/upload` endpoint using the returned signature and should
+enforce the returned 10 MiB client limit.
+
+Configure a **signed** Cloudinary upload preset for raw PDF reports with
+`allowed_formats=pdf` and authenticated access. Cloudinary upload presets do
+not provide a per-preset file-size limit, so configure the product environment's
+maximum upload size if a hard server-side size cap is required; the callable
+signature binds the preset, generated public ID, authenticated delivery type,
+timestamp and `overwrite=false`. The callable can't verify the body size during
+a direct-to-Cloudinary upload.
+
+Set `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, and
+`CLOUDINARY_REPORT_UPLOAD_PRESET` in `functions/.env.<project-id>`. Store the
+secret separately:
+
+```powershell
+firebase functions:secrets:set CLOUDINARY_API_SECRET --project <project-id>
+```
+
+The Functions codebase is not deployed by the default Firebase configuration
+and deploying Firebase Functions requires a Blaze project. No Cloudinary
+credentials are present in source control and no Functions or Cloudinary
+deployment is performed by local code changes.
+
 ## Secret and model
 
 Create a Gemini Developer API key in your own Google AI project, then store it

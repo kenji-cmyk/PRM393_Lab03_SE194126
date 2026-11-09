@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../models/habit_goal.dart';
+import '../services/app_settings.dart';
 import 'meal_flow_screen.dart';
 import 'learning_flow_screen.dart';
 import '../theme/app_theme.dart';
@@ -17,16 +18,24 @@ class FlowScreen extends StatelessWidget {
     super.key,
     required this.onSignOut,
     required this.isPreview,
+    this.onNotifications,
+    this.onReport,
+    this.onSettings,
   });
 
   final VoidCallback onSignOut;
   final bool isPreview;
+  final VoidCallback? onNotifications;
+  final VoidCallback? onReport;
+  final VoidCallback? onSettings;
 
   @override
   Widget build(BuildContext context) {
     final vm = context.watch<OnboardingViewModel>();
     final meals = context.watch<MealViewModel?>();
     final learning = context.watch<LearningViewModel?>();
+    final learningEnabled =
+        context.watch<AppSettings?>()?.learningEnabled ?? true;
     if (vm.stage == OnboardingStage.home &&
         meals != null &&
         meals.stage != MealStage.home) {
@@ -51,6 +60,19 @@ class FlowScreen extends StatelessWidget {
     if (vm.stage == OnboardingStage.home &&
         learning != null &&
         learning.stage != LearningStage.home) {
+      if (!learningEnabled &&
+          (learning.stage == LearningStage.catalog ||
+              learning.stage == LearningStage.detail)) {
+        return Scaffold(
+          appBar: AppBar(title: const Text('Nội dung học')),
+          body: SafeArea(
+            child: AppErrorState(
+              message: 'Nội dung học đang tạm đóng. Bạn vẫn có thể ghi bữa ăn và xem tiến trình.',
+              onRetry: learning.showHome,
+            ),
+          ),
+        );
+      }
       return LearningFlowScreen(
         onHome: learning.showHome,
         onJournal: () {
@@ -79,6 +101,9 @@ class FlowScreen extends StatelessWidget {
             OnboardingStage.home => HomeScreen(
               onSignOut: onSignOut,
               isPreview: isPreview,
+              onNotifications: onNotifications,
+              onReport: onReport,
+              onSettings: onSettings,
             ),
             OnboardingStage.error => AppErrorState(
               message:
@@ -589,9 +614,15 @@ class HomeScreen extends StatelessWidget {
     super.key,
     required this.onSignOut,
     required this.isPreview,
+    this.onNotifications,
+    this.onReport,
+    this.onSettings,
   });
   final VoidCallback onSignOut;
   final bool isPreview;
+  final VoidCallback? onNotifications;
+  final VoidCallback? onReport;
+  final VoidCallback? onSettings;
 
   @override
   Widget build(BuildContext context) {
@@ -601,6 +632,8 @@ class HomeScreen extends StatelessWidget {
     final mealCount = meals?.todayCount ?? 0;
     final theme = Theme.of(context);
     final profile = vm.profile;
+    final reportsEnabled =
+        context.watch<AppSettings?>()?.reportExportEnabled ?? true;
     if (profile == null) {
       return AppErrorState(
         message: 'Hồ sơ chưa sẵn sàng. Vui lòng tải lại.',
@@ -626,13 +659,39 @@ class HomeScreen extends StatelessWidget {
               onSelected: (value) {
                 if (value == 'profile') vm.editProfile();
                 if (value == 'sign_out') onSignOut();
+                if (value == 'notifications') onNotifications?.call();
+                if (value == 'report' && reportsEnabled) onReport?.call();
+                if (value == 'settings') onSettings?.call();
               },
-              itemBuilder: (context) => const [
-                PopupMenuItem(
+              itemBuilder: (context) => [
+                const PopupMenuItem(
                   value: 'profile',
                   child: Text('Chỉnh sửa hồ sơ và mục tiêu'),
                 ),
-                PopupMenuItem(value: 'sign_out', child: Text('Đăng xuất')),
+                if (onNotifications != null)
+                  const PopupMenuItem(
+                    value: 'notifications',
+                    child: Text('Thông báo'),
+                  ),
+                if (onReport != null)
+                  PopupMenuItem(
+                    value: 'report',
+                    enabled: reportsEnabled,
+                    child: Text(
+                      reportsEnabled
+                          ? 'Xuất báo cáo PDF'
+                          : 'Xuất báo cáo đang tạm đóng',
+                    ),
+                  ),
+                if (onSettings != null)
+                  const PopupMenuItem(
+                    value: 'settings',
+                    child: Text('Cài đặt ứng dụng'),
+                  ),
+                const PopupMenuItem(
+                  value: 'sign_out',
+                  child: Text('Đăng xuất'),
+                ),
               ],
             ),
           ),

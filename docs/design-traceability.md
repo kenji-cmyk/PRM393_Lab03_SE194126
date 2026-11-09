@@ -22,10 +22,10 @@ Figma IDs identify actual design nodes; amendment links and prototype limits are
 | 01 Chào mừng - flow 1 | `6:2` | welcome / WelcomeScreen | OnboardingViewModel | Implemented; opens the real profile form |
 | 01A Thông tin của bạn - flow 1 | `166:426` | profile / UserProfileScreen | OnboardingViewModel / retained private draft | Required fields, strict date validation, derived age, comma-decimal measures; unit/widget tests and browser captures |
 | 02 Thiết lập mục tiêu - flow 1 | `6:19` | goals / GoalSetupScreen | OnboardingViewModel / HabitGoal | Single selection, back retention, duplicate guard, save/retry tested |
-| 03 Trang chủ - flow 1 destination | `6:42` | home / HomeScreen | OnboardingViewModel / persisted UserProfile | Actual saved name and goal; edit/sign-out; browser reload restores preview profile; future-flow links explicitly pending |
+| 03 Trang chủ - flow 1 destination | `6:42` | home / HomeScreen | OnboardingViewModel / persisted UserProfile | Actual saved name and goal; edit/sign-out; browser reload restores preview profile; implemented meal/progress/learning navigation and service menu |
 | 04 Ghi bữa ăn - flow 2 | `6:76` | entry / MealFlowScreen | MealViewModel / MealDraft | Manual input, meal time, camera/gallery, explicit upload consent; draft retained |
 | Added recognition/confirmation | User-requested runtime extension | recognizing / confirm | MealViewModel / MealRecognition | Separate OCR and provisional ingredients; edit/add/remove and explicit confirmation before analysis |
-| 05 Đang phân tích - flow 2 | `6:101` | analyzing | MealViewModel / MealIntelligence | Cancel/edit ignores late results; local book matching or authenticated Gemini callable |
+| 05 Đang phân tích - flow 2 | `6:101` | analyzing | MealViewModel / MealIntelligence | Cancel/edit ignores late results; local book matching or authenticated Firebase AI Logic |
 | 06 Kết quả - flow 2 | `6:118` | result | MealViewModel / MealAnalysis | Highlight and suggestion cards, save/edit, profile context, sourced book topics/pages |
 | 07 Lỗi kết nối - flow 2 | `6:138` | error | Same draft/service | Retry recognition/analysis without losing input; save failure retains result |
 | 08 Nhật ký bữa ăn - flow 2 | `6:155` | journal | MealViewModel / MealRepository | Owner records, date selection, notes/detail, same-ID update; local and emulator rules tests |
@@ -35,9 +35,19 @@ Figma IDs identify actual design nodes; amendment links and prototype limits are
 | 12 Bài học nhỏ - Phần 2 - flow 3 | `166:470` | catalog / LearningFlowScreen | Same catalogue with separate part selection | 12 core categories + 3 supplementary entries; only core units count toward 27 |
 | 13 Chi tiết bài học - flow 3 | `166:628` | detail / LearningFlowScreen | Selected Lesson body + owner progress repository | 30 authored introductory bodies, source pages, explicit idempotent save/retry, reload and session cleanup tests |
 
-Auth routing and ownership adapters are implemented for flow 1, awaiting the
-completion of real Google sign-in configuration. Notifications, export and the Firebase demo area remain
-future integration work. See [Firebase setup](firebase-setup.md).
+Auth routing and UID-scoped ownership adapters are implemented; real Google
+sign-in/account switching still need live verification. The 2026-11-09 update adds
+notification history/permission UI, PDF report UI and app settings under the home
+menu. These reuse existing tokens and do not invent Figma node IDs. They remain
+runtime extensions awaiting source-design reconciliation. See [Firebase setup](firebase-setup.md)
+and [service setup](firebase-services-setup.md).
+
+| Runtime extension | Implementation / data | Acceptance status |
+| --- | --- | --- |
+| Notifications | NotificationViewModel / FirebaseNotificationService; UID local history and device registration | Device rules deployed/read back Nov 9; three-state delivery, permission and tap evidence pending |
+| Personal PDF report | ReportViewModel / PdfReportService; saved profile/meals/read progress, Cloudinary authenticated raw owner path | Local PDF export available; Cloudinary credentials/preset and signer deployment pending |
+| App settings | AppSettings / two Remote Config flags controlling learning and export | Both Boolean defaults published true Nov 9; device fetch/before-after evidence pending |
+| Instrumentation | AppTelemetry in Auth/onboarding/meal/learning/report actions | 16 planned events and native sanitized error hooks; DebugView/Crashlytics dashboard evidence pending |
 
 ## Runtime adaptations recorded for flow 1
 
@@ -53,6 +63,8 @@ future integration work. See [Firebase setup](firebase-setup.md).
 | RT-08 | Result keeps primary save/edit after summary cards; optional deeper book sources follow below | 15 curated page-mapped passages; AI Logic output references validated in the client |
 | RT-09 | Weekly bars/counts use real saved meals instead of sample heights; the card says days recorded instead of implying vegetable compliance | Calendar/week/future-date/duplicate-ID tests; text alternatives share the same values |
 | RT-10 | Reader adds original introductory content and inspected source pages to the Figma reading template; catalogue adds the actual core read count | 30 bodies, 48 pages visually inspected; explicit completion and supplementary exclusions tested |
+| RT-11 | Home menu adds cloud notifications, PDF reports and settings; feature routes belong to the session | Runtime extension; source Figma sync and live device acceptance pending |
+| RT-12 | Remote Config can temporarily close learning/report generation with visible states and defaults | Local behavior and live evidence recorded separately in test report |
 
 These runtime adaptations are documented here. No Figma source file was changed
 in this implementation session; corresponding Figma additions remain to be synced
@@ -62,9 +74,9 @@ before claiming complete Lab 3 design/app parity.
 
 | Figma source | Planned implementation location | Verification |
 | --- | --- | --- |
-| Color, typography, spacing and radius tokens on `2:4` | `lib/theme/` | Values mapped in the handoff; runtime pending |
-| Button / Text Field / Card / App Bar on `2:5` | `lib/widgets/` | Reuse variants in form/catalogue; runtime pending |
-| Navigation / Dialog / Loading / Empty / Error on `2:5` | `lib/widgets/` | Preserve navigation and all states; runtime pending |
+| Color, typography, spacing and radius tokens on `2:4` | `lib/theme/` | Mapped in AppTheme; existing flow checks and new service UI checks in test report |
+| Button / Text Field / Card / App Bar on `2:5` | `lib/widgets/` | Shared components reused in forms/catalogue and new service screens |
+| Navigation / Dialog / Loading / Empty / Error on `2:5` | `lib/widgets/` | Existing navigation/loading/error components reused; device acceptance pending |
 
 ## Changes and source fidelity
 
@@ -77,4 +89,6 @@ before claiming complete Lab 3 design/app parity.
   are not app content assets.
 - See [design-change-log.md](design-change-log.md) for design status and Figma
   delivery references. Executed Flutter/browser checks and their limits are in
-  the test report; these are separate from device/ARTEMIS evidence.
+  the test report; these are separate from device/ARTEMIS evidence. The E2E suite now contains
+  17 cases with three repetitions; 25 offline checks passed and all 51 device
+  attempts were skipped. See [E2E setup](../e2e_test/README.md) for the pinned SDK.

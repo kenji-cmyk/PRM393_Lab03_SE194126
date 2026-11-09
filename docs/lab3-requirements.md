@@ -1,9 +1,36 @@
 # Lab 3 requirements and scaffold decisions
 
-Status: **flow 1 implemented**, with local verification in [test-report.md](test-report.md).
-The user selected Cloud-Enabled + Preparation Guide v5 as primary baseline and
-will create Firebase after coding. The wider checklist below remains the complete
-Lab 3 plan; completing flow 1 does not complete the whole assignment.
+Status (2026-11-09): **all three primary flows have Flutter implementations**.
+Auth/Firestore, FCM, PDF generation/Cloudinary, Analytics, native Crashlytics
+and Remote Config integrations are now present. Completion of the whole Lab 3
+still requires the original checklist's live acceptance evidence, ARTEMIS,
+AI PR review and final submission artifacts. See [test report](test-report.md)
+and [service setup](firebase-services-setup.md).
+
+| Area | Implementation | Remaining evidence / setup |
+| --- | --- | --- |
+| Flows 1/2/3 | Profile and goals; meal confirmation/analysis/journal; weekly progress and learning | Real-device interactions and design parity; preview evidence is separate |
+| Auth/Firestore | Google sign-in and UID-scoped profile/meal/lesson progress | Real-account sign-in, save/reload and switching |
+| Cloudinary | Generated personal PDF, signed owner-bound upload, progress/cancel and temporary private download | Credentials/preset and signer deployment missing; live upload/download not verified |
+| FCM | Explicit permission, background handlers, bounded UID history, tap destinations and deployed device-token rules | Platform/VAPID prerequisites, foreground/background/terminated delivery and denial evidence |
+| Analytics | 16 allowlisted events, fixed flow enum, bounded counts and UID lifecycle | DebugView screenshots and ARTEMIS event assertion |
+| Crashlytics | Native handled-error hooks, UID/custom keys and gated debug crash action | Android dashboard evidence for real handled failure and test crash |
+| Remote Config | Two Boolean defaults published true; learning/export controls and fetch/retry UI | Real-device fetch and visible before/after plus failure evidence |
+
+On 2026-11-09, Firestore rules deployment/readback matched the local source,
+including device-token rules, and both Boolean Remote Config defaults were
+published true. Evidence: [readback](../evidence/cloud/firebase-services-readback-2026-11-09.json)
+and [publication](../evidence/cloud/service-flags-publish-2026-11-09.json).
+Historical Storage readback showed no buckets and billing disabled. The user
+subsequently approved Cloudinary; its credentials/preset and signer deployment
+remain pending. These observations do not establish real FCM delivery, Remote
+Config device fetch or cloud file upload. See the latest
+[requirements re-audit](requirements-reaudit.md).
+
+ARTEMIS now has 17 independent cases, each parametrized for three runs. The 25
+offline harness tests passed; all 51 device attempts were skipped. The official
+SDK SHA and device prerequisites are in [E2E setup](../e2e_test/README.md).
+The device-execution and exploration requirements below remain open.
 
 ## Source inventory
 
@@ -30,15 +57,17 @@ The book stays in the same ignored local directory.
 | Testing | ARTEMIS SDK + pytest in `e2e_test/` (Cloud-Enabled pp.8-10; guide p.23) | From Design pp.9-10 uses MobAI; no competing runner. “Patrol” in the primary filename/header is not its body requirement. |
 | Root | `lib/`, `android/` directly at root (Cloud-Enabled pp.10-11) | Final pp.3-6 adds `mobile/`, `web/`, `packages/core/`; defer migration. |
 | MVVM | Flat models/services/firebase/viewmodels/screens/widgets/theme/utils (Cloud-Enabled pp.4-6) | Also matches From Design pp.3-4. Replaces empty legacy placeholders. |
-| State | Choose one of Provider/Riverpod during setup | No arbitrary dependency installed for a folder-only task. |
+| State | Provider 6.1.5+1 selected and used | Preserve the existing injected-service/ViewModel composition. |
 | Data | Real Lab 2 source; Firestore when storing user data (Cloud-Enabled p.3) | From Design p.5 mandates Firestore CRUD/two collections; conditional reference here. |
-| File storage | Firebase Cloud Storage, generated file and per-user path (Cloud-Enabled p.6; guide pp.8-10) | From Design pp.5-6 allows alternatives; Final p.3 excludes Cloud Storage. Do not mix assignment scopes. |
+| File storage | Cloudinary authenticated raw PDFs with owner-scoped callable signer (user confirmed instructor acceptance) | Original Cloud-Enabled baseline names Firebase Cloud Storage (p.6; guide pp.8-10); implementation uses the approved alternative. Final assignment scope remains distinct. |
 | Submission | Lab03_SE194126 report 8-12 pages, slides 12-15, video 5-10 min (Cloud-Enabled pp.10-12; guide p.25) | Alternate handout has shorter report/video; Final uses different paths/names. |
 | Supporting docs | Handoff gaps, design changes, fidelity, AI implementation log, test report retained | No additional MobAI, web admin, or AI product features introduced. |
 
 ## Implementation and evidence checklist
 
-All items remain open until implementation and actual evidence exist.
+The original acceptance checklist is retained below. An unchecked item can have
+implemented code; it stays open until its complete implementation **and actual
+required evidence** exist. The matrix above records code progress separately.
 
 - [ ] Import approved Lab 2 topic/persona/success criterion/Figma/handoff.
 - [ ] Trace and implement every Final UI screen (at least 8) and all 3 flows,
@@ -68,22 +97,29 @@ All items remain open until implementation and actual evidence exist.
   AI tools disclosed (p.10; guide p.24).
 - [ ] Real report/slides/video/evidence complete and accessible (pp.11-16).
 
-## Preparation boundaries
+## Implementation boundaries
 
-Lab 2 files under `design/` and `handoff/` are templates awaiting originals.
-The local name `vetalife` does not define product features.
-No Firebase project ID, account, key, application ID, version pin, or cloud resource
-is invented. No services are deployed and nothing is published.
+The supplied Figma/handoff and source book are the design/content references;
+three flow implementations and runtime adaptations are mapped in
+[traceability](design-traceability.md). Corresponding runtime additions still
+need reconciliation with the source Figma before claiming complete parity.
 
-Flutter manifests, `main.dart`, generated Firebase options, Android build files,
-and actual Firebase CLI project configuration belong to the next setup stage.
+The configured client project is `vetalife-24f03`; identifiers come from existing
+Firebase registration. Firestore device rules and both Remote Config defaults
+were deployed/published on 2026-11-09 with readback evidence; no billing upgrade
+or app publication occurred. Storage has no bucket and its rules were not
+deployed. The user approved Cloudinary as the storage alternative. The Functions
+signer still needs Cloudinary credentials and deployment before live upload
+acceptance. Historical synthetic AI evidence and current local/cloud checks are
+recorded in the [test report](test-report.md).
 
 ## Scaffold validation record
 
 Scaffold checks passed: 25 required directories, two Firebase JSON files,
 eight documentation-only Python modules, Python >=3.12 in valid TOML, and
 26 local Markdown links. All four original PDFs are preserved.
-No application, device, Firebase integration, or ARTEMIS execution is claimed.
+This historical scaffold record is not application, device, Firebase integration
+or ARTEMIS execution evidence; later checks are recorded in the test report.
 
 Local Git setup is **complete**, verified after the user performed the repair:
 
@@ -98,6 +134,5 @@ Local Git setup is **complete**, verified after the user performed the repair:
   Root `.gitignore` and `docs/.gitignore` keep these local references excluded.
 - Temporary extraction tools/files and Git backups remain ignored.
 
-The working tree contains the intended scaffold modifications, additions, and
-removal of the old empty MVVM placeholders. Git setup verification did not publish
-any changes to GitHub.
+The historical Git setup verification did not publish changes to GitHub.
+Subsequent application implementation and validation are recorded separately.

@@ -63,6 +63,35 @@ function meal(id = 'meal_1') {
 const contextFor = (uid) => uid ? environment.authenticatedContext(uid) : environment.unauthenticatedContext();
 const mealDocument = (db, uid = 'alice', id = 'meal_1') => doc(db, 'users', uid, 'meals', id);
 
+test('device token is registered, updated and revoked only by its owner', async () => {
+  const owner = contextFor('alice').firestore();
+  const ref = doc(owner, 'users/alice/devices/device_1');
+  await assertSucceeds(setDoc(ref, {token: 'synthetic-token', platform: 'android', updatedAt: serverTimestamp()}));
+  await assertSucceeds(getDoc(ref));
+  await assertSucceeds(updateDoc(ref, {platform: 'web', updatedAt: serverTimestamp()}));
+  for (const uid of ['bob', null]) {
+    const other = contextFor(uid).firestore();
+    const otherRef = doc(other, 'users/alice/devices/device_1');
+    await assertFails(getDoc(otherRef));
+    await assertFails(getDocs(collection(other, 'users/alice/devices')));
+    await assertFails(setDoc(otherRef, {token: 'attacker', platform: 'web', updatedAt: serverTimestamp()}));
+    await assertFails(deleteDoc(otherRef));
+  }
+  await assertSucceeds(deleteDoc(ref));
+});
+
+test('device token rejects invalid shape, platform, length and timestamp', async () => {
+  const db = contextFor('alice').firestore();
+  const ref = doc(db, 'users/alice/devices/device_1');
+  const valid = {token: 'synthetic-token', platform: 'android', updatedAt: serverTimestamp()};
+  for (const invalid of [
+    {...valid, token: ''}, {...valid, token: 'x'.repeat(1001)},
+    {...valid, token: 123}, {...valid, platform: 'unknown'},
+    {...valid, ownerUid: 'bob'}, {...valid, updatedAt: 'client-time'},
+    {token: 'missing-fields'},
+  ]) await assertFails(setDoc(ref, invalid));
+});
+
 test('owner creates, reads, lists and updates their own meal', async () => {
   const db = contextFor('alice').firestore();
   const reference = mealDocument(db);

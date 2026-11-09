@@ -1,5 +1,33 @@
 # Code review
 
+## Firebase integration review — 2026-11-09
+
+Independent implementation, QA and review agents inspected the integrated
+change. Accepted findings below cover session isolation, privacy, navigation,
+recovery and file permissions. These are local review records, not a published
+PR review. Separate fix commits and PR line links remain to be produced for the
+assignment; no commit or PR was created by this task.
+
+| Finding | Evidence and decision | Applied correction / regression |
+| --- | --- | --- |
+| F5, P1: preview retained generated personal PDF after sign-out | `SessionFeatures` previously survived local repository clearing and retained report bytes. Accepted: the next preview profile could open the previous report. | [Session key recreation](../lib/app.dart), [actual generate/sign-out/re-onboard test](../test/widget/firebase_features_test.dart). |
+| F6, P2: notification navigation could interrupt a busy PDF operation | Direct inbox callbacks could pop the report route during generation/open. Accepted. | [Session route and notification guards](../lib/widgets/session_features.dart); pending notification is reconsidered when report completes. |
+| F7, P2: background inbox stayed stale when opened from Home | The notification screen was not mounted when the app resumed, so its lifecycle callback did not run. Accepted. | [Refresh on opening inbox](../lib/widgets/session_features.dart). |
+| F8, P2: notification content persisted in URL and replayed after reload | Worker originally placed recipient/title/body JSON in the launch query. Accepted: privacy and repeated-navigation defect. | [Opaque worker lookup](../web/firebase-messaging-sw.js), [capture/remove/consume once](../web/notification-history.js), [six JS regressions](../functions/test/notification-web.test.js). |
+| F9, P2: initial-message retry skipped terminated launch | Listener initialization was marked done before `getInitialMessage()` succeeded. Accepted. | [Separate launch-ready flag](../lib/services/notification_service.dart), [failed-first-read retry test](../test/unit/notification_test.dart). |
+| F10, P2: synchronous font loading broke PDF generation | Actual preview widget test reproduced an empty `Future.wait` font result. Accepted. | [Sequential font loading](../lib/services/report_service.dart); actual PDF generation passes [integrated widget tests](../test/widget/firebase_features_test.dart). |
+| F11, P1: Storage create behavior allowed overwriting an existing report | Emulator exposed overwrite despite no update rule. Accepted. | [Explicit `resource == null`](../firebase/storage.rules), [overwrite-denial emulator test](../functions/test-storage/report-storage.test.js). |
+
+The Storage emulator also showed that reserved download-token metadata cannot
+be reliably forbidden by custom-metadata rules. The app deliberately uses
+authenticated `getData` and does not obtain/share bearer URLs. The claim that
+rules prevent an owner deliberately publishing their own file was rejected and
+removed; owner isolation is tested through authenticated Storage access.
+
+Verification: 169 Flutter passes, 2 live AI skips; 18 emulator rule passes;
+28 Node passes. The reviewer did not claim real FCM/native/cloud UI behavior.
+See [test report](test-report.md) for deployment, builds and remaining evidence.
+
 ## Flow 3 review — 2026-11-04
 
 An independent reviewer traced new models, both progress repositories,

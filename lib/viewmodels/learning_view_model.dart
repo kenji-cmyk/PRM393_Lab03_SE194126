@@ -1,4 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
+
+import '../services/app_telemetry.dart';
 
 import '../models/lesson.dart';
 import '../services/lesson_catalog_service.dart';
@@ -13,8 +17,10 @@ class LearningViewModel extends ChangeNotifier {
     required this._repository,
     Future<LessonCatalog> Function()? loadCatalog,
     DateTime Function()? now,
+    this._telemetry = const NoopAppTelemetry(),
   }) : _loadCatalog = loadCatalog ?? AssetLessonCatalog().load,
        _now = now ?? DateTime.now;
+  final AppTelemetry _telemetry;
 
   final LessonProgressRepository _repository;
   final Future<LessonCatalog> Function() _loadCatalog;
@@ -110,6 +116,7 @@ class LearningViewModel extends ChangeNotifier {
     } catch (_) {
       if (!_current(session, load)) return;
       _failedOperation = _LearningOperation.load;
+      unawaited(_telemetry.handledError('lesson_load'));
       _errorMessage = 'Chưa tải được bài học hoặc tiến độ đã đọc. Bạn vẫn có thể đọc nội dung đã tải; hãy thử lại để đồng bộ tiến độ.';
     } finally {
       if (_current(session, load)) {
@@ -135,6 +142,7 @@ class LearningViewModel extends ChangeNotifier {
     if (!_canNavigate) return;
     _clearSaveFailure();
     _stage = LearningStage.progress;
+    unawaited(_telemetry.event('progress_open'));
     _selectedLessonId = null;
     _notify();
   }
@@ -146,6 +154,7 @@ class LearningViewModel extends ChangeNotifier {
       _catalogOrigin = _stage;
     }
     _stage = LearningStage.catalog;
+    unawaited(_telemetry.event('lesson_catalog_open'));
     _selectedLessonId = null;
     _notify();
   }
@@ -170,6 +179,7 @@ class LearningViewModel extends ChangeNotifier {
     _selectedPartId = lesson.partId;
     _selectedLessonId = id;
     _stage = LearningStage.detail;
+    unawaited(_telemetry.event('lesson_open'));
     _notify();
   }
 
@@ -196,6 +206,7 @@ class LearningViewModel extends ChangeNotifier {
     if (lesson == null || isRead(lesson.id)) return;
     if (!_progressReady) {
       _failedOperation = _LearningOperation.load;
+      unawaited(_telemetry.handledError('lesson_load'));
       _errorMessage = 'Hãy thử tải lại tiến độ trước khi đánh dấu bài đã đọc.';
       _notify();
       return;
@@ -215,9 +226,16 @@ class LearningViewModel extends ChangeNotifier {
       await pending;
       if (_disposed || session != _sessionGeneration) return;
       _read[lesson.id] = progress;
+      unawaited(
+        _telemetry.event(
+          'lesson_read',
+          parameters: {'item_count': completedCoreCount},
+        ),
+      );
     } catch (_) {
       if (_disposed || session != _sessionGeneration) return;
       _failedOperation = _LearningOperation.save;
+      unawaited(_telemetry.handledError('lesson_save'));
       _errorMessage =
           'Chưa lưu được trạng thái đã đọc. Bài học vẫn được giữ; hãy thử lại.';
     } finally {

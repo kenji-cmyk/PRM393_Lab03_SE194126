@@ -1,4 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
+
+import '../services/app_telemetry.dart';
 
 import '../models/habit_goal.dart';
 import '../models/user_profile.dart';
@@ -8,8 +12,12 @@ import '../utils/calendar_date.dart';
 enum OnboardingStage { loading, welcome, profile, goals, home, error }
 
 class OnboardingViewModel extends ChangeNotifier {
-  OnboardingViewModel(this._repository, {DateTime Function()? now})
-    : _now = now ?? DateTime.now;
+  OnboardingViewModel(
+    this._repository, {
+    DateTime Function()? now,
+    this._telemetry = const NoopAppTelemetry(),
+  }) : _now = now ?? DateTime.now;
+  final AppTelemetry _telemetry;
 
   final OnboardingRepository _repository;
   final DateTime Function() _now;
@@ -69,6 +77,7 @@ class OnboardingViewModel extends ChangeNotifier {
     } catch (_) {
       if (!_isCurrent(generation)) return;
       _stage = OnboardingStage.error;
+      unawaited(_telemetry.handledError('profile_load'));
       _errorMessage =
           'Không thể tải hồ sơ. Vui lòng kiểm tra kết nối và thử lại.';
     } finally {
@@ -82,6 +91,7 @@ class OnboardingViewModel extends ChangeNotifier {
   void start() {
     if (_disposed || _isSaving || _stage != OnboardingStage.welcome) return;
     _stage = OnboardingStage.profile;
+    unawaited(_telemetry.event('onboarding_start'));
     _notify();
   }
 
@@ -165,8 +175,10 @@ class OnboardingViewModel extends ChangeNotifier {
       if (!_isCurrent(generation)) return;
       _profile = value;
       _stage = OnboardingStage.home;
+      unawaited(_telemetry.event('profile_saved'));
     } catch (_) {
       if (!_isCurrent(generation)) return;
+      unawaited(_telemetry.handledError('profile_save'));
       _errorMessage =
           'Chưa lưu được hồ sơ. Thông tin vẫn được giữ, hãy thử lại.';
     } finally {

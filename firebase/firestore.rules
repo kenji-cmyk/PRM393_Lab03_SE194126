@@ -26,6 +26,19 @@ service cloud.firestore {
       allow create, update: if owns(uid) && validProfile(request.resource.data);
       // No list or delete operation is exposed by flow 1.
 
+      match /devices/{deviceId} {
+        allow read, delete: if owns(uid);
+        allow create, update: if owns(uid)
+          && deviceId.size() <= 1500
+          && request.resource.data.keys().hasAll(['token', 'platform', 'updatedAt'])
+          && request.resource.data.keys().hasOnly(['token', 'platform', 'updatedAt'])
+          && request.resource.data.token is string
+          && request.resource.data.token.size() > 0
+          && request.resource.data.token.size() <= 1000
+          && request.resource.data.platform in ['web', 'android']
+          && request.resource.data.updatedAt == request.time;
+      }
+
       match /lessonProgress/{lessonId} {
         function knownLesson() {
           return lessonId.matches('^p1-ch(0[1-9]|1[0-5])$')

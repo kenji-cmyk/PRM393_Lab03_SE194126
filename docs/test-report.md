@@ -1,5 +1,65 @@
 # Test report
 
+Latest full re-run after the Cloudinary change: see
+[requirements re-audit](requirements-reaudit.md). Historical results below do
+not establish current Cloudinary or device acceptance.
+
+## Firebase services integration — 2026-11-09
+
+Implemented FCM permission/token/inbox/tap handling, private PDF report
+generation/upload, Analytics, native Crashlytics and two Remote Config gates.
+The three existing flows remain covered by the integrated Flutter suite.
+
+| Actual check | Result / evidence |
+| --- | --- |
+| `flutter test --no-pub --reporter expanded` | 169 passed; 2 live AI tests explicitly skipped; [log](../evidence/builds/firebase-services-tests.log) |
+| `flutter analyze --no-pub` | No issues after fixing an extra test import; [log](../evidence/builds/firebase-services-analyze.log) |
+| Firestore + Storage demo emulator suites | 18/18 passed, including device ownership/revoke and report owner/MIME/size/overwrite boundaries; [log](../evidence/builds/firebase-services-rules.log) |
+| Web cloud build | Exit 0; [log](../evidence/builds/firebase-services-web-cloud.log) |
+| Android cloud debug APK | Exit 0; `build/app/outputs/flutter-apk/app-debug.apk`; existing upstream Kotlin/Java/native-access warnings remain |
+| ARTEMIS harness offline | 25 passed, 51 device attempts explicitly skipped; 17 cases, three repetitions each; [record](../evidence/artemis/runs/20261109T030127Z-c35e6758/pytest-summary.json) |
+| Firestore production rollout | Only rules deployed; readback matches local, devices rule present |
+| Remote Config production rollout | Both Boolean gates published with default true; readback confirms both keys |
+| Billing and Storage readback | Billing disabled, no bucket; user subsequently approved Cloudinary instead |
+
+Cloud readback is [recorded separately](../evidence/cloud/firebase-services-readback-2026-11-09.json).
+The first combined rules attempt failed on report overwrite/isolation; the
+report rules and test assertions were corrected before the passing final run.
+An initial emulator attempt could not use occupied port 8080; the final tests
+used the isolated `firebase.test.json` configuration and demo project.
+
+Integrated UI tests caught synchronous font loading in PDF generation and
+duplicate preview sign-out overlays. Fixes passed the final suite, including
+actual PDF creation, route navigation, report-state removal on sign-out and
+Remote Config enable/disable/retry. Notification tests cover ownership,
+bounded/read-preserving history, launch retry and permission denial. Web worker
+regressions check that URLs contain only an opaque ID, that it is consumed once,
+and persistence precedes display/navigation. Independent review also identified
+and fixed stale history on inbox entry and busy-report navigation guards.
+
+A synthetic 35-meal PDF was generated, rendered to six PNG pages using the
+existing local PyMuPDF tool and visually inspected; Vietnamese accents, page
+numbers and page breaks were readable, with no clipped text. Text bounding
+boxes remained inside every page. The sample and renders stay ignored in
+`tmp/pdfs/`; they contain synthetic data, not a real user's medical record.
+
+The updated Chrome preview was restarted and hot reloaded. The in-app Browser
+connection failed due missing runtime sandbox metadata; the available standalone
+Playwright connector was used for the local visual check. Real-account
+Google sign-in/save/reload/switching, device FCM/permission delivery, native
+camera/AI accuracy, Analytics DebugView, Crashlytics dashboard, production
+Remote Config device behavior, and ARTEMIS device/exploratory runs remain
+unverified. ADB lists no connected Android device; installed emulator tooling
+has no AVD or system image. User selected an existing emulator if available;
+none was available, and no large image installation is claimed.
+
+The 2026-11-09 checks above predate the Cloudinary implementation. Cloudinary
+credentials, account size limit, Firebase Functions deployment and real upload/
+download acceptance remain pending. No push was sent to another person, no
+billing upgrade or Storage bucket was created, and no final assignment
+report/slides/video is claimed complete.
+See [service setup and remaining prerequisites](firebase-services-setup.md).
+
 ## Flow 3 verification — 2026-11-04
 
 The final integrated suite passed **144 Flutter tests**, with the same **2 live
@@ -284,7 +344,7 @@ Any case below 3/3 needs investigation. Distinguish an app defect, timing proble
 | Service | Successful behavior | Failure / denial / cancellation behavior | Evidence | Status |
 | --- | --- | --- | --- | --- |
 | Authentication | Pending | Pending | Pending | Not verified |
-| Cloud Storage | Pending | Pending | Pending | Not verified |
+| Cloudinary | Pending | Pending | Pending | Not verified |
 | Cloud Messaging | Pending | Pending | Pending | Not verified |
 | Analytics | Pending | Pending | Pending | Not verified |
 | Crashlytics | Pending | Pending | Pending | Not verified |

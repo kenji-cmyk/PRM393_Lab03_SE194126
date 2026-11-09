@@ -2,40 +2,54 @@
 
 Repository: <https://github.com/kenji-cmyk/PRM393_Lab03_SE194126>.
 
-Status: **Flows 1, 2 and 3 implemented in Flutter**. Flow 1: Chào mừng → Thông tin của bạn →
-Thiết lập mục tiêu → Trang chủ. Includes validation, derived age, draft retention,
-save/retry, local preview persistence, edit/sign-out, and cloud Auth/Firestore code.
-Firebase client configuration targets project `vetalife-24f03`. The VetaLife
-Android app is registered for `vn.edu.fpt.vetalife`; Google Sign-In and the full
-cloud profile/journal flow still need live verification. On 2026-11-04, the nine
-Firestore rules emulator checks passed, rules were deployed to `vetalife-24f03`,
-and production readback matched the local rules, including meal ownership rules.
-Indexes, stored data and billing were unchanged.
-Flow 2: ghi bữa ăn → optional camera/gallery recognition and OCR → editable
-ingredient confirmation → book-grounded feedback → explicit journal save.
-Local preview matches 15 verified book passages. Cloud AI now uses Firebase AI
-Logic with the Gemini Developer API through the Flutter `firebase_ai` SDK,
-targeting the Spark free tier for supported models and quotas. CLI setup has
-enabled `gemini-developer-api` for the Android/web apps and confirmed AI Logic
-App Check enforcement as `ENFORCED`, without changing billing. A temporary
-App Check token exchange and a non-personal `gemini-3.6-flash` connectivity
-request both returned HTTP 200. On 2026-11-04, live RPC/adapter analysis also
-returned HTTP 200 with four validated book citations and health connections;
-synthetic text-card OCR passed separately without inventing ingredients.
-Temporary debug tokens were revoked and JWT files removed. These checks use
-synthetic data and do not verify device SDK attestation, UI, native camera or
-real-meal accuracy. See [the test report](docs/test-report.md) for the observed
-HTTP 500 failure before the successful controlled analysis run.
-Device debug tokens and web reCAPTCHA provider/site key still need configuration.
-Native camera and real-meal analysis accuracy remain unverified. No Gemini
-secret or Functions deployment is required for this path.
-Flow 3: real weekly meal-record counts → two-part book catalogue → selected
-lesson reader → explicit read progress. There are 30 sourced introductory
-lessons; 27 core lessons count toward completion, with 3 supplementary entries
-tracked separately. Preview progress persists locally and clears on sign-out;
-cloud progress is owner-scoped in Firestore. See [Flow 3 setup](docs/flow3-setup.md).
-Confirmed baseline: **Cloud-Enabled Mobile App + Preparation Guide v5**,
-using **Google ARTEMIS** for Android E2E testing.
+Status (2026-11-09): **Flows 1, 2 and 3 and the Firebase service integrations
+are implemented in Flutter. Live cloud/device acceptance is still pending.**
+
+- Flow 1: welcome, validated profile, goal, home, edit and sign-out; local preview
+  and UID-scoped Firestore repositories.
+- Flow 2: meal entry, optional camera/gallery recognition and OCR, editable
+  ingredient confirmation, book-grounded analysis and explicit journal save.
+  Cloud AI uses Firebase AI Logic; preview uses curated book matching.
+- Flow 3: actual weekly meal counts, two-part catalogue, 30 introductory lessons
+  (27 core), reader and explicit persisted read progress.
+- Cloud additions: opt-in FCM and notification history/tap routing; data-derived
+  PDF reports with private owner-scoped Cloudinary uploads; 16 planned Analytics
+  events; native Crashlytics handled-error hooks and gated debug crash test;
+  two Remote Config gates for learning and report export.
+
+The home menu opens notifications (cloud only), reports and settings. Preview
+uses local data, generates PDFs locally and never uploads reports to cloud or
+sends Analytics events. It does not simulate receiving a push notification.
+
+Firebase client configuration targets `vetalife-24f03`, Android ID
+`vn.edu.fpt.vetalife`. On **2026-11-09**, Firestore rules were deployed and
+production readback matched the local file, including `users/{uid}/devices`.
+The two Boolean Remote Config keys were published with defaults `true`.
+See [cloud readback](evidence/cloud/firebase-services-readback-2026-11-09.json)
+and [flag publication](evidence/cloud/service-flags-publish-2026-11-09.json).
+
+Firebase readback confirmed **billing disabled and no Storage buckets**. The
+user approved Cloudinary for report uploads, avoiding Firebase Storage. Cloudinary
+credentials and a signed-upload preset must be configured before cloud upload is
+available. Publishing Remote Config values and deploying device rules do not
+verify device fetch or real push delivery.
+
+See [Firebase service setup](docs/firebase-services-setup.md) for prerequisites
+and acceptance steps, and [test report](docs/test-report.md) for checks actually
+executed. Google sign-in and account switching, cloud save/reload, actual FCM
+   reception in all three app states, Cloudinary private upload/download denial,
+   DebugView,
+Crashlytics dashboards and Remote Config before/after changes need live evidence.
+AI Logic has historical synthetic connectivity/analysis/OCR evidence; that does
+not establish native attestation, camera or real-meal accuracy. Web reCAPTCHA and
+per-device App Check setup remain necessary. No billing change is claimed.
+
+Confirmed baseline: **Cloud-Enabled Mobile App + Preparation Guide v5**, using
+**Google ARTEMIS** for Android E2E testing. The suite now defines **17 independent
+cases with three repetitions each**; **25 offline harness checks passed and 51
+device attempts were skipped**, not passed. The official SDK commit is pinned;
+see [E2E setup](e2e_test/README.md). Device runs and final report/slides/video
+are not complete.
 
 ## Run flows 1, 2 and 3
 
@@ -74,7 +88,7 @@ all direct dependencies are pinned in `pubspec.yaml` and `pubspec.lock`.
 Run `flutter analyze` and `flutter test` for local validation. See
 [the test report](docs/test-report.md) for executed checks and limitations.
 
-Device/ARTEMIS validation, the remaining Firebase lab services and final
+Device/ARTEMIS validation, live Firebase service acceptance and final
 submission evidence remain future work.
 
 ## Repository layout
@@ -94,12 +108,12 @@ vetalife/                         # Local root; GitHub name may differ
 │   ├── widgets/                 # Reusable components and states
 │   ├── theme/                   # Lab 2 tokens and ThemeData
 │   └── utils/                   # Small shared helpers
-├── android/                     # Android build project reserved for setup
+├── android/                     # Android build configuration
 ├── assets/                     # Runtime asset folders and lesson metadata
 │   └── content/lesson-catalog.json  # Book outline with source references
 ├── firebase/                    # Rules, indexes, Remote Config defaults
-├── test/{unit,widget}/          # Future Flutter tests
-├── e2e_test/                    # Future ARTEMIS pytest suite
+├── test/{unit,widget}/          # Flutter unit and widget regression tests
+├── e2e_test/                    # ARTEMIS cases and offline harness tests
 ├── docs/
 │   └── requirements/            # Original PDFs; local and Git-ignored
 ├── evidence/                    # Actual console screenshots and test traces
@@ -115,23 +129,22 @@ Static reactions and 360/412 dp screenshots were reviewed; see
 `docs/design-change-log.md` for node references and prototype
 limitations. This does not represent implemented Flutter or live interaction tests.
 
-## Next implementation stages
+## Remaining acceptance work
 
-1. Review the supplied [Lab 2 Figma design](https://www.figma.com/design/Cc2O3xSmxgjfvDI2hrsY3Q?node-id=0-1),
-   [design specification](design/DESIGN.md), and [handoff](handoff/flutter-handoff.md).
-   The user's amendments add personal information to flow 1 and book-chapter
-   learning to flow 3; confirm any separate original written Lab 2 deliverables.
-2. Continue [traceability](docs/design-traceability.md) and
-   [architecture](docs/architecture.md) for flow 3 using the selected Provider
-   setup. Root Flutter/Android/web initialization and flows 1/2 are complete.
-3. Configure your Firebase project using [the setup guide](docs/firebase-setup.md).
-   Verify the renamed Android app's signing fingerprints, owner rules, and
-   Google Sign-In with the real project.
-4. Implement the remaining flows and Firebase services; instrument, test,
-   review, and produce actual submission evidence in that order.
+1. Complete the platform prerequisites in [Firebase setup](docs/firebase-setup.md)
+   and [service setup](docs/firebase-services-setup.md), including authorized web
+   domains, native fingerprints, web push VAPID and App Check.
+2. Configure Cloudinary report upload secrets/preset and deploy the authenticated
+   Firebase Functions endpoints; then verify private upload/download behavior.
+   Firestore device rules and both Remote Config defaults are already deployed/
+   published.
+3. Run real-account sign-in/save/reload/account-switch checks and collect live
+   notification, Cloudinary, Analytics, Crashlytics and Remote Config evidence.
+4. Execute [ARTEMIS cases](e2e_test/README.md), reconcile runtime adaptations with
+   Figma, and produce the final report, slides and video with actual evidence.
 
-The app and local Flutter checks are runnable now. Android ARTEMIS E2E remains
-pending; see [E2E preparation](e2e_test/README.md).
+The app and local Flutter checks are runnable now. These remaining checks are
+acceptance work; successful compilation does not establish device behavior.
 
 ## Project details to complete
 
@@ -145,7 +158,7 @@ pending; see [E2E preparation](e2e_test/README.md).
 | Flutter/Dart versions and package pins | Flutter 3.47.4 / Dart 3.13.3; exact pins in pubspec.yaml/lock |
 | State management | Provider 6.1.5+1 |
 | Firebase project / Android application ID | vetalife-24f03 / vn.edu.fpt.vetalife; Android app registered, cloud behavior unverified |
-| ARTEMIS commit and model profile | Pending installation; record exact commit |
+| ARTEMIS commit and model profile | SDK pinned to `351ca8422f7b5b54e80a9c1ce03a222e02415b6b`; daemon/device execution pending |
 | Python / uv / ADB versions | Python 3.12+ required; exact versions pending setup |
 | Demo video | Pending; 5-10 minutes |
 
@@ -174,8 +187,8 @@ to the repository above, and `main` tracks `origin/main` with its existing histo
 The legacy `docs/.git` was moved to the ignored `.local-backup/` directory.
 The lab requirement PDFs and source book remain local and Git-ignored. See the
 [validation record](docs/lab3-requirements.md#scaffold-validation-record).
-This repository includes flows 1/2 and their local execution evidence. Live AI
-connectivity has been checked; real-meal accuracy, flow 3 and full
-Firebase/ARTEMIS evidence remain to be completed. The previous
+This repository includes all three flows, Firebase service integration code
+and local verification evidence. Live AI connectivity has been checked;
+real-meal accuracy and full Firebase/device/ARTEMIS evidence remain incomplete. The previous
 `functions/` backend is retained as an optional legacy Blaze implementation;
 the app's default cloud AI path uses Firebase AI Logic on Spark.

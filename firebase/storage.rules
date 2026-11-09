@@ -2,7 +2,17 @@ rules_version = '2';
 
 service firebase.storage {
   match /b/{bucket}/o {
-    // Replace with rules derived from the app's authentication and data model.
+    match /reports/{uid}/{fileName} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow create: if request.auth != null && request.auth.uid == uid
+        && resource == null
+        && fileName.matches('[0-9]+-[a-f0-9]{24}\\.pdf')
+        && request.resource.size > 0
+        && request.resource.size <= 10 * 1024 * 1024
+        && request.resource.contentType == 'application/pdf';
+      allow delete: if request.auth != null && request.auth.uid == uid;
+      allow update: if false;
+    }
     match /{allPaths=**} {
       allow read, write: if false;
     }

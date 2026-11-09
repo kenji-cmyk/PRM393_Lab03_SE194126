@@ -1,11 +1,24 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "prm393-lab3-e2e"
 version = "0.1.0"
 description = "ARTEMIS end-to-end tests for the PRM393 Lab 3 app"
 requires-python = ">=3.12"
-dependencies = ["pytest>=8.0"]
+dependencies = ["pytest==8.4.2"]
+
+[project.optional-dependencies]
+live = ["artemis-client @ git+https://github.com/google/artemis.git@351ca8422f7b5b54e80a9c1ce03a222e02415b6b#subdirectory=packages/artemis-client"]
+
+[tool.setuptools]
+packages = ["e2e_test"]
+package-dir = {e2e_test = "."}
 
 [tool.pytest.ini_options]
 testpaths = ["."]
 python_files = ["test_*.py"]
 addopts = "-ra"
+pythonpath = [".."]
+markers = ["artemis: opt-in Android device/model execution"]

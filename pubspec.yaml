@@ -21,6 +21,14 @@ dependencies:
   image_picker: 1.2.4
   firebase_ai: 4.0.0
   firebase_app_check: 0.4.8
+  firebase_messaging: 16.7.0
+  firebase_analytics: 12.6.0
+  firebase_crashlytics: 5.4.0
+  firebase_remote_config: 6.7.0
+  pdf: 3.13.1
+  printing: 5.15.1
+  cloud_functions: 6.5.0
+  dio: 5.11.1
 
 dev_dependencies:
   flutter_test:
@@ -34,6 +42,8 @@ flutter:
     - assets/content/meal-knowledge.json
     - assets/content/lesson-catalog.json
     - assets/content/lesson-content.json
+    - assets/fonts/Roboto-Regular.ttf
+    - assets/fonts/Roboto-Bold.ttf
   fonts:
     - family: Roboto
       fonts:

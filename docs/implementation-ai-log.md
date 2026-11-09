@@ -4,6 +4,36 @@ This records actual assistance, not the later required AI pull-request review.
 Supporting source: From Design section 9 / Appendix A, which asks for six entries
 over implementation. Do not fabricate entries before work occurs.
 
+## FIREBASE-SERVICES-01 — Integration and verification (2026-11-09)
+
+- User request: continue missing Lab 3 tasks after the requirements audit.
+- Tools: Codex coordinator with specialized Flutter implementation, QA and
+  independent review agents; workflow-team/frontend/QA/review skills; official
+  FlutterFire documentation through Context7; pinned official ARTEMIS source.
+- Changes: FCM permission/token/history/tap lifecycle; PDF reports from saved
+  data and private Storage adapter/rules; 16 bounded Analytics events; native
+  Crashlytics; two visible Remote Config gates; session composition and
+  regression tests. SDK calls remain in services/adapters.
+- Review decisions: accepted seven concrete issues across report isolation,
+  navigation, stale inbox, URL privacy, initialization retry, font loading and
+  overwrite rules; see [review record](code-review.md). No external PR/commit
+  links are invented.
+- Verification: 169 Flutter passes with 2 explicit live AI skips; analyzer clean;
+  18 emulator security tests and 28 Node tests pass; web cloud and Android cloud
+  debug builds succeed. A six-page synthetic PDF was rendered and inspected.
+  Updated local Chrome preview restarted and hot reloaded; no real-user data was
+  used for visual checks.
+- ARTEMIS: 17 independently reset cases, three repetitions each, exact official
+  client commit; offline harness 25 passed and 51 device attempts skipped.
+  No daemon/model/device run was performed.
+- Cloud actions: reviewed Firestore rules deployed and read back; two Remote
+  Config defaults published/read back. Billing readback false and buckets empty.
+  The user explicitly chose to keep Spark and defer upload; no bucket/billing
+  change occurred. Native/real-account/dashboard acceptance remains pending.
+- Permissions and limits: no push sent to another person, no report uploaded
+  from personal data, no test crash performed and no final submission evidence
+  fabricated. See [service setup](firebase-services-setup.md).
+
 The historical entries below describe work before the VetaLife rename. Existing
 test/build logs and screenshots remain records of those original runs.
 

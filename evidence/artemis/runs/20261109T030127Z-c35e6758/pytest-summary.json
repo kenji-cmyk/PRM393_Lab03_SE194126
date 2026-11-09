@@ -1,0 +1,469 @@
+{
+  "session": "20261109T030127Z-c35e6758",
+  "live_opt_in": false,
+  "pytest_exit_status": 0,
+  "results": [
+    {
+      "case": "NOTIFY-01",
+      "nodeid": "test_artemis_smoke.py::test_firebase_behavior[run1-NOTIFY-01]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "CONFIG-01",
+      "nodeid": "test_artemis_smoke.py::test_firebase_behavior[run1-CONFIG-01]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "CONFIG-02",
+      "nodeid": "test_artemis_smoke.py::test_firebase_behavior[run1-CONFIG-02]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "ANALYTICS-01",
+      "nodeid": "test_artemis_smoke.py::test_firebase_behavior[run1-ANALYTICS-01]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "NOTIFY-01",
+      "nodeid": "test_artemis_smoke.py::test_firebase_behavior[run2-NOTIFY-01]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "CONFIG-01",
+      "nodeid": "test_artemis_smoke.py::test_firebase_behavior[run2-CONFIG-01]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "CONFIG-02",
+      "nodeid": "test_artemis_smoke.py::test_firebase_behavior[run2-CONFIG-02]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "ANALYTICS-01",
+      "nodeid": "test_artemis_smoke.py::test_firebase_behavior[run2-ANALYTICS-01]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "NOTIFY-01",
+      "nodeid": "test_artemis_smoke.py::test_firebase_behavior[run3-NOTIFY-01]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "CONFIG-01",
+      "nodeid": "test_artemis_smoke.py::test_firebase_behavior[run3-CONFIG-01]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "CONFIG-02",
+      "nodeid": "test_artemis_smoke.py::test_firebase_behavior[run3-CONFIG-02]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "ANALYTICS-01",
+      "nodeid": "test_artemis_smoke.py::test_firebase_behavior[run3-ANALYTICS-01]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "AUTH-01",
+      "nodeid": "test_auth.py::test_google_auth[run1-AUTH-01]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "AUTH-02",
+      "nodeid": "test_auth.py::test_google_auth[run1-AUTH-02]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "AUTH-01",
+      "nodeid": "test_auth.py::test_google_auth[run2-AUTH-01]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "AUTH-02",
+      "nodeid": "test_auth.py::test_google_auth[run2-AUTH-02]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "AUTH-01",
+      "nodeid": "test_auth.py::test_google_auth[run3-AUTH-01]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "AUTH-02",
+      "nodeid": "test_auth.py::test_google_auth[run3-AUTH-02]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "LEARN-01",
+      "nodeid": "test_detail.py::test_learning_flow[run1-LEARN-01]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "LEARN-02",
+      "nodeid": "test_detail.py::test_learning_flow[run1-LEARN-02]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "LEARN-01",
+      "nodeid": "test_detail.py::test_learning_flow[run2-LEARN-01]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "LEARN-02",
+      "nodeid": "test_detail.py::test_learning_flow[run2-LEARN-02]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "LEARN-01",
+      "nodeid": "test_detail.py::test_learning_flow[run3-LEARN-01]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "LEARN-02",
+      "nodeid": "test_detail.py::test_learning_flow[run3-LEARN-02]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "EXPORT-01",
+      "nodeid": "test_export.py::test_pdf_export[run1-EXPORT-01]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "EXPORT-02",
+      "nodeid": "test_export.py::test_pdf_export[run1-EXPORT-02]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "EXPORT-01",
+      "nodeid": "test_export.py::test_pdf_export[run2-EXPORT-01]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "EXPORT-02",
+      "nodeid": "test_export.py::test_pdf_export[run2-EXPORT-02]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "EXPORT-01",
+      "nodeid": "test_export.py::test_pdf_export[run3-EXPORT-01]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "EXPORT-02",
+      "nodeid": "test_export.py::test_pdf_export[run3-EXPORT-02]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "MEAL-01",
+      "nodeid": "test_flows.py::test_meal_flow[run1-MEAL-01]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "MEAL-02",
+      "nodeid": "test_flows.py::test_meal_flow[run1-MEAL-02]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "MEAL-03",
+      "nodeid": "test_flows.py::test_meal_flow[run1-MEAL-03]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "MEAL-01",
+      "nodeid": "test_flows.py::test_meal_flow[run2-MEAL-01]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "MEAL-02",
+      "nodeid": "test_flows.py::test_meal_flow[run2-MEAL-02]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "MEAL-03",
+      "nodeid": "test_flows.py::test_meal_flow[run2-MEAL-03]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "MEAL-01",
+      "nodeid": "test_flows.py::test_meal_flow[run3-MEAL-01]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "MEAL-02",
+      "nodeid": "test_flows.py::test_meal_flow[run3-MEAL-02]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "MEAL-03",
+      "nodeid": "test_flows.py::test_meal_flow[run3-MEAL-03]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "NAV-01",
+      "nodeid": "test_navigation.py::test_flow_navigation[run1]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "NAV-01",
+      "nodeid": "test_navigation.py::test_flow_navigation[run2]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "NAV-01",
+      "nodeid": "test_navigation.py::test_flow_navigation[run3]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "PROFILE-01",
+      "nodeid": "test_profile.py::test_onboarding_profile[run1-PROFILE-01]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "PROFILE-02",
+      "nodeid": "test_profile.py::test_onboarding_profile[run1-PROFILE-02]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "PROFILE-03",
+      "nodeid": "test_profile.py::test_onboarding_profile[run1-PROFILE-03]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "PROFILE-01",
+      "nodeid": "test_profile.py::test_onboarding_profile[run2-PROFILE-01]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "PROFILE-02",
+      "nodeid": "test_profile.py::test_onboarding_profile[run2-PROFILE-02]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "PROFILE-03",
+      "nodeid": "test_profile.py::test_onboarding_profile[run2-PROFILE-03]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "PROFILE-01",
+      "nodeid": "test_profile.py::test_onboarding_profile[run3-PROFILE-01]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "PROFILE-02",
+      "nodeid": "test_profile.py::test_onboarding_profile[run3-PROFILE-02]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "PROFILE-03",
+      "nodeid": "test_profile.py::test_onboarding_profile[run3-PROFILE-03]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    }
+  ],
+  "by_case": {
+    "NOTIFY-01": {
+      "attempts": 3,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 3,
+      "pass_rate": null,
+      "mean_seconds": null,
+      "needs_investigation": true
+    },
+    "CONFIG-01": {
+      "attempts": 3,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 3,
+      "pass_rate": null,
+      "mean_seconds": null,
+      "needs_investigation": true
+    },
+    "CONFIG-02": {
+      "attempts": 3,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 3,
+      "pass_rate": null,
+      "mean_seconds": null,
+      "needs_investigation": true
+    },
+    "ANALYTICS-01": {
+      "attempts": 3,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 3,
+      "pass_rate": null,
+      "mean_seconds": null,
+      "needs_investigation": true
+    },
+    "AUTH-01": {
+      "attempts": 3,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 3,
+      "pass_rate": null,
+      "mean_seconds": null,
+      "needs_investigation": true
+    },
+    "AUTH-02": {
+      "attempts": 3,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 3,
+      "pass_rate": null,
+      "mean_seconds": null,
+      "needs_investigation": true
+    },
+    "LEARN-01": {
+      "attempts": 3,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 3,
+      "pass_rate": null,
+      "mean_seconds": null,
+      "needs_investigation": true
+    },
+    "LEARN-02": {
+      "attempts": 3,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 3,
+      "pass_rate": null,
+      "mean_seconds": null,
+      "needs_investigation": true
+    },
+    "EXPORT-01": {
+      "attempts": 3,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 3,
+      "pass_rate": null,
+      "mean_seconds": null,
+      "needs_investigation": true
+    },
+    "EXPORT-02": {
+      "attempts": 3,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 3,
+      "pass_rate": null,
+      "mean_seconds": null,
+      "needs_investigation": true
+    },
+    "MEAL-01": {
+      "attempts": 3,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 3,
+      "pass_rate": null,
+      "mean_seconds": null,
+      "needs_investigation": true
+    },
+    "MEAL-02": {
+      "attempts": 3,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 3,
+      "pass_rate": null,
+      "mean_seconds": null,
+      "needs_investigation": true
+    },
+    "MEAL-03": {
+      "attempts": 3,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 3,
+      "pass_rate": null,
+      "mean_seconds": null,
+      "needs_investigation": true
+    },
+    "NAV-01": {
+      "attempts": 3,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 3,
+      "pass_rate": null,
+      "mean_seconds": null,
+      "needs_investigation": true
+    },
+    "PROFILE-01": {
+      "attempts": 3,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 3,
+      "pass_rate": null,
+      "mean_seconds": null,
+      "needs_investigation": true
+    },
+    "PROFILE-02": {
+      "attempts": 3,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 3,
+      "pass_rate": null,
+      "mean_seconds": null,
+      "needs_investigation": true
+    },
+    "PROFILE-03": {
+      "attempts": 3,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 3,
+      "pass_rate": null,
+      "mean_seconds": null,
+      "needs_investigation": true
+    }
+  },
+  "note": "Skipped runs are not passes; no device evidence for skipped cases."
+}

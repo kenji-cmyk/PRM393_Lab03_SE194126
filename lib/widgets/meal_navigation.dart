@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 
 import '../theme/app_theme.dart';
+import '../services/app_settings.dart';
 
 /// Shared home/journal navigation, using the original Figma icon assets.
 class MealNavigation extends StatelessWidget {
@@ -23,6 +25,8 @@ class MealNavigation extends StatelessWidget {
       ('Học', 'learn'),
     ];
     final theme = Theme.of(context);
+    final learningEnabled =
+        context.watch<AppSettings?>()?.learningEnabled ?? true;
     return DecoratedBox(
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
@@ -53,7 +57,9 @@ class MealNavigation extends StatelessWidget {
                           AppTokens.mediumRadius,
                         ),
                         child: InkWell(
-                          onTap: () => onSelected(index),
+                          onTap: index == 3 && !learningEnabled
+                              ? null
+                              : () => onSelected(index),
                           borderRadius: BorderRadius.circular(
                             AppTokens.mediumRadius,
                           ),
@@ -79,7 +85,9 @@ class MealNavigation extends StatelessWidget {
                                   ),
                                   const SizedBox(height: AppTokens.space4),
                                   Text(
-                                    destination.$1,
+                                    index == 3 && !learningEnabled
+                                        ? 'Học (tạm đóng)'
+                                        : destination.$1,
                                     textAlign: TextAlign.center,
                                     style: theme.textTheme.bodySmall?.copyWith(
                                       color: index == selectedIndex

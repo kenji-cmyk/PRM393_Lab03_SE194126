@@ -1,6 +1,10 @@
+import 'dart:async';
+
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
+
+import '../services/app_telemetry.dart';
 
 import '../models/meal.dart';
 import '../models/user_profile.dart';
@@ -30,12 +34,14 @@ class MealViewModel extends ChangeNotifier {
     required this._profile,
     DateTime Function()? now,
     String Function()? idFactory,
+    this._telemetry = const NoopAppTelemetry(),
   }) : _now = now ?? DateTime.now,
        _idFactory = idFactory ?? _newId {
     _draft = _emptyDraft();
     _journalDate = calendarDate(_now());
   }
 
+  final AppTelemetry _telemetry;
   final MealRepository _repository;
   final MealIntelligence _intelligence;
   final MealPhotoPicker _photoPicker;
@@ -146,6 +152,7 @@ class MealViewModel extends ChangeNotifier {
 
   void startNew() {
     if (_disposed || _isSaving) return;
+    unawaited(_telemetry.event('meal_entry_start'));
     ++_generation;
     _draft = _emptyDraft();
     _photo = null;
@@ -171,6 +178,7 @@ class MealViewModel extends ChangeNotifier {
     if (_disposed || _isSaving) return;
     ++_generation;
     _stage = MealStage.journal;
+    unawaited(_telemetry.event('journal_open'));
     _journalDate = calendarDate(_now());
     _notify();
     await _loadJournal();
@@ -188,6 +196,7 @@ class MealViewModel extends ChangeNotifier {
       _records = records;
     } catch (_) {
       if (_disposed || token != _journalGeneration) return;
+      unawaited(_telemetry.handledError('meal_load'));
       _journalError = 'Chưa tải được nhật ký. Kiểm tra kết nối và thử lại; dữ liệu hiện có không bị xóa.';
     } finally {
       if (!_disposed && token == _journalGeneration) {
@@ -404,6 +413,7 @@ class MealViewModel extends ChangeNotifier {
       if (!_current(token)) return;
       _analysis = result;
       _stage = MealStage.result;
+      unawaited(_telemetry.event('meal_analysis_complete'));
     } catch (error) {
       if (_current(token)) _failure(error);
     }
@@ -441,8 +451,15 @@ class MealViewModel extends ChangeNotifier {
       _journalError = null;
       _viewingSaved = true;
       _stage = MealStage.journal;
+      unawaited(
+        _telemetry.event(
+          'meal_saved',
+          parameters: {'item_count': _records.length},
+        ),
+      );
     } catch (error) {
       if (_current(token)) {
+        unawaited(_telemetry.handledError('meal_save'));
         _errorMessage = error is MealServiceException ? error.message : 'Chưa lưu được bữa ăn. Kết quả và bản nháp vẫn được giữ; thử lưu lại.';
       }
     } finally {
@@ -470,6 +487,7 @@ class MealViewModel extends ChangeNotifier {
 
   void showRecord(MealRecord record) {
     if (_disposed || _isSaving) return;
+    unawaited(_telemetry.event('meal_detail_open'));
     ++_generation;
     _draft = record.draft;
     _analysis = record.analysis;
@@ -508,6 +526,7 @@ class MealViewModel extends ChangeNotifier {
   }
 
   void _failure(Object error) {
+    unawaited(_telemetry.handledError('meal_analysis'));
     _errorMessage = error is MealServiceException ? error.message : 'Chưa tải được gợi ý. Kiểm tra kết nối và thử lại; bản nháp vẫn được giữ.';
     _stage = MealStage.error;
   }

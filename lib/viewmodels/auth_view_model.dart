@@ -2,10 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
+import '../services/app_telemetry.dart';
+
 import '../services/auth_service.dart';
 
 class AuthViewModel extends ChangeNotifier {
-  AuthViewModel(this._service);
+  AuthViewModel(this._service, {this._telemetry = const NoopAppTelemetry()});
+  final AppTelemetry _telemetry;
   final AuthService _service;
   StreamSubscription<String?>? _subscription;
   bool isLoading = true;
@@ -18,6 +21,7 @@ class AuthViewModel extends ChangeNotifier {
     _subscription ??= _service.userChanges.listen(
       (value) {
         uid = value;
+        unawaited(_telemetry.identify(value));
         isLoading = false;
         errorMessage = null;
         _notify();
@@ -43,9 +47,16 @@ class AuthViewModel extends ChangeNotifier {
     _notify();
     try {
       await action();
+      unawaited(
+        _telemetry.event(
+          signingIn ? 'login' : 'sign_out',
+          parameters: signingIn ? {'method': 'google'} : const {},
+        ),
+      );
     } on SignInCancelled {
       errorMessage = 'Bạn đã hủy đăng nhập. Có thể thử lại bất cứ lúc nào.';
     } catch (_) {
+      unawaited(_telemetry.handledError('auth'));
       errorMessage = signingIn
           ? 'Đăng nhập chưa thành công. Kiểm tra kết nối và cấu hình Google.'
           : 'Chưa đăng xuất được. Vui lòng thử lại.';

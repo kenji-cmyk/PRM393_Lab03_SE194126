@@ -3,8 +3,10 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'screens/flow_screen.dart';
 import 'services/app_dependencies.dart';
+import 'services/app_settings.dart';
+import 'services/app_telemetry.dart';
+import 'widgets/session_features.dart';
 import 'services/auth_service.dart';
 import 'services/local_onboarding_repository.dart';
 import 'services/book_meal_intelligence.dart';
@@ -53,10 +55,12 @@ class _PreviewFlow extends StatefulWidget {
 
 class _PreviewFlowState extends State<_PreviewFlow> {
   bool _isSigningOut = false;
+  int _sessionGeneration = 0;
 
   @override
   Widget build(BuildContext context) => MultiProvider(
     providers: [
+      ChangeNotifierProvider(create: (_) => AppSettings()),
       ChangeNotifierProvider(
         create: (_) => OnboardingViewModel(
           LocalOnboardingRepository(preferences: widget.preferences),
@@ -89,7 +93,8 @@ class _PreviewFlowState extends State<_PreviewFlow> {
                 excluding: _isSigningOut,
                 child: ExcludeSemantics(
                   excluding: _isSigningOut,
-                  child: FlowScreen(
+                  child: SessionFeatures(
+                    key: ValueKey(_sessionGeneration),
                     isPreview: true,
                     onSignOut: () async {
                       if (_isSigningOut) return;
@@ -102,6 +107,7 @@ class _PreviewFlowState extends State<_PreviewFlow> {
                         await learning.clearPreviewSession();
                         await meals.clearPreviewSession();
                         await onboarding.clearPreviewSession();
+                        if (mounted) setState(() => _sessionGeneration++);
                       } catch (_) {
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -173,8 +179,19 @@ class _CloudBootstrapState extends State<_CloudBootstrap> {
       if (!snapshot.hasData) {
         return const Scaffold(body: SafeArea(child: AppLoadingState()));
       }
-      return ChangeNotifierProvider(
-        create: (_) => AuthViewModel(snapshot.data!)..init(),
+      return MultiProvider(
+        providers: [
+          Provider<AppTelemetry>.value(value: AppDependencies.telemetry),
+          ChangeNotifierProvider(
+            create: (_) => AppSettings.cloud()..initialize(),
+          ),
+          ChangeNotifierProvider(
+            create: (_) => AuthViewModel(
+              snapshot.data!,
+              telemetry: AppDependencies.telemetry,
+            )..init(),
+          ),
+        ],
         child: const _AuthGate(),
       );
     },
@@ -196,11 +213,14 @@ class _AuthGate extends StatelessWidget {
       key: ValueKey(uid),
       providers: [
         ChangeNotifierProvider(
-          create: (_) =>
-              OnboardingViewModel(AppDependencies.repositoryFor(uid))..init(),
+          create: (_) => OnboardingViewModel(
+            AppDependencies.repositoryFor(uid),
+            telemetry: AppDependencies.telemetry,
+          )..init(),
         ),
         ChangeNotifierProvider(
           create: (context) => MealViewModel(
+            telemetry: AppDependencies.telemetry,
             repository: AppDependencies.mealsFor(uid),
             intelligence: AppDependencies.mealIntelligence(),
             photoPicker: DeviceMealPhotoPicker(sessionOwner: 'cloud:$uid'),
@@ -208,9 +228,10 @@ class _AuthGate extends StatelessWidget {
           )..initialize(),
         ),
         ChangeNotifierProvider(
-          create: (_) =>
-              LearningViewModel(repository: AppDependencies.lessonsFor(uid))
-                ..initialize(),
+          create: (_) => LearningViewModel(
+            repository: AppDependencies.lessonsFor(uid),
+            telemetry: AppDependencies.telemetry,
+          )..initialize(),
         ),
       ],
       child: Column(
@@ -221,7 +242,11 @@ class _AuthGate extends StatelessWidget {
               child: AppInlineError(message: auth.errorMessage!),
             ),
           Expanded(
-            child: FlowScreen(isPreview: false, onSignOut: auth.signOut),
+            child: SessionFeatures(
+              isPreview: false,
+              uid: uid,
+              onSignOut: auth.signOut,
+            ),
           ),
         ],
       ),

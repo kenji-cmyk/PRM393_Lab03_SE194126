@@ -1,0 +1,23 @@
+{
+  "project": "vetalife-24f03",
+  "checkedAt": "2026-11-09T03:02:17.270Z",
+  "readOnly": true,
+  "billing": {
+    "verified": true,
+    "enabled": false
+  },
+  "storage": {
+    "verified": true,
+    "buckets": []
+  },
+  "remoteConfig": {
+    "verified": true,
+    "learningEnabledPublished": true,
+    "reportExportEnabledPublished": true
+  },
+  "firestoreRules": {
+    "verified": true,
+    "devicesRulePresent": true,
+    "matchesLocal": true
+  }
+}

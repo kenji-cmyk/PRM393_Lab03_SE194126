@@ -122,7 +122,7 @@ The earlier scaffold has been implemented as the Flutter application described
 above, using Provider consistently. Remaining lab-service plans below should
 not be read as verification of features outside the three implemented flows.
 
-ARTEMIS is the confirmed Android E2E tool, and Firebase Cloud Storage is the selected file-storage service under the primary Lab 3 baseline. Device/model setup for ARTEMIS and the actual Firebase project's Storage availability, configuration, and owner-scoped rules still need verification during implementation.
+ARTEMIS is the confirmed Android E2E tool. Cloudinary is the user-approved report file provider; Firebase callable Functions sign owner-bound uploads and generate time-limited private downloads. Device/model setup for ARTEMIS and Cloudinary/Functions configuration still need verification.
 
 ## Folder responsibilities
 
@@ -208,9 +208,9 @@ These are responsibility placeholders, not existing classes. Feature-specific na
 | --- | --- | --- |
 | Authentication and profile | Authentication service | Signed-in/out, loading, cancellation, failure, and user-state cleanup. |
 | Each Lab 2 data-loading screen (TBD) | Topic-specific data service (API or Firestore, TBD) | Loading, data, empty, error, and retry matching the approved handoff. |
-| File export and upload demonstration | Report export service and Firebase Cloud Storage service | Generation/upload progress, completion URL, and failure; verify actual project setup and owner-scoped rules during implementation. |
+| File export and upload demonstration | Report export service, Cloudinary authenticated raw assets and Firebase callable signer | Generation/upload progress, completion location, and failure; verify Cloudinary preset, secret, account size limit and Functions deployment. |
 | Notifications demonstration | Messaging service | Permission, received notifications, and navigation request. |
 | Remote Config demonstration | Remote configuration service | Defaults, fetched values, and visible behavior changes. |
 | Instrumentation used by relevant ViewModels/services | Analytics and crash reporting services | Event contracts and handled-error reporting; test-crash control only in the demonstration area. |
 
-Before feature development, replace the TBD entries using the actual Lab 2 handoff, complete the design traceability and analytics plans, choose the state manager, and verify the ARTEMIS environment and Firebase Cloud Storage setup and owner-scoped rules.
+Before feature development, replace the TBD entries using the actual Lab 2 handoff, complete the design traceability and analytics plans, choose the state manager, and verify the ARTEMIS environment and Cloudinary/Functions configuration.
