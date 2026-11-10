@@ -46,11 +46,16 @@ firebase emulators:exec --config firebase.test.json --only firestore,storage --p
 ```
 
 This is a disposable demo project on ports 8185/9295, independent of production.
-The report signer is in the legacy Functions codebase. Start its Auth, Firestore
-and Functions emulators with
+The report signer is in the legacy Functions codebase. Run
+`npm --prefix functions run build` first, then start its Auth, Firestore and
+Functions emulators with
 `firebase emulators:start --config firebase.functions.legacy.json --only auth,firestore,functions`.
 Flutter's `USE_FIREBASE_EMULATORS` setting targets Auth 9099, Firestore 8080 and
-Functions 5001. Cloudinary requests still reach Cloudinary when using local
+Functions 5001 on `127.0.0.1` by default (use `adb reverse tcp:9099 tcp:9099`,
+`adb reverse tcp:8080 tcp:8080`, and `adb reverse tcp:5001 tcp:5001` when
+running on an Android emulator or USB device, or pass
+`--dart-define=FIREBASE_EMULATOR_HOST=10.0.2.2` if binding emulators on all
+interfaces). Cloudinary requests still reach Cloudinary when using local
 Functions.
 
 On 2026-11-09 the reviewed Firestore rules were deployed and production readback
@@ -67,12 +72,25 @@ firebase deploy --config firebase.functions.legacy.json --only functions:meal-ai
 
 Set the non-secret `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, and
 `CLOUDINARY_REPORT_UPLOAD_PRESET` in the Functions environment for the target
-project. In Cloudinary, create a **signed** raw upload preset that allows PDF
-files and uses authenticated delivery; ensure the account raw-file size Usage
-Limit is no more than 10 MiB if that is the required hard cap. Firebase
-Functions deployment may require Blaze billing. Do not put these values in Dart
-defines or commit secrets. This repository has not been given Cloudinary
-credentials, so endpoints are not yet deployed and live upload is not active.
+project (`functions/.env.<project-id>` for production, or ignored
+`functions/.env.local` + `functions/.secret.local` for local emulator testing).
+In Cloudinary:
+
+1. Create a **signed** upload preset with `overwrite=false`, `allowed_formats=pdf`,
+   and `authenticated` delivery type; leave the preset **Asset folder / Folder**
+   empty so the server's `u_<base64urlUid>/reports/<uuid>.pdf` public ID is
+   preserved exactly.
+2. In Cloudinary Console → **Settings → Security**, enable **Allow delivery of
+   PDF and ZIP files** (disabled by default on free accounts; without this,
+   downloading private PDFs fails with HTTP 401/404).
+3. Ensure the account raw-file size Usage Limit is configured (client also
+   enforces the 10 MiB limit).
+
+Firebase Functions deployment requires Blaze billing on `vetalife-24f03`. Do not
+put these values in Dart defines or commit secrets. This repository has not
+been given production Cloudinary credentials or Blaze permissions, so
+production signer endpoints remain pending until the project owner approves
+deployment.
 
 See [readback](../evidence/cloud/firebase-services-readback-2026-11-09.json).
 This deployment is configuration evidence, not a real-device FCM delivery test.

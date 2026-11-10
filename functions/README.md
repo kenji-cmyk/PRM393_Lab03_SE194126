@@ -83,20 +83,38 @@ uploads to the `raw/upload` endpoint using the returned signature and should
 enforce the returned 10 MiB client limit.
 
 Configure a **signed** Cloudinary upload preset for raw PDF reports with
-`allowed_formats=pdf` and authenticated access. Cloudinary upload presets do
-not provide a per-preset file-size limit, so configure the product environment's
-maximum upload size if a hard server-side size cap is required; the callable
+`allowed_formats=pdf`, `overwrite=false`, and authenticated access. Leave the
+preset's **Asset folder / Folder** empty so Cloudinary preserves the exact
+owner-bound `public_id` (`u_<base64urlUid>/reports/<uuid>.pdf`) verified by
+the Flutter client. In Cloudinary Console → **Settings → Security**, also enable
+**Allow delivery of PDF and ZIP files** so authenticated raw PDF downloads do
+not fail with HTTP 401/404. Cloudinary upload presets do not provide a
+per-preset file-size limit, so configure the product environment's maximum
+raw-file upload size if a hard server-side size cap is required; the callable
 signature binds the preset, generated public ID, authenticated delivery type,
 timestamp and `overwrite=false`. The callable can't verify the body size during
 a direct-to-Cloudinary upload.
 
 Set `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, and
-`CLOUDINARY_REPORT_UPLOAD_PRESET` in `functions/.env.<project-id>`. Store the
-secret separately:
+`CLOUDINARY_REPORT_UPLOAD_PRESET` in `functions/.env.<project-id>` (or
+`functions/.env.local` for local emulator testing). Store the secret separately:
 
 ```powershell
 firebase functions:secrets:set CLOUDINARY_API_SECRET --project <project-id>
 ```
+
+For local Functions emulation without Blaze, run `npm run build`, put the
+non-secret keys in ignored `functions/.env.local` and `CLOUDINARY_API_SECRET=...`
+in ignored `functions/.secret.local`, then start:
+
+```powershell
+firebase emulators:start --config firebase.functions.legacy.json --only auth,firestore,functions
+```
+
+When targeting local emulators from an Android emulator or USB device, run
+`adb reverse tcp:9099 tcp:9099`, `adb reverse tcp:8080 tcp:8080`, and
+`adb reverse tcp:5001 tcp:5001` before launching Flutter with
+`--dart-define=APP_MODE=cloud --dart-define=USE_FIREBASE_EMULATORS=true`.
 
 The Functions codebase is not deployed by the default Firebase configuration
 and deploying Firebase Functions requires a Blaze project. No Cloudinary

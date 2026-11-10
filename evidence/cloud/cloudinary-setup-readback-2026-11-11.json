@@ -1,0 +1,34 @@
+{
+  "checkedAt": "2026-11-11T02:25:00+07:00",
+  "branch": "vy",
+  "baseCommit": "f45fe28",
+  "readOnlyChecks": {
+    "firebaseProjectsListTargetVisible": false,
+    "targetProjectId": "vetalife-24f03",
+    "priorBillingReadbackRef": "evidence/cloud/firebase-services-readback-2026-11-09.json",
+    "priorBillingEnabled": false
+  },
+  "blockers": [
+    {
+      "id": "FIREBASE-ACCESS-01",
+      "summary": "Current developer Firebase CLI account does not yet have member access to vetalife-24f03.",
+      "unlockAction": "Project owner adds the developer Google account under Firebase Console > Project Settings > Users and permissions (Editor or Firebase Admin), and registers the developer's Android debug SHA-1 for Google Sign-In."
+    },
+    {
+      "id": "FIREBASE-BILLING-01",
+      "summary": "Project vetalife-24f03 is on the Spark plan (billing.enabled = false); deploying Cloud Functions v2 (createReportUploadSignature, getReportDownloadUrl) to production requires Blaze billing.",
+      "unlockAction": "Project owner upgrades vetalife-24f03 to Blaze (or approves a dedicated Blaze test project) and configures Secret Manager CLOUDINARY_API_SECRET + non-secret Functions env before deploying from firebase.functions.legacy.json."
+    },
+    {
+      "id": "CLOUDINARY-CONFIG-01",
+      "summary": "Production Cloudinary credentials and signed upload preset are not yet configured.",
+      "unlockAction": "Create Cloudinary account, configure signed raw/authenticated preset (allowed_formats=pdf, overwrite=false, empty Folder), enable 'Allow delivery of PDF and ZIP files' in Security settings, and verify account upload size limit."
+    }
+  ],
+  "liveVerificationStatus": {
+    "productionFunctionsDeployed": false,
+    "liveCloudinaryUploadDownload": "pending",
+    "liveAuthFirestoreAccountSwitch": "pending"
+  }
+}
+
