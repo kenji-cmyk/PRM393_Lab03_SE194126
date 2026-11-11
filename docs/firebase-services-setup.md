@@ -58,16 +58,18 @@ running on an Android emulator or USB device, or pass
 interfaces). Cloudinary requests still reach Cloudinary when using local
 Functions.
 
-On 2026-11-09 the reviewed Firestore rules were deployed and production readback
-matched the local file, including device rules. Storage rules were not deployed;
-the user approved Cloudinary instead. Firebase readback found no Storage bucket.
-Cloud Functions deployment and Cloudinary credentials remain prerequisites for
-live report uploads:
+On 2026-11-11 the team migrated active Firebase client configuration to the
+dedicated project `vetalife-lab3`, registered Android (`vn.edu.fpt.vetalife`)
+and Web apps, and deployed `firebase/firestore.rules` to `vetalife-lab3`
+(including `users/{uid}/devices`). Earlier 2026-11-09 readback on `vetalife-24f03`
+had billing disabled and no Storage bucket; `vetalife-lab3` is also on Spark,
+so Cloud Functions deployment and production Cloudinary credentials remain
+prerequisites for production report uploads:
 
 ```powershell
-firebase deploy --only firestore:rules --project vetalife-24f03
-firebase functions:secrets:set CLOUDINARY_API_SECRET --project vetalife-24f03
-firebase deploy --config firebase.functions.legacy.json --only functions:meal-ai:createReportUploadSignature,functions:meal-ai:getReportDownloadUrl --project vetalife-24f03
+firebase deploy --only firestore:rules --project vetalife-lab3
+firebase functions:secrets:set CLOUDINARY_API_SECRET --project vetalife-lab3
+firebase deploy --config firebase.functions.legacy.json --only functions:meal-ai:createReportUploadSignature,functions:meal-ai:getReportDownloadUrl --project vetalife-lab3
 ```
 
 Set the non-secret `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, and
@@ -86,11 +88,10 @@ In Cloudinary:
 3. Ensure the account raw-file size Usage Limit is configured (client also
    enforces the 10 MiB limit).
 
-Firebase Functions deployment requires Blaze billing on `vetalife-24f03`. Do not
-put these values in Dart defines or commit secrets. This repository has not
-been given production Cloudinary credentials or Blaze permissions, so
-production signer endpoints remain pending until the project owner approves
-deployment.
+Firebase Functions deployment requires Blaze billing on `vetalife-lab3`. Do not
+put these values in Dart defines or commit secrets. Production signer endpoints
+remain pending until Blaze billing is approved and configured; use the local
+Firebase emulators (`USE_FIREBASE_EMULATORS=true`) for Spark-compatible testing.
 
 See [readback](../evidence/cloud/firebase-services-readback-2026-11-09.json).
 This deployment is configuration evidence, not a real-device FCM delivery test.
