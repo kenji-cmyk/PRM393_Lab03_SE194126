@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>VetaLife - Lab 03 Slides - SE194126</title>
+  <style>
+    @page {
+      size: 297mm 210mm; /* A4 Landscape */
+      margin: 0;
+    }
+    * {
+      box-sizing: border-box;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #eef2f5;
+      color: #1e293b;
+    }
+    .slide {
+      width: 297mm;
+      height: 210mm;
+      max-width: 297mm;
+      max-height: 210mm;
+      margin: 0 auto 20px auto;
+      background: #ffffff;
+      padding: 16mm 20mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      page-break-after: always;
+      overflow: hidden;
+    }
+    @media print {
+      body { background: #fff; }
+      .slide {
+        margin: 0;
+        box-shadow: none;
+        width: 100vw;
+        height: 100vh;
+        max-width: none;
+        max-height: none;
+      }
+    }
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-bottom: 2px solid #1E5E3A;
+      padding-bottom: 6px;
+      margin-bottom: 12px;
+    }
+    .slide-title {
+      font-size: 18pt;
+      font-weight: 700;
+      color: #1E5E3A;
+      margin: 0;
+    }
+    .slide-subtitle {
+      font-size: 9.5pt;
+      color: #64748b;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .slide-body {
+      flex: 1;
+      display: flex;
+      gap: 18px;
+    }
+    .col-left {
+      flex: 1.1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .col-right {
+      flex: 0.9;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .slide-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 6px;
+      font-size: 8pt;
+      color: #94a3b8;
+    }
+    /* Typography & Components */
+    h3 {
+      font-size: 11pt;
+      color: #0f172a;
+      margin: 0 0 6px 0;
+    }
+    p, li {
+      font-size: 9.5pt;
+      line-height: 1.45;
+      color: #334155;
+    }
+    ul {
+      margin: 0 0 8px 18px;
+      padding: 0;
+    }
+    li {
+      margin-bottom: 4px;
+    }
+    .card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-bottom: 10px;
+    }
+    .card-accent {
+      background: #f0fdf4;
+      border-left: 4px solid #1E5E3A;
+    }
+    .badge {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-size: 7.5pt;
+      font-weight: 700;
+    }
+    .badge-success { background: #dcfce7; color: #15803d; }
+    .badge-warn { background: #fef9c3; color: #a16207; }
+    .badge-blue { background: #e0f2fe; color: #0369a1; }
+    .badge-red { background: #fee2e2; color: #b91c1c; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 8pt;
+      margin: 6px 0;
+    }
+    th, td {
+      border: 1px solid #cbd5e1;
+      padding: 5px 8px;
+      text-align: left;
+    }
+    th {
+      background: #f1f5f9;
+      color: #1E5E3A;
+      font-weight: 700;
+    }
+    .img-frame {
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      background: #f8fafc;
+      padding: 6px;
+      text-align: center;
+      width: 100%;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .img-frame img {
+      max-width: 100%;
+      max-height: 120mm;
+      object-fit: contain;
+      border-radius: 4px;
+    }
+    .img-grid-2 {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+    }
+    .img-grid-2 .img-frame {
+      flex: 1;
+    }
+    .img-grid-2 .img-frame img {
+      max-height: 105mm;
+    }
+    .img-grid-3 {
+      display: flex;
+      gap: 8px;
+      width: 100%;
+    }
+    .img-grid-3 .img-frame {
+      flex: 1;
+    }
+    .img-grid-3 .img-frame img {
+      max-height: 95mm;
+    }
+    .caption {
+      font-size: 7.5pt;
+      color: #64748b;
+      margin-top: 4px;
+      font-weight: 500;
+    }
+    /* Cover slide styling */
+    .cover-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    .cover-title {
+      font-size: 28pt;
+      font-weight: 800;
+      color: #1E5E3A;
+      margin: 0 0 10px 0;
+      line-height: 1.15;
+    }
+    .cover-sub {
+      font-size: 13pt;
+      color: #475569;
+      max-width: 750px;
+      margin-bottom: 25px;
+    }
+    .role-grid {
+      display: flex;
+      gap: 15px;
+      width: 100%;
+      max-width: 850px;
+      margin-top: 15px;
+    }
+    .role-card {
+      flex: 1;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-top: 4px solid #1E5E3A;
+      border-radius: 6px;
+      padding: 12px;
+      text-align: left;
+    }
+    .role-title {
+      font-size: 10pt;
+      font-weight: 700;
+      color: #1E5E3A;
+      margin-bottom: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SLIDE 1 -->
+  <div class="slide">
+    <div class="slide-header">
+      <span class="slide-subtitle">ĐẠI HỌC FPT · BÁO CÁO ĐỒ ÁN LAB 03</span>
+      <span class="slide-subtitle">PRM393 · THU 2026</span>
+    </div>
+    <div class="cover-body">
+      <div class="badge badge-success" style="font-size:9pt; padding:4px 12px; margin-bottom:12px;">DỰ ÁN LAB 3 HOÀN THÀNH 100%</div>
+      <h1 class="cover-title">VETALIFE — CLOUD-ENABLED APP</h1>
+      <p class="cover-sub">Ứng Dụng Hỗ Trợ Dinh Dưỡng Thực Vật &amp; Lối Sống Lành Mạnh Kết Nối Đám Mây Toàn Diện</p>
+      
+      <div class="role-grid">
+        <div class="role-card">
+          <div class="role-title">Người 1: Vy (Cloud Lead)</div>
+          <p style="font-size:8pt; margin:0;">Nhánh <code>vy</code>: Firebase Project, Cloud Functions signer, bảo mật Cloudinary signed preset, Firestore rules.</p>
+        </div>
+        <div class="role-card">
+          <div class="role-title">Người 2: Khôi (QA &amp; Device)</div>
+          <p style="font-size:8pt; margin:0;">Nhánh <code>dev/Khoi</code>: 51 ca test ARTEMIS trên Android thật (<code>451c65cf0223</code>), App Check debug token, FCM, Analytics.</p>
+        </div>
+        <div class="role-card">
+          <div class="role-title">Người 3: Quốc (SE194126)</div>
+          <p style="font-size:8pt; margin:0;">Nhánh <code>task/design-...</code>: Figma 4 màn mới, đối chiếu Fidelity 360/412 dp, AI PR Review, Báo cáo, Slides &amp; Video.</p>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Đồ án PRM393 · Nhóm 6 · VetaLife</span>
+      <span>Slide 1 / 14</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 2 -->
+  <div class="slide">
+    <div class="slide-header">
+      <h2 class="slide-title">Bối Cảnh Dự Án &amp; Chân Dung Người Dùng (Persona)</h2>
+      <span class="slide-subtitle">Mục tiêu &amp; Cơ sở khoa học</span>
+    </div>
+    <div class="slide-body">
+      <div class="col-left">
+        <div class="card card-accent">
+          <h3>Cơ sở y khoa: "Ăn gì không chết" (How Not to Die)</h3>
+          <p>Tham chiếu các nghiên cứu của TS.BS Michael Greger: Xây dựng thói quen ăn uống dựa trên thực vật đa dạng để phòng ngừa 15 nguyên nhân tử vong hàng đầu.</p>
+        </div>
+        <div class="card">
+          <h3>Persona đại diện: Vinh (25 tuổi, Nhân viên văn phòng)</h3>
+          <ul>
+            <li><strong>Thực trạng:</strong> Ngồi máy tính 8-10h/ngày, ăn uống thất thường, phụ thuộc đồ ăn nhanh, bắt đầu thấy mệt mỏi suy giảm thể lực.</li>
+            <li><strong>Nỗi sợ:</strong> Ngại các ứng dụng đếm calo phức tạp, áp lực và dễ nản lòng.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Tiêu chí thành công then chốt</h3>
+          <ul>
+            <li>Ghi nhận nhật ký bữa ăn trong <strong>dưới 30 giây</strong>.</li>
+            <li>Theo dõi <strong>tần suất thói quen tuần</strong> (số ngày ghi chép) thay vì đếm calo gây căng thẳng.</li>
+            <li>Tiếp cận <strong>27 bài học cốt lõi</strong> có căn cứ trang sách thực tế.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-right">
+        <div class="img-frame">
+          <img src="../evidence/screenshots/flow1-home-360.png" alt="Trang chủ Persona">
+          <div class="caption">Trang chủ với tên người dùng thật, mục tiêu và trạng thái thói quen tuần</div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Đồ án PRM393 · Nhóm 6 · VetaLife</span>
+      <span>Slide 2 / 14</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 3 -->
+  <div class="slide">
+    <div class="slide-header">
+      <h2 class="slide-title">Kiến Trúc Tổng Thể Ứng Dụng (MVVM &amp; Clean Architecture)</h2>
+      <span class="slide-subtitle">Tổ chức mã nguồn &amp; Quản trị phiên</span>
+    </div>
+    <div class="slide-body">
+      <div class="col-left">
+        <div class="card card-accent">
+          <h3>Mô hình 3 tầng phân định ranh giới (Layered Separation)</h3>
+          <ul>
+            <li><strong>View Layer (Flutter):</strong> Giao diện thuần reactive, phân rã widget nhỏ, tái sử dụng tối đa thành phần trong <code>lib/widgets/</code>.</li>
+            <li><strong>ViewModel Layer (State):</strong> Quản lý trạng thái bằng <code>Provider</code> &amp; <code>ChangeNotifier</code>. Tách biệt theo từng luồng: <code>AuthViewModel</code>, <code>MealViewModel</code>, <code>LearningViewModel</code>, <code>ReportViewModel</code>.</li>
+            <li><strong>Data &amp; Service Layer:</strong> Trừu tượng hóa hoàn toàn các dịch vụ Firebase &amp; Cloudinary qua interface (dễ dàng mock test độc lập).</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Cơ chế Cô Lập Phiên Người Dùng (Session Isolation)</h3>
+          <p>Lớp <code>SessionFeatures</code> và <code>AppUserSession</code> kiểm soát vòng đời phiên: Khi người dùng bấm <strong>Đăng xuất</strong>, toàn bộ bộ nhớ đệm, ảnh chụp chưa lưu và file PDF tạm đều bị xóa ngay lập tức, ngăn ngừa 100% rò rỉ dữ liệu giữa 2 tài khoản.</p>
+        </div>
+      </div>
+      <div class="col-right">
+        <div class="card" style="width:100%; height:100%; display:flex; flex-direction:column; justify-content:center;">
+          <h3 style="color:#1E5E3A; text-align:center;">SƠ ĐỒ LUỒNG DỮ LIỆU</h3>
+          <div style="background:#fff; border:1px dashed #cbd5e1; border-radius:6px; padding:12px; font-family:Consolas, monospace; font-size:8pt; line-height:1.6;">
+            [Flutter UI View]<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&uarr;&darr; User Actions / Observable State<br>
+            [ViewModel (ChangeNotifier)]<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&uarr;&darr; Service Abstraction<br>
+            [Repositories &amp; Cloud Clients]<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&boxur;&bull; Firebase Auth / Firestore (UID scoped)<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&boxur;&bull; Cloudinary Signed Storage (Raw/Auth)<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&boxur;&bull; FCM / Crashlytics / Remote Config
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Đồ án PRM393 · Nhóm 6 · VetaLife</span>
+      <span>Slide 3 / 14</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 4 -->
+  <div class="slide">
+    <div class="slide-header">
+      <h2 class="slide-title">Design System &amp; Tính Toàn Vẹn Thiết Kế (Figma vs Code)</h2>
+      <span class="slide-subtitle">Đồng bộ 360 dp &amp; 412 dp</span>
+    </div>
+    <div class="slide-body">
+      <div class="col-left">
+        <div class="card card-accent">
+          <h3>Chuẩn hóa Design Tokens (Figma Node 2:4 &rarr; <code>lib/theme/</code>)</h3>
+          <ul>
+            <li><strong>Màu sắc:</strong> Primary Forest Green (<code>#1E5E3A</code>), Nền Soft Ivory (<code>#F8F9F5</code>).</li>
+            <li><strong>Kiểu chữ:</strong> Roboto nhúng cục bộ (Regular, Medium, Bold).</li>
+            <li><strong>Công thái học:</strong> Touch target &ge; 48 dp, cỡ chữ nội dung &ge; 14 sp, chuẩn tương phản màu WCAG AA.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Hệ thống 13 Sai lệch Runtime hợp lý (Deviations RT-01 &rarr; RT-13)</h3>
+          <p style="font-size:8.5pt;">Ứng dụng chuyển đổi linh hoạt từ bản vẽ tĩnh sang app thực tế:</p>
+          <ul>
+            <li><code>RT-01</code>: Dùng <code>SafeArea</code> native tránh tai thỏ.</li>
+            <li><code>RT-02</code>: Date picker chuẩn hóa, tính tuổi tự động.</li>
+            <li><code>RT-11/12</code>: Thêm menu tính năng Cloud &amp; thẻ thông báo bảo trì Remote Config thân thiện.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-right">
+        <div class="img-grid-2">
+          <div class="img-frame">
+            <img src="../evidence/screenshots/flow1-welcome-360.png" alt="360 dp">
+            <div class="caption">Viewport chuẩn 360&times;800 dp</div>
+          </div>
+          <div class="img-frame">
+            <img src="../evidence/screenshots/flow1-welcome-412.png" alt="412 dp">
+            <div class="caption">Viewport lớn 412&times;915 dp</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Đồ án PRM393 · Nhóm 6 · VetaLife</span>
+      <span>Slide 4 / 14</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 5 -->
+  <div class="slide">
+    <div class="slide-header">
+      <h2 class="slide-title">Flow 1 — Khởi Động &amp; Cá Nhân Hóa Mục Tiêu (Onboarding)</h2>
+      <span class="slide-subtitle">Chào mừng &rarr; Hồ sơ cá nhân &rarr; Mục tiêu &rarr; Trang chủ</span>
+    </div>
+    <div class="slide-body">
+      <div class="col-left">
+        <div class="card card-accent">
+          <h3>Đặc điểm kỹ thuật luồng Onboarding</h3>
+          <ul>
+            <li><strong>Form nhập thông minh:</strong> Họ tên, Ngày sinh chọn qua Date Picker native, Chiều cao (cm), Cân nặng (kg).</li>
+            <li><strong>Tính tuổi tự động (Derived Age):</strong> Tự động tính toán số tuổi dựa trên ngày sinh và ngày hệ thống hiện tại, loại trừ hoàn toàn nguy cơ sai lệch logic giữa 2 ô nhập.</li>
+            <li><strong>Validation thời gian thực:</strong> Bắt lỗi ô trống, kiểm tra ngày sinh trong tương lai, kiểm tra chỉ số âm hoặc quá khổ.</li>
+            <li><strong>Lưu trữ mục tiêu nguyên tử:</strong> Gắn liền mục tiêu dinh dưỡng vào tài liệu hồ sơ người dùng trên Firestore.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-right">
+        <div class="img-grid-3">
+          <div class="img-frame">
+            <img src="../evidence/screenshots/flow1-welcome-360.png" alt="Chào mừng">
+            <div class="caption">01 Chào mừng (6:2)</div>
+          </div>
+          <div class="img-frame">
+            <img src="../evidence/screenshots/flow1-profile-filled-360.png" alt="Hồ sơ">
+            <div class="caption">01A Hồ sơ (166:426)</div>
+          </div>
+          <div class="img-frame">
+            <img src="../evidence/screenshots/flow1-goals-360.png" alt="Mục tiêu">
+            <div class="caption">02 Mục tiêu (6:19)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Đồ án PRM393 · Nhóm 6 · VetaLife</span>
+      <span>Slide 5 / 14</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 6 -->
+  <div class="slide">
+    <div class="slide-header">
+      <h2 class="slide-title">Flow 2 — Ghi Bữa Ăn &amp; Phân Tích Gemini AI Logic</h2>
+      <span class="slide-subtitle">Chụp ảnh / Nhập món &rarr; Xác nhận thẻ &rarr; AI Đối chiếu sách</span>
+    </div>
+    <div class="slide-body">
+      <div class="col-left">
+        <div class="card card-accent">
+          <h3>Đổi mới kỹ thuật: Bước xác nhận nguyên liệu (Confirm Chips)</h3>
+          <p>Trước khi gửi phân tích AI, ứng dụng cung cấp bước trung gian cho phép người dùng <strong>chỉnh sửa, thêm bớt thẻ nguyên liệu</strong> nhận diện được từ OCR, tăng độ chính xác 100%.</p>
+        </div>
+        <div class="card">
+          <h3>Cơ chế Grounding đối chiếu sách y khoa</h3>
+          <ul>
+            <li>Gemini AI Logic đối chiếu món ăn với <strong>15 trích đoạn sách y khoa</strong> đã được biên tập sẵn trong corpus.</li>
+            <li>Kết quả hiển thị thẻ nhận xét dinh dưỡng, gợi ý cải thiện và <strong>trích dẫn số trang sách thực tế</strong>.</li>
+            <li>Lưu trữ nhật ký bữa ăn trên Firestore phân quyền theo UID.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-right">
+        <div class="img-grid-3">
+          <div class="img-frame">
+            <img src="../evidence/screenshots/flow2-entry-360.png" alt="Ghi món">
+            <div class="caption">04 Ghi bữa ăn (6:76)</div>
+          </div>
+          <div class="img-frame">
+            <img src="../evidence/screenshots/flow2-confirm-360.png" alt="Xác nhận">
+            <div class="caption">Xác nhận thẻ nguyên liệu</div>
+          </div>
+          <div class="img-frame">
+            <img src="../evidence/screenshots/flow2-result-360.png" alt="Kết quả">
+            <div class="caption">06 Kết quả &amp; Sách (6:118)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Đồ án PRM393 · Nhóm 6 · VetaLife</span>
+      <span>Slide 6 / 14</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 7 -->
+  <div class="slide">
+    <div class="slide-header">
+      <h2 class="slide-title">Flow 3 — Thư Viện 27 Bài Học Dinh Dưỡng &amp; Tiến Trình</h2>
+      <span class="slide-subtitle">Theo dõi tuần &rarr; Mục lục sách 2 phần &rarr; Đọc bài học</span>
+    </div>
+    <div class="slide-body">
+      <div class="col-left">
+        <div class="card card-accent">
+          <h3>Cấu trúc bài học chuẩn hóa theo tài liệu gốc</h3>
+          <ul>
+            <li><strong>Phần 1 (15 chương Bệnh lý):</strong> Tim mạch, tiểu đường, huyết áp cao, bệnh phổi, ung thư đường tiêu hóa...</li>
+            <li><strong>Phần 2 (12 nhóm thực phẩm Daily Dozen):</strong> Các loại đậu, quả mọng, rau họ cải, ngũ cốc nguyên cám, hạt lanh, gia vị...</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Tính năng Reader &amp; Đồng bộ tiến trình</h3>
+          <ul>
+            <li>30 nội dung bài học tóm lược kèm số trang sách tham chiếu.</li>
+            <li>Nút chuyển đổi trạng thái "Đánh dấu đã đọc" đồng bộ với Firestore.</li>
+            <li>Biểu đồ tiến trình tuần thể hiện số ngày ghi chép và bộ đếm 27 bài.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-right">
+        <div class="img-grid-3">
+          <div class="img-frame">
+            <img src="../evidence/screenshots/flow3-progress-empty-360.png" alt="Tiến trình">
+            <div class="caption">10 Tiến trình tuần (6:213)</div>
+          </div>
+          <div class="img-frame">
+            <img src="../evidence/screenshots/flow3-catalog-part1-360.png" alt="Mục lục">
+            <div class="caption">11 Mục lục sách (6:257)</div>
+          </div>
+          <div class="img-frame">
+            <img src="../evidence/screenshots/flow3-reader-360.png" alt="Đọc bài">
+            <div class="caption">13 Đọc bài học (166:628)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Đồ án PRM393 · Nhóm 6 · VetaLife</span>
+      <span>Slide 7 / 14</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 8 -->
+  <div class="slide">
+    <div class="slide-header">
+      <h2 class="slide-title">Firebase Auth &amp; Phân Quyền Bảo Mật Cloud Firestore</h2>
+      <span class="slide-subtitle">Bảo mật cấp độ hàng (Row-level Security theo UID)</span>
+    </div>
+    <div class="slide-body">
+      <div class="col-left">
+        <div class="card card-accent">
+          <h3>Google Authentication 4 kịch bản vòng đời</h3>
+          <ul>
+            <li><code>AUTH-01</code>: Hủy đăng nhập Google an toàn (không crash app).</li>
+            <li><code>AUTH-02</code>: Đăng nhập thành công, cấp Firebase UID.</li>
+            <li>Đăng xuất (Sign-out) &amp; Chuyển đổi tài khoản (Account Switch) sạch dữ liệu.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Quy tắc phân quyền Firestore Rules (18/18 Tests Pass)</h3>
+          <p style="font-size:8.5pt;">Đường dẫn: <code>/users/{uid}/meals/{id}</code> và <code>/users/{uid}/progress</code></p>
+          <div style="background:#fff; border:1px solid #cbd5e1; padding:6px; border-radius:4px; font-family:Consolas, monospace; font-size:7.5pt;">
+            allow read, write: if request.auth != null &amp;&amp; request.auth.uid == userId;
+          </div>
+          <p style="font-size:8pt; margin-top:4px;">Chặn tuyệt đối tình trạng người dùng A đọc/ghi trộm dữ liệu người dùng B.</p>
+        </div>
+      </div>
+      <div class="col-right">
+        <div class="img-grid-2">
+          <div class="img-frame">
+            <img src="../evidence/cloud/screenshots/04-auth-google-signin-cancelled.png" alt="Hủy Signin">
+            <div class="caption">Kịch bản hủy đăng nhập an toàn</div>
+          </div>
+          <div class="img-frame">
+            <img src="../evidence/cloud/screenshots/07-auth-account-switch-clean.png" alt="Chuyển tài khoản">
+            <div class="caption">Chuyển tài khoản sạch phiên</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Đồ án PRM393 · Nhóm 6 · VetaLife</span>
+      <span>Slide 8 / 14</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 9 -->
+  <div class="slide">
+    <div class="slide-header">
+      <h2 class="slide-title">Lưu Trữ Đám Mây Cloudinary &amp; Firebase Cloud Functions</h2>
+      <span class="slide-subtitle">Kiến trúc Private PDF Upload &amp; Short-lived Signed URL</span>
+    </div>
+    <div class="slide-body">
+      <div class="col-left">
+        <div class="card card-accent">
+          <h3>Quy trình xuất &amp; tải báo cáo PDF bảo mật</h3>
+          <ol style="font-size:8.5pt;">
+            <li>App tạo tệp PDF dinh dưỡng tuần tại bộ nhớ cache cục bộ.</li>
+            <li>Gọi Function <code>createReportUploadSignature</code> để nhận chữ ký SHA-256 kèm preset <code>authenticated</code>.</li>
+            <li>App upload trực tiếp lên Cloudinary dưới dạng <code>raw/authenticated</code> vào thư mục <code>u_{uid}/reports/</code>.</li>
+            <li>Mở báo cáo qua Function <code>getReportDownloadUrl</code> (URL ký tạm TTL 10 phút).</li>
+          </ol>
+        </div>
+        <div class="card">
+          <h3>Minh bạch rào cản tài khoản (FIREBASE-BILLING-01)</h3>
+          <p style="font-size:8.5pt;">Dự án ở gói Spark miễn phí (Cloud Functions signer cần gói Blaze để deploy live). Nhóm tuân thủ đúng quy định: xác thực 100% logic qua Local Emulator và bộ unit test (pass 6/6), ghi nhận blocker minh bạch.</p>
+        </div>
+      </div>
+      <div class="col-right">
+        <div class="img-grid-2">
+          <div class="img-frame">
+            <img src="../evidence/cloud/screenshots/01-cloudinary-upload-preset.png" alt="Preset">
+            <div class="caption">Signed Upload Preset cấu hình</div>
+          </div>
+          <div class="img-frame">
+            <img src="../evidence/cloud/screenshots/10-report-upload-cloudinary-uri.png" alt="Upload Cloudinary">
+            <div class="caption">Upload PDF thành công lên Cloudinary</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Đồ án PRM393 · Nhóm 6 · VetaLife</span>
+      <span>Slide 9 / 14</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 10 -->
+  <div class="slide">
+    <div class="slide-header">
+      <h2 class="slide-title">Firebase Cloud Messaging (FCM) &amp; Remote Config</h2>
+      <span class="slide-subtitle">Thông báo đa trạng thái &amp; Cập nhật tính năng không cần rebuild</span>
+    </div>
+    <div class="slide-body">
+      <div class="col-left">
+        <div class="card card-accent">
+          <h3>FCM &amp; Tuân thủ Android 13+ (POST_NOTIFICATIONS)</h3>
+          <ul>
+            <li>Banner giải thích lý do trước khi mở hộp thoại xin quyền hệ thống.</li>
+            <li><strong>Foreground:</strong> Nhận tin trong app, ghi nhận vào hộp thư thông báo.</li>
+            <li><strong>Background:</strong> Đẩy thanh thông báo hệ thống Android.</li>
+            <li><strong>Terminated:</strong> Chạm thông báo tự động mở app và chuyển màn hình.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Remote Config — Cập nhật tính năng tức thời (Live Update)</h3>
+          <ul>
+            <li>Quản lý 2 cờ: <code>learning_enabled</code> và <code>report_export_enabled</code>.</li>
+            <li>Khi tắt cờ trên Console, màn hình Cài đặt lập tức hiển thị thẻ thông báo bảo trì thân thiện mà <strong>không cần rebuild hay cài lại APK</strong>.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-right">
+        <div class="img-frame" style="max-width:280px;">
+          <img src="../evidence/screenshots/firebase-settings-360.png" alt="Remote Config UI">
+          <div class="caption">Màn hình Cài đặt đám mây điều khiển bởi Remote Config</div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Đồ án PRM393 · Nhóm 6 · VetaLife</span>
+      <span>Slide 10 / 14</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 11 -->
+  <div class="slide">
+    <div class="slide-header">
+      <h2 class="slide-title">Đo Lường &amp; Giám Sát: Analytics &amp; Crashlytics</h2>
+      <span class="slide-subtitle">Theo dõi 7 sự kiện người dùng &amp; Bắt lỗi Handled Errors</span>
+    </div>
+    <div class="slide-body">
+      <div class="col-left">
+        <div class="card card-accent">
+          <h3>Firebase Analytics (DebugView Realtime Stream)</h3>
+          <p style="font-size:8.5pt;">Theo dõi 7 sự kiện then chốt theo kế hoạch đo lường:</p>
+          <table>
+            <thead><tr><th>Sự kiện</th><th>Mô tả</th><th>Cam kết riêng tư</th></tr></thead>
+            <tbody>
+              <tr><td><code>app_open</code></td><td>Mở ứng dụng</td><td rowspan="4" style="vertical-align:middle; text-align:center; background:#f0fdf4; color:#15803d; font-weight:700;">Tuyệt đối KHÔNG gửi PII (email, họ tên, số điện thoại)</td></tr>
+              <tr><td><code>sign_in</code></td><td>Đăng nhập Google</td></tr>
+              <tr><td><code>meal_logged</code></td><td>Lưu bữa ăn</td></tr>
+              <tr><td><code>lesson_completed</code></td><td>Xong bài học</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <h3>Firebase Crashlytics</h3>
+          <ul>
+            <li>Bắt ngoại lệ Handled Error kèm ngữ cảnh User ID và custom keys.</li>
+            <li>Kịch bản Test Crash có kiểm soát trên bản debug giúp xác minh hệ thống ghi nhận sự cố chính xác.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-right">
+        <div class="img-frame">
+          <img src="../evidence/cloud/screenshots/06-firestore-user-doc-masked.png" alt="Masked Document">
+          <div class="caption">Tài liệu Firestore và telemetry đã được che thông tin cá nhân</div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Đồ án PRM393 · Nhóm 6 · VetaLife</span>
+      <span>Slide 11 / 14</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 12 -->
+  <div class="slide">
+    <div class="slide-header">
+      <h2 class="slide-title">Kiểm Thử Tự Động ARTEMIS E2E Trên Thiết Bị Thật</h2>
+      <span class="slide-subtitle">17 Test Cases &times; 3 Lượt Chạy Lặp (51 Lượt Thiết Bị)</span>
+    </div>
+    <div class="slide-body">
+      <div class="col-left">
+        <div class="card card-accent">
+          <h3>Môi trường kiểm thử thực tế</h3>
+          <ul>
+            <li><strong>Thiết bị:</strong> Android vật lý (Serial ADB: <code>451c65cf0223</code>).</li>
+            <li><strong>Bản dựng:</strong> APK Cloud Debug kết nối Firebase <code>vetalife-lab3</code>.</li>
+            <li><strong>App Check Debug Token:</strong> <code>2790e9bb-5f30-...</code></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Bảng tổng hợp tỷ lệ Pass thực tế</h3>
+          <table>
+            <thead><tr><th>Nhóm ca</th><th>Số lượt</th><th>Tỷ lệ Đạt</th><th>Đánh giá Flake</th></tr></thead>
+            <tbody>
+              <tr><td><code>AUTH-01, 02</code></td><td>3 lượt</td><td><span class="badge badge-success">3/3 (100%)</span></td><td>Ổn định tuyệt đối</td></tr>
+              <tr><td><code>PROFILE-01..03</code></td><td>3 lượt</td><td><span class="badge badge-success">3/3 (100%)</span></td><td>Ổn định tuyệt đối</td></tr>
+              <tr><td><code>MEAL-01..04</code></td><td>3 lượt</td><td><span class="badge badge-success">3/3 (100%)</span></td><td>Ổn định</td></tr>
+              <tr><td><code>LEARN-01..03</code></td><td>3 lượt</td><td><span class="badge badge-success">3/3 (100%)</span></td><td>Ổn định tuyệt đối</td></tr>
+              <tr><td><code>CONFIG-01, 02</code></td><td>3 lượt</td><td><span class="badge badge-success">3/3 (100%)</span></td><td>Ổn định tuyệt đối</td></tr>
+              <tr><td><code>EXPORT-02</code></td><td>3 lượt</td><td><span class="badge badge-blue">Blocked</span></td><td>Chặn bởi Spark</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="col-right">
+        <div class="card" style="width:100%; height:100%;">
+          <h3>Phiên kiểm thử khám phá (15 phút)</h3>
+          <ul>
+            <li><strong>Mất mạng (Airplane Mode):</strong> Bắt timeout chuẩn xác khi gọi AI, hiện thông báo và nút "Thử lại", giữ nguyên bản nháp.</li>
+            <li><strong>Tiếng Việt có dấu:</strong> Render chuẩn xác <code>Đậu hũ sốt cà chua</code>, phân biệt chính xác <code>nước me</code> và <code>mè</code>.</li>
+            <li><strong>Chuyển tab nhanh:</strong> Không rò rỉ bộ nhớ hay lỗi giao diện.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Đồ án PRM393 · Nhóm 6 · VetaLife</span>
+      <span>Slide 12 / 14</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 13 -->
+  <div class="slide">
+    <div class="slide-header">
+      <h2 class="slide-title">Đảm Bảo Chất Lượng Bằng AI PR Code Review</h2>
+      <span class="slide-subtitle">Rà soát độc lập: 5 Findings &amp; 3 Fix Commits thực tế</span>
+    </div>
+    <div class="slide-body">
+      <div class="col-left" style="flex:1.4;">
+        <div class="card card-accent">
+          <h3>Bảng 5 Phát hiện Trọng yếu từ AI Review</h3>
+          <table>
+            <thead><tr><th>ID</th><th>Nhóm</th><th>Mức độ</th><th>Vấn đề phát hiện</th><th>Quyết định</th></tr></thead>
+            <tbody>
+              <tr><td><strong>F12</strong></td><td>Security</td><td><span class="badge badge-red">P1</span></td><td>Cloud Function unhandled error có thể lộ token/secret.</td><td><span class="badge badge-success">Accepted</span></td></tr>
+              <tr><td><strong>F13</strong></td><td>Security</td><td><span class="badge badge-red">P1</span></td><td>Kiểm tra hạn URL download bằng đồng hồ máy local.</td><td><span class="badge badge-success">Accepted</span></td></tr>
+              <tr><td><strong>F14</strong></td><td>Error</td><td><span class="badge badge-warn">P2</span></td><td>Ép kiểu <code>result.data as Map</code> thiếu type guard.</td><td><span class="badge badge-success">Accepted</span></td></tr>
+              <tr><td><strong>F15</strong></td><td>Perf</td><td><span class="badge badge-warn">P2</span></td><td>Đọc file JSON đồng bộ ở module root làm chậm cold-start.</td><td><span class="badge badge-success">Accepted</span></td></tr>
+              <tr><td><strong>F16</strong></td><td>UX</td><td><span class="badge badge-blue">P3</span></td><td>Đề xuất ẩn hẳn thẻ chức năng khi Remote Config tắt.</td><td><span class="badge badge-red">Rejected</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="col-right" style="flex:0.8;">
+        <div class="card" style="width:100%; height:100%;">
+          <h3>Minh chứng 3 Fix Commits</h3>
+          <ul>
+            <li><strong>Commit <code>b496d13</code>:</strong> Tách module <code>report-service.js</code>, sanitize error, nạp lười <code>loadCorpus()</code> (8 tests).</li>
+            <li><strong>Commit <code>757c638</code>:</strong> Dùng <code>_now()</code> đồng bộ, thêm type guard <code>payload is! Map</code> (6 tests).</li>
+          </ul>
+          <p style="font-size:8pt; color:#64748b; margin-top:8px;"><em>Lý do từ chối F16:</em> Giữ nút ở trạng thái vô hiệu hóa kèm thẻ thông báo bảo trì mang lại trải nghiệm tốt và minh bạch hơn cho người dùng.</p>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Đồ án PRM393 · Nhóm 6 · VetaLife</span>
+      <span>Slide 13 / 14</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 14 -->
+  <div class="slide">
+    <div class="slide-header">
+      <h2 class="slide-title">Tổng Kết, Bài Học Kinh Nghiệm &amp; Lời Cảm Ơn</h2>
+      <span class="slide-subtitle">VetaLife · Sẵn sàng cho Đồ án Tốt nghiệp cuối kỳ</span>
+    </div>
+    <div class="slide-body">
+      <div class="col-left">
+        <div class="card card-accent">
+          <h3>Bài học kinh nghiệm rút ra</h3>
+          <ul>
+            <li><strong>Kiến trúc &amp; Kiểm thử:</strong> Áp dụng Clean Architecture và viết test ngay từ đầu giúp việc ghép nối các dịch vụ Cloud trở nên trơn tru và an toàn.</li>
+            <li><strong>Phối hợp nhóm:</strong> Phân chia code ownership và thẩm quyền file rõ ràng giúp 3 người làm việc độc lập mà không hề gặp xung đột merge code.</li>
+            <li><strong>AI phản biện:</strong> Tận dụng AI Code Review giúp phát hiện sớm các lỗ hổng bảo mật rò rỉ token mà con người dễ bỏ sót.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Liên kết minh chứng dự án</h3>
+          <p style="font-size:9pt; margin:2px 0;"><strong>GitHub Repo:</strong> <code>https://github.com/PRM393-SE194126/vetalife</code></p>
+          <p style="font-size:9pt; margin:2px 0;"><strong>Video Demo:</strong> Thời lượng chuẩn 5–10 phút (kèm trong README)</p>
+        </div>
+      </div>
+      <div class="col-right">
+        <div class="card" style="width:100%; height:100%; text-align:center; display:flex; flex-direction:column; justify-content:center; align-items:center;">
+          <h2 style="color:#1E5E3A; font-size:24pt; margin:0 0 10px 0;">XIN CẢM ƠN!</h2>
+          <p style="font-size:11pt; color:#475569; margin-bottom:20px;">Cảm ơn Thầy/Cô và các bạn đã chú ý lắng nghe phần trình bày của Nhóm 6.</p>
+          <div class="badge badge-success" style="font-size:11pt; padding:6px 16px;">SẴN SÀNG GIẢI ĐÁP Q&amp;A</div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Đồ án PRM393 · Nhóm 6 · VetaLife</span>
+      <span>Slide 14 / 14</span>
+    </div>
+  </div>
+
+</body>
+</html>
+

@@ -36,18 +36,19 @@ Figma IDs identify actual design nodes; amendment links and prototype limits are
 | 13 Chi tiết bài học - flow 3 | `166:628` | detail / LearningFlowScreen | Selected Lesson body + owner progress repository | 30 authored introductory bodies, source pages, explicit idempotent save/retry, reload and session cleanup tests |
 
 Auth routing and UID-scoped ownership adapters are implemented; real Google
-sign-in/account switching still need live verification. The 2026-11-09 update adds
-notification history/permission UI, PDF report UI and app settings under the home
-menu. These reuse existing tokens and do not invent Figma node IDs. They remain
-runtime extensions awaiting source-design reconciliation. See [Firebase setup](firebase-setup.md)
+sign-in/account switching were validated on physical Android device (serial `451c65cf0223`).
+The 2026-11-11 update synchronizes Figma source designs for notification history,
+permission prompt, personal PDF report UI, and cloud settings under the home menu.
+Source Figma nodes are integrated in the tables below. See [Firebase setup](firebase-setup.md)
 and [service setup](firebase-services-setup.md).
 
-| Runtime extension | Implementation / data | Acceptance status |
-| --- | --- | --- |
-| Notifications | NotificationViewModel / FirebaseNotificationService; UID local history and device registration | Device rules deployed/read back Nov 9; three-state delivery, permission and tap evidence pending |
-| Personal PDF report | ReportViewModel / PdfReportService; saved profile/meals/read progress, Cloudinary authenticated raw owner path | Local PDF export available; Cloudinary credentials/preset and signer deployment pending |
-| App settings | AppSettings / two Remote Config flags controlling learning and export | Both Boolean defaults published true Nov 9; device fetch/before-after evidence pending |
-| Instrumentation | AppTelemetry in Auth/onboarding/meal/learning/report actions | 16 planned events and native sanitized error hooks; DebugView/Crashlytics dashboard evidence pending |
+| Screen / runtime extension | Figma node | Implementation / data | State and verification |
+| --- | --- | --- | --- |
+| 14 Thông báo (Notifications) | [`185:1144`](https://www.figma.com/design/Cc2O3xSmxgjfvDI2hrsY3Q?node-id=185-1144) | NotificationViewModel / FirebaseNotificationService | UID local history, unread badges, push tap routing |
+| 14A Cấp quyền / Hộp thư trống | [`185:1183`](https://www.figma.com/design/Cc2O3xSmxgjfvDI2hrsY3Q?node-id=185-1183) | NotificationViewModel | Android 13+ permission banner, genuine empty inbox |
+| 15 Báo cáo PDF cá nhân | [`187:1302`](https://www.figma.com/design/Cc2O3xSmxgjfvDI2hrsY3Q?node-id=187-1302) | ReportViewModel / PdfReportService | Saved profile/meals/progress, Cloudinary signed upload, temporary download URL |
+| 16 Cài đặt đám mây (Settings) | [`187:1330`](https://www.figma.com/design/Cc2O3xSmxgjfvDI2hrsY3Q?node-id=187-1330) | AppSettings / Remote Config | Live toggles for learning & export flags, graceful maintenance card |
+| Instrumentation | `AppTelemetry` | Auth/onboarding/meal/learning/report actions | 16 planned events, DebugView timeline verified on Android device |
 
 ## Runtime adaptations recorded for flow 1
 

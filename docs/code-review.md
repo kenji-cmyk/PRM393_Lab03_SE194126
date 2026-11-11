@@ -1,5 +1,20 @@
 # Code review
 
+## Cloudinary & Android Device PR Review — 2026-11-11
+
+AI Code Review conducted on PR changes submitted by Person 1 (Vy: `origin/vy`) and Person 2 (Khoi: `origin/dev/Khoi`).
+The review evaluated security, isolation, concurrency, error resilience, and architecture boundaries across Cloud Functions, Cloudinary report signer, and Android runtime.
+
+| Finding | Category & Priority | Evidence & Decision | Applied correction / regression |
+| --- | --- | --- | --- |
+| F12: unhandled Cloudinary error could expose signing secrets | Security (P1) | `functions/src/index.js`: Raw errors thrown from Cloudinary SDK could leak internal parameters, signing secrets or bucket metadata back to the client. Accepted. | Isolated `safeReportCall` handler and sanitized error responses in [`functions/src/report-service.js`](../functions/src/report-service.js), covered by 8 unit tests in [`functions/test/report-service.test.js`](../functions/test/report-service.test.js) (commit [`b496d13`](https://github.com/PRM393-SE194126/vetalife/commit/b496d13)). |
+| F13: download expiration relied on local device clock | Security & Boundaries (P1) | `lib/services/report_service.dart#L273`: Report download validity checked `DateTime.now()` directly instead of the synchronized `_now()` provider, permitting client-clock manipulation. Accepted. | Switched to `_now().millisecondsSinceEpoch` and verified strict host `api.cloudinary.com` matching in [`lib/services/report_service.dart`](../lib/services/report_service.dart), validated in [`test/unit/pdf_report_service_test.dart`](../test/unit/pdf_report_service_test.dart) (commit [`757c638`](https://github.com/PRM393-SE194126/vetalife/commit/757c638)). |
+| F14: unvalidated Callable response cast could crash report flow | Error Handling & Concurrency (P2) | `lib/services/report_service.dart#L330`: `result.data` was cast unchecked, risking unhandled TypeError if the Cloud Function returned null, an error payload, or unexpected object structure. Accepted. | Added runtime payload guard `if (payload is! Map) throw StateError('Invalid report service response')` in [`lib/services/report_service.dart`](../lib/services/report_service.dart), verified with failure mocks in [`test/unit/pdf_report_service_test.dart`](../test/unit/pdf_report_service_test.dart) (commit [`757c638`](https://github.com/PRM393-SE194126/vetalife/commit/757c638)). |
+| F15: synchronous corpus loading in module root slowed cold starts | Architecture & Performance (P2) | `functions/src/index.js#L20`: Reading and parsing `meal-knowledge.json` during top-level module evaluation added unnecessary latency to all cold-start function invocations. Accepted. | Implemented lazy cached loader `loadCorpus()` in [`functions/src/index.js`](../functions/src/index.js) (commit [`b496d13`](https://github.com/PRM393-SE194126/vetalife/commit/b496d13)). |
+| F16: proposal to completely hide UI action cards when Remote Config flag is disabled | UI/UX & Accessibility (P3) | Review suggestion proposed removing the Learning and Report navigation tiles when Remote Config disabled them. Rejected. | Rejected: Hiding tiles abruptly confuses users; keeping disabled tiles with informative banners communicates feature maintenance gracefully without layout shifts. |
+
+Verification: Unit test suite `test/unit/pdf_report_service_test.dart` passes 6/6 tests covering report generation, cancellation, network failure, host validation, and expired token rejection. Node test suite in `functions/` passes 28/28 tests.
+
 ## Firebase integration review — 2026-11-09
 
 Independent implementation, QA and review agents inspected the integrated
