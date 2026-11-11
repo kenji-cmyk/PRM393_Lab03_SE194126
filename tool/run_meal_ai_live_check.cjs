@@ -6,8 +6,13 @@ const {randomUUID} = require('node:crypto');
 const {spawnSync} = require('node:child_process');
 
 const root = path.resolve(__dirname, '..');
-const project = 'vetalife-24f03';
-const appId = '1:455537300059:web:74e2fcd06bfd330291257e';
+const publicOptions = fs.readFileSync(path.join(root, 'lib/firebase_options.dart'), 'utf8');
+const webOptions = publicOptions.match(/static const FirebaseOptions web = FirebaseOptions\(([\s\S]*?)\);/)?.[1] ?? '';
+const option = name => webOptions.match(new RegExp(`${name}: '([^']+)'`))?.[1];
+const project = option('projectId');
+const appId = option('appId');
+const projectNumber = option('messagingSenderId');
+const apiKey = option('apiKey');
 const ocrOnly = process.argv.includes('--ocr-only');
 const includeOcr = process.argv.includes('--include-ocr') || ocrOnly;
 const env = {...process.env, FIREBASE_CLI_EXPERIMENTS:
@@ -26,6 +31,10 @@ function firebase(args) {
 }
 
 async function main() {
+  if (!project || !apiKey || !/^\d+$/.test(projectNumber ?? '') ||
+      !appId?.startsWith(`1:${projectNumber}:web:`)) {
+    throw new Error('Public Firebase web configuration could not be read or is inconsistent.');
+  }
   if (process.platform !== 'win32' || process.argv.slice(2).some(arg => !['--include-ocr', '--ocr-only'].includes(arg)) ||
       (ocrOnly && process.argv.includes('--include-ocr'))) {
     throw new Error('Run on Windows with Node 22+: node tool/run_meal_ai_live_check.cjs [--include-ocr | --ocr-only]');
@@ -36,18 +45,15 @@ async function main() {
   if (located.status !== 0 || !cli || !fs.existsSync(cli)) {
     throw new Error('Install the Firebase CLI with npm and run firebase login first.');
   }
-  const publicOptions = fs.readFileSync(path.join(root, 'lib/firebase_options.dart'), 'utf8');
-  const apiKey = publicOptions.match(/static const FirebaseOptions web = FirebaseOptions\([\s\S]*?apiKey: '([^']+)'/)?.[1];
-  if (!apiKey) throw new Error('Public Firebase web configuration could not be read.');
   const secret = randomUUID();
   const registration = firebase(['appcheck:debugtokens:create', secret, '--app', appId,
     '--display-name', `VetaLife live check ${randomUUID().slice(0, 8)}`]);
   let tokenFile;
   try {
-    if (!registration?.name?.startsWith(`projects/455537300059/apps/${appId}/debugTokens/`)) {
+    if (!registration?.name?.startsWith(`projects/${projectNumber}/apps/${appId}/debugTokens/`)) {
       throw new Error('Unexpected App Check registration; inspect temporary VetaLife live-check tokens in Firebase Console.');
     }
-    const exchange = await fetch(`https://firebaseappcheck.googleapis.com/v1/projects/455537300059/apps/${appId}:exchangeDebugToken`, {
+    const exchange = await fetch(`https://firebaseappcheck.googleapis.com/v1/projects/${projectNumber}/apps/${appId}:exchangeDebugToken`, {
       method: 'POST', headers: {'Content-Type': 'application/json', 'x-goog-api-key': apiKey},
       body: JSON.stringify({debugToken: secret}), signal: AbortSignal.timeout(30000),
     });
@@ -70,7 +76,7 @@ async function main() {
     process.exitCode = run.status ?? 1;
   } finally {
     try {
-      if (registration?.name?.startsWith(`projects/455537300059/apps/${appId}/debugTokens/`)) {
+      if (registration?.name?.startsWith(`projects/${projectNumber}/apps/${appId}/debugTokens/`)) {
         firebase(['appcheck:debugtokens:delete', registration.name, '--app', appId, '--force']);
         console.log('Temporary App Check debug token revoked.');
       }
