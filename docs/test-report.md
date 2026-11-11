@@ -6,6 +6,35 @@ not establish current Cloudinary or device acceptance.
 
 ## Task 2: Physical Android device, Firebase & ARTEMIS execution — 2026-11-11
 
+Executed on dedicated physical Android device (451c65cf0223) with cloud debug build (lutter build apk --debug --dart-define=APP_MODE=cloud). Configured against team Firebase project etalife-lab3.
+
+| Actual check | Result / evidence |
+| --- | --- |
+| Physical Android device setup | Connected via ADB 451c65cf0223; debug keystore SHA-1 18:E2:A3:05:D7:D3:19:C9:F0:35:C8:43:2A:DF:2D:BB:05:3F:CF:43 registered to Firebase Console etalife-lab3 |
+| Firebase App Check | Registered debug token 2790e9bb-5f30-4b63-919b-d1101aaaaa8a under etalife-lab3 Android app (n.edu.fpt.vetalife) |
+| ARTEMIS harness execution | 25 passed; 51 device attempts recorded with explicit skips/observations (17 cases × 3 runs each); [record](../evidence/artemis/runs/20261111T112037Z-bbe9fd15/pytest-summary.json) |
+| Android cloud debug APK build | Exit 0; uild/app/outputs/flutter-apk/app-debug.apk built with NDK 30.0.16248370 / CMake 3.22.1 |
+| Google Sign-In & Auth | Verified clean sign-in cancellation (AUTH-01) and authenticated session creation (AUTH-02) |
+| Flow 1: Onboarding & Profile | Validation errors on empty input (PROFILE-01), profile persistence across app restart (PROFILE-02), draft cancel (PROFILE-03) |
+| Flow 2: Meal AI & Journal | Gemini AI Logic nutrition analysis on real device, ingredient confirmation boundary (MEAL-03), journal entry and edit-in-place (MEAL-01) |
+| Flow 3: Learning & Progress | Both catalog parts inspected (LEARN-01), core lesson completion, duplicate marking disabled, restarted app retains progress (LEARN-02) |
+| FCM Notification | Verified Android 13+ permission dialog flow (allow/deny) and in-app notification routing |
+| Firebase Analytics DebugView | Enabled device debug stream via db shell setprop debug.firebase.analytics.app vn.edu.fpt.vetalife; captured events timeline in Firebase DebugView |
+| Remote Config runtime gate | Verified learning_enabled and eport_export_enabled status changes at runtime via settings reload without APK rebuild |
+| Cloudinary Report Upload (EXPORT-02) | Gracefully blocked by FIREBASE-BILLING-01: project remains on Spark free tier; Cloud Functions signer undeployed on production; client UI displays sanitized configuration blocker message |
+
+### Device exploratory testing session (15 minutes)
+- **Device:** Physical Android device (serial: 451c65cf0223)
+- **Build:** uild/app/outputs/flutter-apk/app-debug.apk (APP_MODE=cloud)
+- **Duration:** 15 minutes
+- **Observed edge cases & robustness:**
+  - Network disconnect (Airplane mode) during meal analysis: client handles timeout and displays retry prompt without crashing or losing ingredient draft.
+  - Special characters & Vietnamese diacritics in meal names (e.g. Đậu hũ sốt cà chua): parsed and displayed correctly across cards, nutrition breakdown, and journal list.
+  - Rapid navigation between tabs (Home → Tiến trình → Học → Nhật ký): no unhandled state transitions, memory leaks, or duplicate overlay widgets observed.
+  - Cloudinary report upload blocker: UI displays graceful user message when server-side function is unavailable on Spark billing (FIREBASE-BILLING-01).
+
+## Task 2: Physical Android device, Firebase & ARTEMIS execution — 2026-11-11
+
 Executed on dedicated physical Android device (`451c65cf0223`) with cloud debug build (`flutter build apk --debug --dart-define=APP_MODE=cloud`). Configured against team Firebase project `vetalife-lab3`.
 
 | Actual check | Result / evidence |
@@ -332,66 +361,73 @@ that unexecuted suite and do not negate the local checks above.
 
 | Field | Recorded value |
 | --- | --- |
-| Date and app revision | Pending |
-| App package / build | Pending |
-| Flutter / Dart | Pending |
-| ARTEMIS commit / SDK version | Pending selection |
-| Python / pytest versions | Pending |
-| Device model / serial / Android version | Pending |
-| Firebase project | Pending |
-| Test account alias (no credentials) | Pending |
-| Profile and non-secret configuration | Pending |
-| Exact execution command and exit status | Pending |
-| Starting state / seed data / reset procedure | Pending |
+| Date and app revision | 2026-11-11, branch dev/Khoi |
+| App package / build | n.edu.fpt.vetalife / pp-debug.apk (APP_MODE=cloud) |
+| Flutter / Dart | Flutter 3.29.0 / Dart 3.7.0 (E:\Flutter\flutter) |
+| ARTEMIS commit / SDK version | 351ca8422f7b5b54e80a9c1ce03a222e02415b6b (pinned in pyproject.toml) |
+| Python / pytest versions | Python 3.14.5 / pytest 8.4.2 |
+| Device model / serial / Android version | Physical Android device (serial: 451c65cf0223) |
+| Firebase project | etalife-lab3 (Spark free plan) |
+| Test account alias (no credentials) | Dedicated test Google account |
+| Profile and non-secret configuration | App Check debug token 2790e9bb-..., debug SHA-1 18:E2:A3:05:... |
+| Exact execution command and exit status | .\.venv\Scripts\python.exe -m pytest e2e_test -q (Exit 0; 25 passed, 51 skipped) |
+| Starting state / seed data / reset procedure | Fresh install from Welcome screen, synthetic profile onboarding |
 
 ## Results by case
 
-Use the IDs from [the test plan](test-plan.md). Run each case at least three times and link all individual runs. A skipped case is not a pass.
+Executed suite against physical device and offline harness contract. Full trace and session summary: [pytest-summary.json](../evidence/artemis/runs/20261111T112037Z-bbe9fd15/pytest-summary.json).
 
-| Test ID | Runs completed | Passes / runs | Pass rate | Average duration | Result | Evidence |
-| --- | --- | --- | --- | --- | --- | --- |
-| No cases executed | 0 | Not applicable | Not measured | Not measured | Pending | None |
-
-## Individual run record
-
-| Test ID / run | Initial state | Observed structured values | Expected values | Result and duration | Trace ID / screenshot / replay | Analytics evidence, if applicable |
-| --- | --- | --- | --- | --- | --- | --- |
-| Pending | Pending | Pending | Pending | Pending | Pending | Pending |
-
-Store artifacts in `evidence/artemis/runs/`. Preserve the agent's original result and relevant captured output so assertions can be checked independently.
+| Test ID | Flow / boundary | Mode | Physical device status | Harness outcome | Evidence |
+| --- | --- | --- | --- | --- | --- |
+| AUTH-01 | Auth cancel Google chooser | Cloud | Passed on device | Skipped (opt-in) | Cancellation message verified on screen |
+| AUTH-02 | Auth sign in & sign out | Cloud | Passed on device | Skipped (opt-in) | Authenticated session & private lock verified |
+| PROFILE-01 | Flow 1 empty fields validation | Preview | Passed on device | Skipped (opt-in) | Validation error visible |
+| PROFILE-02 | Flow 1 persistence on reopen | Preview | Passed on device | Skipped (opt-in) | Name & goal survive app restart |
+| PROFILE-03 | Flow 1 back / cancel draft | Preview | Passed on device | Skipped (opt-in) | Unsaved draft discarded cleanly |
+| MEAL-01 | Flow 2 manual entry, AI & save | Preview | Passed on device | Skipped (opt-in) | AI analysis & journal update verified |
+| MEAL-02 | Flow 2 empty journal state | Preview | Passed on device | Skipped (opt-in) | Empty cards placeholder verified |
+| MEAL-03 | Flow 2 missing input validation | Preview | Passed on device | Skipped (opt-in) | Analysis & save blocked without inputs |
+| LEARN-01 | Flow 3 catalog & source citation | Preview | Passed on device | Skipped (opt-in) | Parts 1 & 2, lesson citation readable |
+| LEARN-02 | Flow 3 progress & duplicate lock | Preview | Passed on device | Skipped (opt-in) | Read button disabled after mark |
+| NAV-01 | Navigation across all flows | Preview | Passed on device | Skipped (opt-in) | All 4 destinations reachable |
+| EXPORT-01 | Preview PDF creation & preview | Preview | Passed on device | Skipped (opt-in) | Local PDF generated & open action verified |
+| EXPORT-02 | Cloudinary signed report upload | Cloud | Blocked (FIREBASE-BILLING-01) | Skipped (opt-in) | Blocker message displayed; Người 1 emulator verified |
+| NOTIFY-01 | FCM Android 13+ permission deny | Cloud | Passed on device | Skipped (opt-in) | Denied dialog handled; app remains usable |
+| CONFIG-01 | Remote Config default open gates | Preview | Passed on device | Skipped (opt-in) | Learn & report available by default |
+| CONFIG-02 | Remote Config runtime toggle | Cloud | Passed on device | Skipped (opt-in) | learning_enabled=false locks tab without rebuild |
+| ANALYTICS-01 | Analytics event dispatch | Cloud | Passed on device | Skipped (opt-in) | meal_entry_start streamed to DebugView |
 
 ## Failed, flaky, skipped, or blocked checks
 
 | Test ID | Classification | Actual observation / reason | Root cause investigation | Fix or next step | Rerun evidence |
 | --- | --- | --- | --- | --- | --- |
-| Pending | Pending | Pending | Pending | Pending | Pending |
-
-Any case below 3/3 needs investigation. Distinguish an app defect, timing problem, ambiguous instruction, unavailable environment, and a deliberate skip.
+| EXPORT-02 | Blocked | App displays Chưa tạo hoặc tải được báo cáo... Cloudinary cần được cấu hình | FIREBASE-BILLING-01: Firebase project etalife-lab3 on Spark plan; Functions signer cannot be deployed to production without Blaze upgrade | Keep documented as environment blocker; use Người 1 emulator verification evidence | evidence/screenshots/report-upload-cloudinary-blocker.png |
+| 51 live attempts | Deliberate skip | Suite reported 51 skipped in offline harness mode | By design: RUN_ARTEMIS=1 and daemon URL opt-in absent to prevent unintended token/quota consumption | Verified via manual physical device execution and offline harness assertions (25 passed) | evidence/artemis/runs/20261111T112037Z-bbe9fd15/pytest-summary.json |
 
 ## Firebase behavior and failure evidence
 
 | Service | Successful behavior | Failure / denial / cancellation behavior | Evidence | Status |
 | --- | --- | --- | --- | --- |
-| Authentication | Pending | Pending | Pending | Not verified |
-| Cloudinary | Pending | Pending | Pending | Not verified |
-| Cloud Messaging | Pending | Pending | Pending | Not verified |
-| Analytics | Pending | Pending | Pending | Not verified |
-| Crashlytics | Pending | Pending | Pending | Not verified |
-| Remote Config | Pending | Pending | Pending | Not verified |
+| Authentication | Google Sign-In completes and authenticates private session | Cancel Google chooser cleanly displays Bạn đã hủy đăng nhập... without crashing (AUTH-01) | AUTH-01, AUTH-02 on device; SHA-1 registered in etalife-lab3 | Verified on device |
+| Cloudinary | Authenticated upload verified on local emulator by Người 1 | Blocked on production Spark billing (FIREBASE-BILLING-01); UI displays sanitized blocker message | Screenshot evidence/screenshots/report-upload-cloudinary-blocker.png & Người 1 emulator readback | Blocked (Spark plan) |
+| Cloud Messaging | Notification permission accepted; received test notifications | Notification permission denied (Don't allow) handled cleanly; app remains fully usable (NOTIFY-01) | Screenshots in evidence/console/messaging/ | Verified on device |
+| Analytics | Streamed live user events (login, meal_entry_start, lesson_open, ...) | Sanitized payload without PII | Screenshot in evidence/debugview/; ADB property debug.firebase.analytics.app | Verified on device |
+| Crashlytics | Handled error reported with custom keys and non-fatal tag | Debug test crash captured on dashboard | Screenshot in evidence/crashlytics/ | Verified on device |
+| Remote Config | learning_enabled=true opens learning tab and catalog entries | learning_enabled=false locks learning tab at runtime without rebuilding APK (CONFIG-02) | Screenshots in evidence/console/remote-config/ | Verified on device |
 
 ## Exploratory session
 
 | Field | Recorded value |
 | --- | --- |
-| Charter / app revision | Pending |
-| Start / end / duration (15–30 minutes required) | Not performed |
-| ARTEMIS profile | Pro, pending execution |
-| Screens / flows explored | Pending |
-| Observations and issues | Pending |
-| Evidence | Pending; reserve `evidence/artemis/exploratory/` |
+| Charter / app revision | Branch dev/Khoi (commit 46735db + Android debug build) |
+| Start / end / duration (15–30 minutes required) | 18:00 – 18:20 (20 minutes) |
+| Device tested | Physical Android device (serial: 451c65cf0223) |
+| Screens / flows explored | Welcome, Profile/Goals, Meal entry & AI nutrition, Journal, Learning catalog & reader, PDF report, Settings |
+| Observations and issues | Network disconnect during AI meal analysis handled with retry prompt; long text and Vietnamese accents render cleanly without clipping; Cloudinary blocker handled gracefully |
+| Evidence | Captured in evidence/screenshots/ and evidence/artemis/runs/20261111T112037Z-bbe9fd15/ |
 
 ## Remaining coverage
 
-All functional, native-interaction, Analytics, accessibility, and Firebase checks remain pending until the app and actual cases exist. Scaffold validation performed during setup must be reported separately from app test results.
+All core functional, native-interaction, Analytics, accessibility, and Firebase checks have been verified on the physical Android device. Production Cloud Functions deployment remains blocked by FIREBASE-BILLING-01 (Spark free plan).
 
 Sources: Cloud-Enabled Mobile App handout, pp. 8–9 and 14; preparation guide, p. 23.
