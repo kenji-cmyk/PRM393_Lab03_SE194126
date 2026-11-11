@@ -49,14 +49,17 @@ This is a disposable demo project on ports 8185/9295, independent of production.
 The report signer is in the legacy Functions codebase. Run
 `npm --prefix functions run build` first, then start its Auth, Firestore and
 Functions emulators with
-`firebase emulators:start --config firebase.functions.legacy.json --only auth,firestore,functions`.
+`firebase emulators:start --config firebase.functions.legacy.json --only auth,firestore,functions --project vetalife-lab3`.
 Flutter's `USE_FIREBASE_EMULATORS` setting targets Auth 9099, Firestore 8080 and
 Functions 5001 on `127.0.0.1` by default (use `adb reverse tcp:9099 tcp:9099`,
 `adb reverse tcp:8080 tcp:8080`, and `adb reverse tcp:5001 tcp:5001` when
 running on an Android emulator or USB device, or pass
 `--dart-define=FIREBASE_EMULATOR_HOST=10.0.2.2` if binding emulators on all
-interfaces). Cloudinary requests still reach Cloudinary when using local
-Functions.
+interfaces). Android debug builds use `android/app/src/debug/AndroidManifest.xml`
+and `android/app/src/debug/res/xml/network_security_config.xml` to allow cleartext
+emulator HTTP strictly to `10.0.2.2`, `127.0.0.1`, and `localhost` while keeping
+release builds HTTPS-only. Cloudinary requests still reach Cloudinary when using
+local Functions.
 
 On 2026-11-11 the team migrated active Firebase client configuration to the
 dedicated project `vetalife-lab3`, registered Android (`vn.edu.fpt.vetalife`)
