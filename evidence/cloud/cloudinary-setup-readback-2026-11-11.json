@@ -1,9 +1,10 @@
 {
-  "checkedAt": "2026-11-11T11:55:20+07:00",
+  "checkedAt": "2026-11-11T14:22:00+07:00",
   "branch": "vy",
   "baseCommit": "f45fe28",
   "targetProjectId": "vetalife-lab3",
   "previousProjectId": "vetalife-24f03",
+  "device": "Android Emulator Medium_Phone (API 34, emulator-5554)",
   "configuredServices": {
     "androidAppId": "1:1040707043721:android:cc12edc6282daa7569a158",
     "webAppId": "1:1040707043721:web:0005ba1c2217ccb769a158",
@@ -11,18 +12,38 @@
     "firestoreDatabaseCreated": true,
     "firestoreRulesDeployed": true,
     "remoteConfigPublished": true,
-    "remoteConfigVersion": "1"
+    "remoteConfigVersion": "1",
+    "appCheckApiEnabled": true,
+    "aiLogicGeminiDeveloperApiEnabled": true,
+    "cloudinaryCloudName": "z1kbu8wz",
+    "cloudinaryUploadPreset": "vetalife_reports",
+    "cloudinaryPresetSettingsVerified": {
+      "signingMode": "Signed",
+      "overwrite": false,
+      "type": "authenticated",
+      "allowedFormats": ["pdf"],
+      "allowPdfZipDelivery": true,
+      "accountFreeTierMaxRawBytes": 10485760
+    }
   },
   "blockers": [
     {
       "id": "FIREBASE-BILLING-01",
       "summary": "Project vetalife-lab3 is on the Spark plan (free tier); deploying Cloud Functions v2 (createReportUploadSignature, getReportDownloadUrl) to production requires Blaze billing.",
-      "unlockAction": "Project owner upgrades vetalife-lab3 to Blaze (if approved) and configures Secret Manager CLOUDINARY_API_SECRET + functions/.env.vetalife-lab3 before deploying from firebase.functions.legacy.json, or runs local Firebase Emulators for testing."
+      "unlockAction": "Project owner upgrades vetalife-lab3 to Blaze (if approved), configures Secret Manager CLOUDINARY_API_SECRET + non-secret Cloudinary env vars, and runs `firebase deploy --config firebase.functions.legacy.json --only functions:meal-ai:createReportUploadSignature,functions:meal-ai:getReportDownloadUrl --project vetalife-lab3`. Until then, run local Firebase Emulators (`USE_FIREBASE_EMULATORS=true`) for real Cloudinary upload/download verification."
     }
   ],
   "liveVerificationStatus": {
     "productionFunctionsDeployed": false,
-    "liveCloudinaryUploadDownload": "pending",
-    "liveAuthFirestoreAccountSwitch": "pending"
+    "liveCloudinaryUploadDownload": "verified_via_local_emulators_to_real_cloudinary",
+    "liveCloudinaryVerificationDetails": {
+      "androidAppUploadAndOpenPdf": true,
+      "androidAppCancelAndNetworkError": true,
+      "emulatorChecksReadback": "evidence/cloud/emulator-report-checks-2026-11-11.json",
+      "crossUidDenied403": true,
+      "oversizeRejected400ByCloudinary": true
+    },
+    "liveAuthFirestoreAccountSwitch": "verified_on_android_emulator",
+    "screenshotsDir": "evidence/cloud/screenshots"
   }
 }

@@ -1,0 +1,53 @@
+{
+  "checkedAt": "2026-11-11T07:04:44.531Z",
+  "projectId": "vetalife-lab3",
+  "environment": "local Firebase Emulators (Auth 9099, Functions 5001) -> real Cloudinary account",
+  "cloudName": "z1kbu8wz",
+  "uploadPreset": "vetalife_reports",
+  "syntheticUsersOnly": true,
+  "note": "All signatures, API keys, signed download URLs, and full UIDs are redacted.",
+  "checks": {
+    "unauthenticatedCallsRejected": {
+      "createReportUploadSignature": {
+        "httpStatus": 401,
+        "errorStatus": "UNAUTHENTICATED"
+      },
+      "getReportDownloadUrl": {
+        "httpStatus": 401,
+        "errorStatus": "UNAUTHENTICATED"
+      }
+    },
+    "ownerUploadAndDownload": {
+      "ownerUidMasked": "PKzC...QrKs",
+      "publicIdPatternValid": true,
+      "resourceType": "raw",
+      "deliveryType": "authenticated",
+      "maxBytesReportedByFunction": 10485760,
+      "cloudinaryUploadHttpStatus": 200,
+      "cloudinaryReturnedResourceType": "raw",
+      "cloudinaryReturnedType": "authenticated",
+      "cloudinaryUploadedBytes": 99,
+      "duplicateSamePublicIdStatus": 200,
+      "duplicateSamePublicIdExisting": true,
+      "duplicateSamePublicIdBytes": 99,
+      "duplicateSamePublicIdError": null,
+      "unsignedPublicDeliveryHttpStatus": 401,
+      "signedDownloadHttpStatus": 200,
+      "downloadedStartsWithPdfHeader": true,
+      "downloadedByteLength": 99,
+      "downloadUrlTtlSecondsApprox": 600
+    },
+    "crossUidDenial": {
+      "attackerUidMasked": "XepQ...rePI",
+      "targetOwnerUidMasked": "PKzC...QrKs",
+      "httpStatus": 403,
+      "errorStatus": "PERMISSION_DENIED",
+      "errorMessage": "Báo cáo không thuộc tài khoản hiện tại."
+    },
+    "oversizeRejectionCloudinaryServer": {
+      "attemptedBytes": 10747904,
+      "httpStatus": 400,
+      "errorMessage": "File size too large. Got 10747913. Maximum is 10485760."
+    }
+  }
+}
