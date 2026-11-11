@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-11-11T11:40:00+07:00",
+  "checkedAt": "2026-11-11T11:55:20+07:00",
   "branch": "vy",
   "baseCommit": "f45fe28",
   "targetProjectId": "vetalife-lab3",
@@ -9,18 +9,15 @@
     "webAppId": "1:1040707043721:web:0005ba1c2217ccb769a158",
     "googleSignInOAuthClientPresent": true,
     "firestoreDatabaseCreated": true,
-    "firestoreRulesDeployed": true
+    "firestoreRulesDeployed": true,
+    "remoteConfigPublished": true,
+    "remoteConfigVersion": "1"
   },
   "blockers": [
     {
       "id": "FIREBASE-BILLING-01",
       "summary": "Project vetalife-lab3 is on the Spark plan (free tier); deploying Cloud Functions v2 (createReportUploadSignature, getReportDownloadUrl) to production requires Blaze billing.",
       "unlockAction": "Project owner upgrades vetalife-lab3 to Blaze (if approved) and configures Secret Manager CLOUDINARY_API_SECRET + functions/.env.vetalife-lab3 before deploying from firebase.functions.legacy.json, or runs local Firebase Emulators for testing."
-    },
-    {
-      "id": "REMOTE-CONFIG-PUBLISH-01",
-      "summary": "Remote Config parameters (learning_enabled, report_export_enabled) are currently saved in Draft state on vetalife-lab3 and need to be published in Console.",
-      "unlockAction": "Click 'Publish changes' in Firebase Console > Remote Config for vetalife-lab3."
     }
   ],
   "liveVerificationStatus": {
