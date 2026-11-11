@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Báo Cáo Lab 3 - PRM393 - SE194126 - VetaLife</title>
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 15mm 15mm 15mm 15mm;
+    }
+    * {
+      box-sizing: border-box;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      font-size: 10pt;
+      line-height: 1.45;
+      color: #222;
+      margin: 0;
+      padding: 0;
+      background: #fff;
+    }
+    .page {
+      page-break-after: always;
+      height: 265mm;
+      max-height: 265mm;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 0;
+      position: relative;
+    }
+    .page:last-child {
+      page-break-after: auto;
+    }
+    .page-header {
+      border-bottom: 2px solid #1E5E3A;
+      padding-bottom: 4px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 8.5pt;
+      color: #555;
+      font-weight: 600;
+    }
+    .page-footer {
+      border-top: 1px solid #ccc;
+      padding-top: 4px;
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 8pt;
+      color: #777;
+    }
+    .content {
+      flex: 1;
+    }
+    h1 {
+      color: #1E5E3A;
+      font-size: 17pt;
+      margin: 0 0 8px 0;
+      line-height: 1.2;
+    }
+    h2 {
+      color: #1E5E3A;
+      font-size: 13pt;
+      margin: 10px 0 6px 0;
+      border-left: 4px solid #1E5E3A;
+      padding-left: 8px;
+    }
+    h3 {
+      color: #2c3e50;
+      font-size: 10.5pt;
+      margin: 8px 0 4px 0;
+    }
+    p {
+      margin: 0 0 6px 0;
+      text-align: justify;
+    }
+    ul, ol {
+      margin: 0 0 8px 18px;
+      padding: 0;
+    }
+    li {
+      margin-bottom: 3px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 6px 0 10px 0;
+      font-size: 8.5pt;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 5px 6px;
+      text-align: left;
+    }
+    th {
+      background-color: #eaf3ed;
+      color: #1E5E3A;
+      font-weight: 700;
+    }
+    tr:nth-child(even) {
+      background-color: #fafbfc;
+    }
+    .badge {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 7.5pt;
+      font-weight: 700;
+    }
+    .badge-pass { background: #d4edda; color: #155724; }
+    .badge-p1 { background: #f8d7da; color: #721c24; }
+    .badge-p2 { background: #fff3cd; color: #856404; }
+    .badge-info { background: #d1ecf1; color: #0c5460; }
+    .img-grid {
+      display: flex;
+      gap: 10px;
+      margin: 8px 0;
+      justify-content: center;
+    }
+    .img-card {
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 4px;
+      text-align: center;
+      background: #fafafa;
+      flex: 1;
+      max-width: 48%;
+    }
+    .img-card img {
+      max-width: 100%;
+      max-height: 110px;
+      object-fit: contain;
+      border-radius: 4px;
+    }
+    .img-caption {
+      font-size: 7.5pt;
+      color: #666;
+      margin-top: 3px;
+      font-weight: 500;
+    }
+    .callout {
+      background: #f4f8f5;
+      border-left: 4px solid #1E5E3A;
+      padding: 6px 10px;
+      margin: 8px 0;
+      border-radius: 0 4px 4px 0;
+      font-size: 9pt;
+    }
+    .cover-box {
+      border: 2px solid #1E5E3A;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      background: #fdfefd;
+      margin: 20px 0;
+    }
+    code {
+      background: #f1f1f1;
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-family: Consolas, monospace;
+      font-size: 8.5pt;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TRANG 1 -->
+  <div class="page">
+    <div class="page-header">
+      <span>ĐẠI HỌC FPT · BÁO CÁO ĐỒ ÁN LAB 03</span>
+      <span>PRM393 · THU 2026</span>
+    </div>
+    <div class="content">
+      <div class="cover-box">
+        <h3 style="color:#666; margin:0 0 5px 0; text-transform:uppercase; letter-spacing:1px;">BÁO CÁO KẾT QUẢ ĐỒ ÁN MÔN HỌC</h3>
+        <h1 style="font-size:22pt; margin:8px 0 10px 0;">VETALIFE — CLOUD-ENABLED MOBILE APP</h1>
+        <p style="font-size:11pt; color:#1E5E3A; font-weight:600; margin-bottom:15px;">Ứng Dụng Hỗ Trợ Dinh Dưỡng Thực Vật & Lối Sống Lành Mạnh Kết Nối Đám Mây</p>
+        <p style="margin:4px 0;"><strong>Học phần:</strong> PRM393 - Lập trình Di động nâng cao với Cloud & Firebase</p>
+        <p style="margin:4px 0;"><strong>Mã số sinh viên:</strong> SE194126 &nbsp;|&nbsp; <strong>Nhóm thực hiện:</strong> Nhóm 6</p>
+        <p style="margin:4px 0;"><strong>Thời điểm báo cáo:</strong> 11/11/2026</p>
+      </div>
+
+      <h2>1. Tổng quan dự án</h2>
+      <p><strong>VetaLife</strong> là giải pháp ứng dụng di động được xây dựng trên nền tảng Flutter, tham chiếu các nghiên cứu khoa học từ tài liệu y khoa <em>"Ăn gì không chết"</em> (How Not to Die - TS. Michael Greger). Ứng dụng cung cấp công cụ ghi nhận nhật ký món ăn trong 30 giây, đánh giá dinh dưỡng thông minh bằng Gemini AI Logic và thư viện 27 bài học cốt lõi.</p>
+
+      <h2>2. Bản phân công trách nhiệm nhóm 3 người</h2>
+      <p>Dự án được phân định ranh giới sở hữu mã nguồn (Code Ownership) nghiêm ngặt giữa 3 thành viên độc lập:</p>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:20%;">Thành viên</th>
+            <th style="width:22%;">Nhánh Git</th>
+            <th style="width:28%;">Phạm vi sở hữu</th>
+            <th>Trách nhiệm chính bàn giao</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Vy (Người 1)</strong></td>
+            <td><code>vy</code></td>
+            <td><code>functions/</code>, Cloudinary, Firebase rules</td>
+            <td>Cấu hình dự án <code>vetalife-lab3</code>, Cloud Functions signer, bảo mật Cloudinary signed upload, unit tests.</td>
+          </tr>
+          <tr>
+            <td><strong>Khôi (Người 2)</strong></td>
+            <td><code>dev/Khoi</code></td>
+            <td><code>e2e_test/</code>, <code>docs/test-report.md</code></td>
+            <td>Thực thi 51 lượt test ARTEMIS trên Android thật (<code>451c65cf0223</code>), cấu hình App Check token, FCM/Analytics DebugView.</td>
+          </tr>
+          <tr>
+            <td><strong>Quốc (Người 3)</strong></td>
+            <td><code>task/design-review-submission</code></td>
+            <td><code>design/</code>, <code>docs/</code>, <code>report/</code>, <code>slides/</code></td>
+            <td>Đồng bộ Figma (màn 14-16), đối chiếu Fidelity 360/412 dp, AI Code Review, biên soạn Báo cáo, Slides, Kịch bản Video.</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        <strong>Cam kết bảo mật & liêm chính học thuật:</strong> Toàn bộ API secrets, private key, token và thông tin cá nhân (PII) đều được che giấu trong tài liệu và mã nguồn. Không tự ý kích hoạt dịch vụ trả phí khi chưa có sự phê duyệt.
+      </div>
+    </div>
+    <div class="page-footer">
+      <span>Đồ án PRM393 · Nhóm 6 · VetaLife</span>
+      <span>Trang 1 / 10</span>
+    </div>
+  </div>
+
+  <!-- TRANG 2 -->
+  <div class="page">
+    <div class="page-header">
+      <span>VETALIFE · PRM393 LAB 03</span>
+      <span>PERSONA, FLOWS & TIÊU CHÍ LAB 2</span>
+    </div>
+    <div class="content">
+      <h2>1. Chân dung người dùng mục tiêu (Persona)</h2>
+      <p>Ứng dụng hướng đến đối tượng người dùng đại diện là <strong>Vinh (25 tuổi, Nhân viên văn phòng)</strong>:</p>
+      <ul>
+        <li><strong>Bối cảnh & Hành vi:</strong> Ngồi làm việc với máy tính 8-10 giờ mỗi ngày, ít vận động, ăn uống thất thường và phụ thuộc vào thức ăn nhanh.</li>
+        <li><strong>Nỗi đau (Pain points):</strong> Cảm thấy sức khỏe suy giảm nhưng không có thời gian cân đo đong đếm calo phức tạp; cảm thấy tội lỗi hoặc bỏ cuộc khi dùng các ứng dụng đếm calo áp lực.</li>
+        <li><strong>Mục tiêu:</strong> Một công cụ ghi chép bữa ăn siêu nhanh (&lt; 30 giây, thao tác 1 tay), hiển thị tần suất thói quen tuần và gợi ý thực phẩm lành mạnh dễ áp dụng.</li>
+      </ul>
+
+      <h2>2. Ba luồng người dùng cốt lõi (Core User Flows)</h2>
+      <div class="img-grid">
+        <div class="img-card">
+          <img src="../evidence/screenshots/flow1-welcome-360.png" alt="Flow 1">
+          <div class="img-caption">Flow 1: Chào mừng & Onboarding</div>
+        </div>
+        <div class="img-card">
+          <img src="../evidence/screenshots/flow2-entry-360.png" alt="Flow 2">
+          <div class="img-caption">Flow 2: Ghi bữa ăn & Phân tích AI</div>
+        </div>
+        <div class="img-card">
+          <img src="../evidence/screenshots/flow3-catalog-part1-360.png" alt="Flow 3">
+          <div class="img-caption">Flow 3: Thư viện bài học sách</div>
+        </div>
+      </div>
+      <ol>
+        <li><strong>Flow 1 — Bắt đầu (Onboarding):</strong> Chào mừng -&gt; Điền hồ sơ (Họ tên, Ngày sinh -&gt; tính tuổi tự động, Chiều cao, Cân nặng) -&gt; Chọn mục tiêu lối sống -&gt; Chuyển vào Trang chủ.</li>
+        <li><strong>Flow 2 — Ghi nhật ký bữa ăn (Meal Journal):</strong> Chụp ảnh/nhập món -&gt; Xác nhận thẻ nguyên liệu (OCR chips) -&gt; AI Gemini đối chiếu tri thức sách -&gt; Lưu vào Firestore theo UID.</li>
+        <li><strong>Flow 3 — Theo dõi tuần & Học tập (Learning & Progress):</strong> Biểu đồ tuần thể hiện số ngày có ghi chép -&gt; Danh mục 27 bài học cốt lõi chia thành 2 phần chuẩn y khoa -&gt; Đọc chi tiết và đánh dấu hoàn thành.</li>
+      </ol>
+
+      <h2>3. Tiêu chí thành công đạt được từ Lab 2</h2>
+      <ul>
+        <li><strong>Tốc độ ghi nhận:</strong> Hoàn thành ghi bữa ăn trong dưới 30 giây với giao diện trực quan, hỗ trợ gợi ý nguyên liệu thông minh.</li>
+        <li><strong>Giao diện tích cực:</strong> Thống kê trực quan số ngày ghi nhận trong tuần, khuyến khích sự kiên trì thay vì đếm calo áp lực.</li>
+        <li><strong>Khả năng phục hồi dữ liệu:</strong> Giữ nguyên bản nháp khi mất mạng hoặc hủy thao tác; có nút "Thử lại" tự động.</li>
+      </ul>
+    </div>
+    <div class="page-footer">
+      <span>Đồ án PRM393 · Nhóm 6 · VetaLife</span>
+      <span>Trang 2 / 10</span>
+    </div>
+  </div>
+
+  <!-- TRANG 3 -->
+  <div class="page">
+    <div class="page-header">
+      <span>VETALIFE · PRM393 LAB 03</span>
+      <span>KIẾN TRÚC MVVM & DESIGN SYSTEM</span>
+    </div>
+    <div class="content">
+      <h2>1. Kiến trúc phần mềm MVVM & Clean Architecture</h2>
+      <p>Ứng dụng được thiết kế theo mô hình tách bạch rõ ràng giữa Giao diện (View), Logic trạng thái (ViewModel) và Tầng dịch vụ dữ liệu (Data/Service):</p>
+      <ul>
+        <li><strong>View Layer:</strong> Các màn hình Flutter phản ứng (Reactive Widgets), sử dụng các thành phần giao diện dùng chung chuẩn hóa.</li>
+        <li><strong>ViewModel Layer:</strong> Quản lý trạng thái bằng <code>ChangeNotifier</code> và <code>Provider</code> (<code>AuthViewModel</code>, <code>MealViewModel</code>, <code>LearningViewModel</code>, <code>ReportViewModel</code>, <code>NotificationViewModel</code>).</li>
+        <li><strong>Service & Cloud Layer:</strong> Các dịch vụ trừu tượng hóa (<code>PdfReportService</code>, <code>FirebaseNotificationService</code>, <code>AppTelemetry</code>) cho phép dễ dàng mock dữ liệu khi viết unit test.</li>
+      </ul>
+
+      <div class="callout">
+        <strong>Cơ chế cô lập phiên an toàn (Session Isolation):</strong><br>
+        Lớp <code>SessionFeatures</code> và <code>AppUserSession</code> đảm bảo khi người dùng nhấn <strong>Đăng xuất</strong>, toàn bộ ảnh tạm, cache nhật ký và file PDF tạo cục bộ bị hủy ngay lập tức, ngăn ngừa rò rỉ dữ liệu cá nhân sang phiên kế tiếp.
+      </div>
+
+      <h2>2. Hệ thống thiết kế trong mã nguồn (Design System Tokens)</h2>
+      <p>Mã nguồn Flutter tại <code>lib/theme/</code> ánh xạ chặt chẽ toàn bộ tokens từ trang <code>04 Design System</code> (node <code>2:4</code>) trên Figma:</p>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:25%;">Thành phần Token</th>
+            <th style="width:30%;">Giá trị kỹ thuật</th>
+            <th>Ý nghĩa & Quy chuẩn áp dụng</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Màu chính (Primary)</strong></td>
+            <td><code>#1E5E3A</code> (Forest Green)</td>
+            <td>Màu xanh thực vật tự nhiên, biểu trưng cho sức sống và chế độ ăn lành mạnh.</td>
+          </tr>
+          <tr>
+            <td><strong>Màu nền (Background)</strong></td>
+            <td><code>#F8F9F5</code> (Soft Ivory)</td>
+            <td>Tông nền ấm dịu mắt, tăng độ dễ chịu khi đọc các bài học dinh dưỡng dài.</td>
+          </tr>
+          <tr>
+            <td><strong>Kiểu chữ (Typography)</strong></td>
+            <td>Roboto (Regular, Medium, Bold)</td>
+            <td>Nhúng tệp font cục bộ trong <code>assets/fonts/</code> kèm file bản quyền mã nguồn mở.</td>
+          </tr>
+          <tr>
+            <td><strong>Kích thước chạm</strong></td>
+            <td>Touch Target &ge; 48&times;48 dp</td>
+            <td>Tuân thủ chuẩn tiếp cận người dùng, thao tác bấm dễ dàng bằng một tay.</td>
+          </tr>
+          <tr>
+            <td><strong>Cỡ chữ nội dung</strong></td>
+            <td>Body Text &ge; 14 sp</td>
+            <td>Đảm bảo độ sắc nét, dễ đọc trên nhiều kích thước màn hình Android.</td>
+          </tr>
+          <tr>
+            <td><strong>Độ tương phản màu</strong></td>
+            <td>Tỷ lệ tương phản &ge; 4.5:1</td>
+            <td>Đạt chuẩn tiếp cận WCAG AA, hiển thị rõ ràng cả dưới ánh nắng ngoài trời.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="page-footer">
+      <span>Đồ án PRM393 · Nhóm 6 · VetaLife</span>
+      <span>Trang 3 / 10</span>
+    </div>
+  </div>
+
+  <!-- TRANG 4 -->
+  <div class="page">
+    <div class="page-header">
+      <span>VETALIFE · PRM393 LAB 03</span>
+      <span>ĐỐI CHIẾU THIẾT KẾ & SAI LỆCH RUNTIME</span>
+    </div>
+    <div class="content">
+      <h2>1. Quy chuẩn đối chiếu giao diện (Design Fidelity)</h2>
+      <p>Mọi màn hình được kiểm thử hiển thị trên 2 độ phân giải chuẩn Android: <strong>360&times;800 dp</strong> (màn hình phổ thông) và <strong>412&times;915 dp</strong> (màn hình kích thước lớn).</p>
+
+      <h2>2. Bảng đối chiếu các màn hình & Sai lệch hợp lý</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Màn hình</th>
+            <th>Figma Node</th>
+            <th>Sai lệch kỹ thuật & Lý do hợp lệ</th>
+            <th>Mã ID</th>
+            <th>Trạng thái</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>01 Chào mừng</strong></td>
+            <td><code>6:2</code></td>
+            <td>Dùng <code>SafeArea</code> native thay thế thanh 9:41 cứng nhắc.</td>
+            <td>RT-01</td>
+            <td><span class="badge badge-pass">Đạt</span></td>
+          </tr>
+          <tr>
+            <td><strong>01A Hồ sơ</strong></td>
+            <td><code>166:426</code></td>
+            <td>Date picker native chuẩn hóa; tính tuổi tự động từ ngày sinh.</td>
+            <td>RT-02</td>
+            <td><span class="badge badge-pass">Đạt</span></td>
+          </tr>
+          <tr>
+            <td><strong>02 Mục tiêu</strong></td>
+            <td><code>6:19</code></td>
+            <td>Lưu trữ nguyên tử cùng hồ sơ, giữ trạng thái khi back lại.</td>
+            <td>RT-03</td>
+            <td><span class="badge badge-pass">Đạt</span></td>
+          </tr>
+          <tr>
+            <td><strong>03 Trang chủ</strong></td>
+            <td><code>6:42</code></td>
+            <td>Hiển thị tên người dùng thật và trạng thái ban đầu 0 bữa ăn.</td>
+            <td>RT-04</td>
+            <td><span class="badge badge-pass">Đạt</span></td>
+          </tr>
+          <tr>
+            <td><strong>04 Ghi bữa ăn</strong></td>
+            <td><code>6:76</code></td>
+            <td>Thêm nút Camera/Gallery thật và công tắc đồng ý AI.</td>
+            <td>RT-07</td>
+            <td><span class="badge badge-pass">Đạt</span></td>
+          </tr>
+          <tr>
+            <td><strong>Xác nhận thẻ</strong></td>
+            <td>Mở rộng</td>
+            <td>Bước trung gian sửa/thêm/xóa nguyên liệu OCR trước khi gọi AI.</td>
+            <td>RT-07</td>
+            <td><span class="badge badge-pass">Đạt</span></td>
+          </tr>
+          <tr>
+            <td><strong>06 Kết quả</strong></td>
+            <td><code>6:118</code></td>
+            <td>Thẻ dẫn chứng đối chiếu 15 trích đoạn sách y khoa biên soạn.</td>
+            <td>RT-08</td>
+            <td><span class="badge badge-pass">Đạt</span></td>
+          </tr>
+          <tr>
+            <td><strong>08 Nhật ký</strong></td>
+            <td><code>6:155</code></td>
+            <td>Bộ lọc ngày thật, trạng thái trống thật không chèn món mẫu.</td>
+            <td>RT-06</td>
+            <td><span class="badge badge-pass">Đạt</span></td>
+          </tr>
+          <tr>
+            <td><strong>10 Tiến trình</strong></td>
+            <td><code>6:213</code></td>
+            <td>Biểu đồ cột ngày ghi chép; đếm tiến độ 27 bài học cốt lõi.</td>
+            <td>RT-09</td>
+            <td><span class="badge badge-pass">Đạt</span></td>
+          </tr>
+          <tr>
+            <td><strong>11, 12 Mục lục</strong></td>
+            <td><code>6:257</code>, <code>166:470</code></td>
+            <td>Phân chia 15 chương Bệnh lý (P1) và 12 nhóm Daily Dozen (P2).</td>
+            <td>RT-10</td>
+            <td><span class="badge badge-pass">Đạt</span></td>
+          </tr>
+          <tr>
+            <td><strong>13 Đọc bài học</strong></td>
+            <td><code>166:628</code></td>
+            <td>30 bài học tóm lược kèm số trang sách và nút hoàn thành.</td>
+            <td>RT-10</td>
+            <td><span class="badge badge-pass">Đạt</span></td>
+          </tr>
+          <tr>
+            <td><strong>14 Thông báo</strong></td>
+            <td><code>185:1144</code></td>
+            <td>Lịch sử thông báo đẩy cá nhân hóa theo UID người dùng.</td>
+            <td>RT-11</td>
+            <td><span class="badge badge-pass">Đạt</span></td>
+          </tr>
+          <tr>
+            <td><strong>14A Cấp quyền</strong></td>
+            <td><code>185:1183</code></td>
+            <td>Banner xin cấp quyền Android 13+ và hộp thư rỗng sạch sẽ.</td>
+            <td>RT-11</td>
+            <td><span class="badge badge-pass">Đạt</span></td>
+          </tr>
+          <tr>
+            <td><strong>15 Báo cáo PDF</strong></td>
+            <td><code>187:1302</code></td>
+            <td>Nút tạo PDF tuần, upload Cloudinary, mở URL bảo mật.</td>
+            <td>RT-11</td>
+            <td><span class="badge badge-pass">Đạt</span></td>
+          </tr>
+          <tr>
+            <td><strong>16 Cài đặt mây</strong></td>
+            <td><code>187:1330</code></td>
+            <td>Toggles Remote Config; thẻ bảo trì khi tắt tính năng.</td>
+            <td>RT-11/12</td>
+            <td><span class="badge badge-pass">Đạt</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="page-footer">
+      <span>Đồ án PRM393 · Nhóm 6 · VetaLife</span>
+      <span>Trang 4 / 10</span>
+    </div>
+  </div>
+
+  <!-- TRANG 5 -->
+  <div class="page">
+    <div class="page-header">
+      <span>VETALIFE · PRM393 LAB 03</span>
+      <span>FIREBASE AUTHENTICATION & FIRESTORE RULES</span>
+    </div>
+    <div class="content">
+      <h2>1. Google Authentication đa kịch bản</h2>
+      <p>Ứng dụng tích hợp dịch vụ Firebase Authentication, hỗ trợ đăng nhập bằng tài khoản Google với đầy đủ xử lý các tình huống biên:</p>
+      <div class="img-grid">
+        <div class="img-card">
+          <img src="../evidence/cloud/screenshots/04-auth-google-signin-cancelled.png" alt="Hủy đăng nhập">
+          <div class="img-caption">Kịch bản hủy đăng nhập (AUTH-01) an toàn</div>
+        </div>
+        <div class="img-card">
+          <img src="../evidence/cloud/screenshots/07-auth-account-switch-clean.png" alt="Chuyển tài khoản">
+          <div class="img-caption">Chuyển tài khoản (Account Switch) sạch dữ liệu</div>
+        </div>
+      </div>
+      <ul>
+        <li><strong>AUTH-01 (Hủy đăng nhập):</strong> Người dùng nhấn nút Back hoặc bấm ra ngoài hộp thoại Google Sign-in; ứng dụng bắt ngoại lệ êm đẹp, không gây văng ứng dụng (crash).</li>
+        <li><strong>AUTH-02 (Đăng nhập thành công):</strong> Tạo phiên Firebase User, sinh UID duy nhất và đồng bộ dữ liệu hồ sơ cá nhân lên đám mây.</li>
+        <li><strong>Đăng xuất &amp; Chuyển tài khoản:</strong> Xóa sạch cache phiên cũ; khi tài khoản B đăng nhập vào, chỉ truy xuất đúng dữ liệu thuộc quyền sở hữu của B.</li>
+      </ul>
+
+      <h2>2. Cloud Firestore &amp; Phân quyền bảo mật (Row-level Security)</h2>
+      <p>Dữ liệu trên Cloud Firestore được tổ chức theo cây phân cấp gắn liền với UID người dùng: <code>users/{uid}/meals/{mealId}</code> và <code>users/{uid}/progress</code>.</p>
+      <div class="img-grid">
+        <div class="img-card" style="max-width:98%;">
+          <img src="../evidence/cloud/screenshots/06-firestore-user-doc-masked.png" alt="Firestore Masked Doc">
+          <div class="img-caption">Bằng chứng tài liệu Firestore phân quyền theo UID (đã che thông tin cá nhân)</div>
+        </div>
+      </div>
+      <p><strong>Kiểm thử bộ quy tắc Firestore Rules:</strong> Chạy kiểm thử trên Firebase Emulator với 18 kịch bản tự động, đạt kết quả <strong>18/18 tests passed</strong>. Hệ thống từ chối mọi truy vấn đọc/ghi chéo tài khoản giữa các người dùng khác nhau.</p>
+    </div>
+    <div class="page-footer">
+      <span>Đồ án PRM393 · Nhóm 6 · VetaLife</span>
+      <span>Trang 5 / 10</span>
+    </div>
+  </div>
+
+  <!-- TRANG 6 -->
+  <div class="page">
+    <div class="page-header">
+      <span>VETALIFE · PRM393 LAB 03</span>
+      <span>LƯU TRỮ CLOUDINARY &amp; CLOUD FUNCTIONS</span>
+    </div>
+    <div class="content">
+      <h2>1. Kiến trúc lưu trữ PDF an toàn (Private Cloud Storage)</h2>
+      <p>Để đảm bảo tính riêng tư của dữ liệu sức khỏe, tệp PDF tổng hợp dinh dưỡng cá nhân được quản lý qua quy trình ký số nhiều tầng:</p>
+      <div class="img-grid">
+        <div class="img-card">
+          <img src="../evidence/cloud/screenshots/01-cloudinary-upload-preset.png" alt="Cloudinary Preset">
+          <div class="img-caption">Cấu hình Signed Upload Preset (raw/authenticated)</div>
+        </div>
+        <div class="img-card">
+          <img src="../evidence/cloud/screenshots/10-report-upload-cloudinary-uri.png" alt="Upload Success">
+          <div class="img-caption">Bằng chứng upload PDF nhận URI Cloudinary</div>
+        </div>
+      </div>
+      <ol>
+        <li>Ứng dụng Flutter kết xuất dữ liệu tuần thành tệp PDF tại bộ nhớ cục bộ.</li>
+        <li>Gọi Cloud Function <code>createReportUploadSignature</code> để tạo chữ ký SHA-256 an toàn dựa trên UID đã đăng nhập.</li>
+        <li>App tải tệp trực tiếp lên Cloudinary dưới dạng <code>raw/authenticated</code> vào thư mục <code>u_{base64(uid)}/reports/</code> với preset <code>overwrite: false</code>.</li>
+        <li>Khi người dùng mở báo cáo, hàm <code>getReportDownloadUrl</code> cung cấp URL tải xuống có chữ ký tạm thời với thời gian sống (TTL) 10 phút.</li>
+      </ol>
+
+      <h2>2. Xử lý ngoại lệ mạng &amp; Rào cản gói Spark (Billing Blocker)</h2>
+      <div class="img-grid">
+        <div class="img-card">
+          <img src="../evidence/cloud/screenshots/08-report-upload-cancelled.png" alt="Hủy Upload">
+          <div class="img-caption">Xử lý người dùng hủy tải lên (Cancel)</div>
+        </div>
+        <div class="img-card">
+          <img src="../evidence/cloud/screenshots/09-report-upload-network-error.png" alt="Lỗi mạng">
+          <div class="img-caption">Xử lý mất kết nối mạng và hỗ trợ Retry</div>
+        </div>
+      </div>
+      <div class="callout">
+        <strong>Giải trình minh bạch rào cản tài khoản (FIREBASE-BILLING-01):</strong><br>
+        Dự án Firebase đang ở gói Spark miễn phí (Cloud Functions cần gói Blaze có thẻ tín dụng để deploy live). Nhóm tuân thủ nghiêm ngặt quy định: không tự ý kích hoạt billing của chủ dự án; thay vào đó, toàn bộ quy trình ký số và upload đã được kiểm chứng 100% qua Firebase Local Emulator Suite và bộ unit test chặt chẽ (<code>pdf_report_service_test.dart</code> pass 6/6).
+      </div>
+    </div>
+    <div class="page-footer">
+      <span>Đồ án PRM393 · Nhóm 6 · VetaLife</span>
+      <span>Trang 6 / 10</span>
+    </div>
+  </div>
+
+  <!-- TRANG 7 -->
+  <div class="page">
+    <div class="page-header">
+      <span>VETALIFE · PRM393 LAB 03</span>
+      <span>FCM, ANALYTICS, CRASHLYTICS &amp; REMOTE CONFIG</span>
+    </div>
+    <div class="content">
+      <h2>1. Firebase Cloud Messaging (FCM)</h2>
+      <ul>
+        <li><strong>Tuân thủ Android 13+:</strong> Hiển thị banner nội bộ giải thích lý do cần nhận thông báo trước khi gọi hộp thoại cấp quyền hệ thống <code>POST_NOTIFICATIONS</code>.</li>
+        <li><strong>3 trạng thái vòng đời:</strong> Nhận tin khi mở app (<em>Foreground</em>), đẩy khay hệ thống khi ẩn app (<em>Background</em>), và tự động mở đúng màn hình khi chạm vào thông báo từ trạng thái đóng hoàn toàn (<em>Terminated</em>).</li>
+      </ul>
+
+      <h2>2. Firebase Analytics (DebugView)</h2>
+      <p>Kích hoạt luồng kiểm thử sự kiện thực tế qua lệnh <code>adb shell setprop debug.firebase.analytics.app vn.edu.fpt.vetalife</code>. Ứng dụng theo dõi 7 sự kiện then chốt:</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Tên sự kiện</th>
+            <th>Thời điểm kích hoạt</th>
+            <th>Tham số gửi kèm (Cam kết không lộ PII)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code>app_open</code></td><td>Khởi động ứng dụng</td><td><code>build_mode: cloud</code>, <code>session_id</code></td></tr>
+          <tr><td><code>sign_in</code></td><td>Đăng nhập thành công</td><td><code>method: google.com</code></td></tr>
+          <tr><td><code>goal_set</code></td><td>Chọn mục tiêu Flow 1</td><td><code>goal_type: addVegetables/readDaily</code></td></tr>
+          <tr><td><code>meal_logged</code></td><td>Lưu bữa ăn Flow 2</td><td><code>meal_time: lunch</code>, <code>ingredient_count</code></td></tr>
+          <tr><td><code>lesson_completed</code></td><td>Đánh dấu xong bài học</td><td><code>lesson_id</code>, <code>core_progress_count</code></td></tr>
+          <tr><td><code>report_exported</code></td><td>Xuất báo cáo PDF</td><td><code>status: success</code>, <code>size_bytes</code></td></tr>
+          <tr><td><code>notification_opened</code></td><td>Chạm mở thông báo</td><td><code>campaign_id</code>, <code>source: fcm</code></td></tr>
+        </tbody>
+      </table>
+
+      <h2>3. Crashlytics &amp; Remote Config</h2>
+      <div class="img-grid">
+        <div class="img-card" style="max-width:48%;">
+          <img src="../evidence/screenshots/firebase-settings-360.png" alt="Remote Config UI">
+          <div class="img-caption">Màn hình Cài đặt điều khiển bởi Remote Config</div>
+        </div>
+      </div>
+      <ul>
+        <li><strong>Crashlytics:</strong> Bắt ngoại lệ Handled Error kèm User ID và custom keys; kịch bản Test Crash có kiểm soát trên bản debug giúp kiểm chứng hệ thống ghi nhận lỗi chính xác.</li>
+        <li><strong>Remote Config:</strong> Quản lý 2 cờ tính năng <code>learning_enabled</code> và <code>report_export_enabled</code>. Người dùng tải lại cài đặt sẽ thấy giao diện đổi trạng thái ngay mà không cần build lại APK.</li>
+      </ul>
+    </div>
+    <div class="page-footer">
+      <span>Đồ án PRM393 · Nhóm 6 · VetaLife</span>
+      <span>Trang 7 / 10</span>
+    </div>
+  </div>
+
+  <!-- TRANG 8 -->
+  <div class="page">
+    <div class="page-header">
+      <span>VETALIFE · PRM393 LAB 03</span>
+      <span>KIỂM THỬ ARTEMIS E2E TRÊN THIẾT BỊ THẬT</span>
+    </div>
+    <div class="content">
+      <h2>1. Quy mô kiểm thử tự động E2E với ARTEMIS Harness</h2>
+      <p>Kiểm thử được thực thi trực tiếp trên <strong>thiết bị Android vật lý (Serial ADB: <code>451c65cf0223</code>)</strong>, chạy bản dựng Cloud Debug APK kết nối với Firebase project <code>vetalife-lab3</code>.</p>
+      <ul>
+        <li><strong>Quy cách:</strong> 17 kịch bản kiểm thử độc lập, mỗi kịch bản được chạy lặp lại <strong>3 lần liên tục</strong> (tổng cộng 51 lượt chạy thiết bị) để phân tích độ tin cậy và phát hiện lỗi chập chờn (flaky tests).</li>
+        <li><strong>Tệp dữ liệu báo cáo gốc:</strong> <code>evidence/artemis/runs/20261111T112037Z-bbe9fd15/pytest-summary.json</code>.</li>
+      </ul>
+
+      <h2>2. Bảng tổng hợp kết quả 17 ca kiểm thử thiết bị</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:18%;">Mã ca kiểm thử</th>
+            <th style="width:38%;">Hành vi &amp; Kịch bản kiểm tra</th>
+            <th style="width:14%;">Lượt chạy</th>
+            <th style="width:15%;">Tỷ lệ Đạt</th>
+            <th>Đánh giá Flake</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code>AUTH-01</code>, <code>02</code></td><td>Hủy đăng nhập Google &amp; Đăng nhập thành công</td><td>3 lượt</td><td><span class="badge badge-pass">3/3 (100%)</span></td><td>Ổn định tuyệt đối</td></tr>
+          <tr><td><code>PROFILE-01..03</code></td><td>Bắt lỗi form, lưu hồ sơ qua restart, hủy nháp</td><td>3 lượt</td><td><span class="badge badge-pass">3/3 (100%)</span></td><td>Ổn định tuyệt đối</td></tr>
+          <tr><td><code>MEAL-01..04</code></td><td>Nhập món, sửa thẻ chips, Gemini AI, sửa nhật ký</td><td>3 lượt</td><td><span class="badge badge-pass">3/3 (100%)</span></td><td>Ổn định</td></tr>
+          <tr><td><code>LEARN-01..03</code></td><td>Xem 2 phần mục lục, đọc bài học, lưu tiến trình</td><td>3 lượt</td><td><span class="badge badge-pass">3/3 (100%)</span></td><td>Ổn định tuyệt đối</td></tr>
+          <tr><td><code>NOTIF-01..03</code></td><td>Cấp/từ chối quyền Android 13+, push, chạm mở</td><td>3 lượt</td><td><span class="badge badge-pass">3/3 (100%)</span></td><td>Ổn định</td></tr>
+          <tr><td><code>CONFIG-01, 02</code></td><td>Đổi cờ Remote Config tắt/bật không cần rebuild</td><td>3 lượt</td><td><span class="badge badge-pass">3/3 (100%)</span></td><td>Ổn định tuyệt đối</td></tr>
+          <tr><td><code>EXPORT-02</code></td><td>Upload PDF lên Cloudinary (Chặn bởi Spark)</td><td>3 lượt</td><td><span class="badge badge-info">Blocked</span></td><td>Ghi nhận blocker</td></tr>
+        </tbody>
+      </table>
+
+      <h2>3. Phiên kiểm thử khám phá (Exploratory Testing Session — 15 phút)</h2>
+      <p>Thực hiện kiểm thử tự do 15 phút trên thiết bị thật để đánh giá khả năng chịu lỗi:</p>
+      <ul>
+        <li><strong>Ngắt mạng đột ngột (Airplane Mode):</strong> Bật chế độ máy bay khi đang gửi phân tích bữa ăn; app bắt timeout chuẩn, hiển thị thông báo kèm nút "Thử lại", không làm mất bản nháp.</li>
+        <li><strong>Xử lý tiếng Việt có dấu:</strong> Các chuỗi phức tạp (<code>Đậu hũ sốt cà chua</code>, phân biệt <code>nước me</code> và <code>mè</code>) hiển thị hoàn hảo trên giao diện và tài liệu Firestore.</li>
+        <li><strong>Điều hướng tab tốc độ cao:</strong> Chuyển nhanh giữa Trang chủ -&gt; Tiến trình -&gt; Học -&gt; Nhật ký không gây hiện tượng tràn bộ nhớ hay lỗi chồng giao diện.</li>
+      </ul>
+    </div>
+    <div class="page-footer">
+      <span>Đồ án PRM393 · Nhóm 6 · VetaLife</span>
+      <span>Trang 8 / 10</span>
+    </div>
+  </div>
+
+  <!-- TRANG 9 -->
+  <div class="page">
+    <div class="page-header">
+      <span>VETALIFE · PRM393 LAB 03</span>
+      <span>ĐÁNH GIÁ MÃ NGUỒN BẰNG AI PR REVIEW</span>
+    </div>
+    <div class="content">
+      <h2>1. Quy trình thực hiện AI PR Code Review</h2>
+      <p>Người 3 sử dụng trợ lý AI chuyên gia rà soát toàn bộ diff mã nguồn giữa các nhánh của Người 1 (<code>vy</code>) và Người 2 (<code>dev/Khoi</code>), phát hiện 5 vấn đề kỹ thuật quan trọng thuộc 4 nhóm danh mục:</p>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nhóm danh mục</th>
+            <th>Mức độ</th>
+            <th>Vị trí mã nguồn</th>
+            <th>Nội dung phát hiện</th>
+            <th>Quyết định</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>F12</strong></td>
+            <td>Security &amp; Privacy</td>
+            <td><span class="badge badge-p1">P1</span></td>
+            <td><code>functions/src/index.js</code></td>
+            <td>Unhandled error trong Cloud Function có thể làm lộ secret/token Cloudinary về client.</td>
+            <td><span class="badge badge-pass">Accepted</span></td>
+          </tr>
+          <tr>
+            <td><strong>F13</strong></td>
+            <td>Security &amp; Boundaries</td>
+            <td><span class="badge badge-p1">P1</span></td>
+            <td><code>report_service.dart#L273</code></td>
+            <td>Kiểm tra hạn URL tải xuống bằng <code>DateTime.now()</code> máy local thay vì đồng hồ server.</td>
+            <td><span class="badge badge-pass">Accepted</span></td>
+          </tr>
+          <tr>
+            <td><strong>F14</strong></td>
+            <td>Error Handling</td>
+            <td><span class="badge badge-p2">P2</span></td>
+            <td><code>report_service.dart#L330</code></td>
+            <td>Ép kiểu <code>result.data as Map</code> trực tiếp, có nguy cơ crash nếu server trả null/lỗi lạ.</td>
+            <td><span class="badge badge-pass">Accepted</span></td>
+          </tr>
+          <tr>
+            <td><strong>F15</strong></td>
+            <td>Architecture</td>
+            <td><span class="badge badge-p2">P2</span></td>
+            <td><code>functions/src/index.js#L20</code></td>
+            <td>Đọc đồng bộ <code>readFileSync</code> file tri thức ở module root làm chậm cold-start.</td>
+            <td><span class="badge badge-pass">Accepted</span></td>
+          </tr>
+          <tr>
+            <td><strong>F16</strong></td>
+            <td>UI/UX Accessibility</td>
+            <td><span class="badge badge-info">P3</span></td>
+            <td><code>cloud_settings_screen.dart</code></td>
+            <td>Đề xuất ẩn mất hoàn toàn thẻ chức năng khi cờ Remote Config bị tắt.</td>
+            <td><span class="badge badge-p1">Rejected</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>2. Minh chứng 3 Fix Commits độc lập khắc phục lỗi</h2>
+      <p>Người 1 đã tiếp thu và sửa đổi thành các commit độc lập kèm kiểm thử xác thực:</p>
+      <ul>
+        <li><strong>Commit <code>b496d13</code> (Khắc phục F12, F15):</strong> Tách riêng module <code>report-service.js</code>, cô lập hàm <code>safeReportCall</code> với thông điệp sanitized an toàn và chuyển sang nạp lười <code>loadCorpus()</code> có bộ nhớ đệm (8 unit tests đạt trong <code>report-service.test.js</code>).</li>
+        <li><strong>Commit <code>757c638</code> (Khắc phục F13, F14):</strong> Chuyển sang sử dụng provider <code>_now()</code>, kiểm tra nghiêm ngặt host <code>api.cloudinary.com</code> và bổ sung type guard <code>if (payload is! Map) throw StateError(...)</code> (xác thực qua 6 unit tests trong <code>pdf_report_service_test.dart</code>).</li>
+      </ul>
+      <p><em>Quyết định từ chối F16:</em> Việc ẩn đột ngột nút bấm gây hoang mang cho người dùng; giữ nút ở trạng thái vô hiệu hóa kèm thẻ thông báo bảo trì mang lại trải nghiệm minh bạch và tốt hơn.</p>
+    </div>
+    <div class="page-footer">
+      <span>Đồ án PRM393 · Nhóm 6 · VetaLife</span>
+      <span>Trang 9 / 10</span>
+    </div>
+  </div>
+
+  <!-- TRANG 10 -->
+  <div class="page">
+    <div class="page-header">
+      <span>VETALIFE · PRM393 LAB 03</span>
+      <span>BÀI HỌC KINH NGHIỆM &amp; HƯỚNG PHÁT TRIỂN</span>
+    </div>
+    <div class="content">
+      <h2>1. Thách thức kỹ thuật đã vượt qua</h2>
+      <ol>
+        <li><strong>Xử lý hạn chế hạ tầng miễn phí (Spark vs Blaze):</strong> Thay vì phụ thuộc vào thẻ tín dụng, nhóm đã xây dựng giải pháp kiểm thử toàn diện trên Firebase Local Emulator Suite và xác thực Cloudinary Signed Preset một cách khoa học.</li>
+        <li><strong>Đảm bảo tính trung thực thiết kế (Design Fidelity):</strong> Áp dụng linh hoạt hệ thống 13 quy tắc thích ứng (<code>RT-01</code> đến <code>RT-13</code>) giúp ứng dụng chạy trơn tru trên mọi độ phân giải Android mà không vi phạm bản vẽ Figma.</li>
+        <li><strong>Phối hợp nhóm 3 người hiệu quả:</strong> Phân chia quyền hạn tệp chặt chẽ, tạo nhánh độc lập và trao đổi qua PR giúp mã nguồn không bị xung đột merge.</li>
+      </ol>
+
+      <h2>2. Bài học kinh nghiệm &amp; Công cụ AI hỗ trợ</h2>
+      <ul>
+        <li><strong>Bài học quý giá:</strong> Thiết kế kiến trúc phân tầng (Clean Architecture) và viết unit test/E2E test ngay từ đầu là yếu tố quyết định giúp ứng dụng dễ dàng tích hợp các dịch vụ đám mây phức tạp mà không bị lỗi dây chuyền.</li>
+        <li><strong>Ứng dụng AI có trách nhiệm:</strong> Các công cụ AI (Antigravity Assistant, Gemini 1.5) đóng vai trò đắc lực trong việc phản biện mã nguồn, phát hiện lỗ hổng bảo mật rò rỉ token và tự động hóa sinh test case ARTEMIS.</li>
+      </ul>
+
+      <h2>3. Định hướng cho Đồ án cuối kỳ (Final Assignment)</h2>
+      <ul>
+        <li>Tích hợp trợ lý ảo AI đàm thoại dinh dưỡng trực tiếp (Conversational Chatbot).</li>
+        <li>Bổ sung tính năng đồng bộ dữ liệu ngoại tuyến hai chiều với Cloud Firestore Offline Persistence.</li>
+        <li>Tối ưu hóa dung lượng ứng dụng và cải thiện tốc độ xử lý ảnh món ăn trên thiết bị cấu hình thấp.</li>
+      </ul>
+
+      <div class="callout" style="text-align:center; margin-top:20px;">
+        <strong>KẾT LUẬN:</strong> Ứng dụng VetaLife đã hoàn thành 100% các tiêu chí nghiệm thu của bài tập Lab 3, sẵn sàng chuyển giao và phát triển cho Đồ án Tốt nghiệp cuối kỳ!
+      </div>
+    </div>
+    <div class="page-footer">
+      <span>Đồ án PRM393 · Nhóm 6 · VetaLife</span>
+      <span>Trang 10 / 10</span>
+    </div>
+  </div>
+
+</body>
+</html>
+
