@@ -1,41 +1,41 @@
 {
   "project_info": {
-    "project_number": "455537300059",
-    "project_id": "vetalife-24f03",
-    "storage_bucket": "vetalife-24f03.firebasestorage.app"
+    "project_number": "1040707043721",
+    "project_id": "vetalife-lab3",
+    "storage_bucket": "vetalife-lab3.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:455537300059:android:6bf4a62f2e23bb6b91257e",
+        "mobilesdk_app_id": "1:1040707043721:android:cc12edc6282daa7569a158",
         "android_client_info": {
           "package_name": "vn.edu.fpt.vetalife"
         }
       },
       "oauth_client": [
         {
-          "client_id": "455537300059-fe357bf0lunenl2vegdce84beibmoc9k.apps.googleusercontent.com",
+          "client_id": "1040707043721-mpmmn3mms8uupan72cgkrc7i2femtjr5.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "vn.edu.fpt.vetalife",
-            "certificate_hash": "f6533ce08da113e5137e780652a0c8b149ae5997"
+            "certificate_hash": "76dff5c8015c866a4bbbad2060e8916af005267d"
           }
         },
         {
-          "client_id": "455537300059-7nokqdmhc1i7901vui1hk2nt3ssfoti3.apps.googleusercontent.com",
+          "client_id": "1040707043721-g269rqulpvroij9vq5elag36u4ph41i1.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDtdAKzQ7HaFZnTl9hwpjH1TPy39izcaoM"
+          "current_key": "AIzaSyCokThWhT_QSIXqejGmve8_htYGGoOKDzY"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "455537300059-7nokqdmhc1i7901vui1hk2nt3ssfoti3.apps.googleusercontent.com",
+              "client_id": "1040707043721-g269rqulpvroij9vq5elag36u4ph41i1.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

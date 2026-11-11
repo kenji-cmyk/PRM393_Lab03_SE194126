@@ -48,12 +48,12 @@ importScripts('https://www.gstatic.com/firebasejs/12.3.0/firebase-app-compat.js'
 importScripts('https://www.gstatic.com/firebasejs/12.3.0/firebase-messaging-compat.js');
 
 firebase.initializeApp({
-  apiKey: 'AIzaSyABxNZRKO6HFOHp5AagG9HV7pKbboN1eiI',
-  appId: '1:455537300059:web:74e2fcd06bfd330291257e',
-  messagingSenderId: '455537300059',
-  projectId: 'vetalife-24f03',
-  authDomain: 'vetalife-24f03.firebaseapp.com',
-  storageBucket: 'vetalife-24f03.firebasestorage.app',
+  apiKey: 'AIzaSyBUuNVkbrez8ZacgQuh9NSw-Q35iil6AaA',
+  appId: '1:1040707043721:web:0005ba1c2217ccb769a158',
+  messagingSenderId: '1040707043721',
+  projectId: 'vetalife-lab3',
+  authDomain: 'vetalife-lab3.firebaseapp.com',
+  storageBucket: 'vetalife-lab3.firebasestorage.app',
 });
 
 firebase.messaging().onBackgroundMessage(async (payload) => {

@@ -54,12 +54,19 @@ class ReportCancelled implements Exception {
   const ReportCancelled();
 }
 
+typedef ReportCallable =
+    Future<Map<String, dynamic>> Function(
+      String name, [
+      Map<String, Object?>? data,
+    ]);
+
 /// No Firebase instance is touched in preview mode.
 class PdfReportService implements ReportService {
   PdfReportService({
     this.uid,
     this.currentUserId,
     this._functions,
+    this._callCallable,
     Dio? dio,
     DateTime Function()? now,
     Future<ByteData> Function(String)? loadFont,
@@ -70,6 +77,7 @@ class PdfReportService implements ReportService {
   final String? uid;
   final String? Function()? currentUserId;
   final FirebaseFunctions? _functions;
+  final ReportCallable? _callCallable;
   final Dio _dio;
   final DateTime Function() _now;
   final Future<ByteData> Function(String) _loadFont;
@@ -265,7 +273,7 @@ class PdfReportService implements ReportService {
     final url = Uri.tryParse(_requiredString(result, 'url'));
     final query = url?.queryParameters;
     final expiresAt = int.tryParse(query?['expires_at'] ?? '');
-    final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+    final now = _now().millisecondsSinceEpoch ~/ 1000;
     if (url == null ||
         url.scheme != 'https' ||
         url.host != 'api.cloudinary.com' ||
@@ -309,6 +317,9 @@ class PdfReportService implements ReportService {
     String name, [
     Map<String, Object?>? data,
   ]) async {
+    if (_callCallable != null) {
+      return _callCallable(name, data);
+    }
     final result =
         await (_functions ??
                 FirebaseFunctions.instanceFor(region: 'asia-southeast1'))
@@ -318,8 +329,12 @@ class PdfReportService implements ReportService {
                 timeout: const Duration(seconds: 30),
               ),
             )
-            .call<Map<String, dynamic>>(data ?? const <String, Object?>{});
-    return result.data;
+            .call<Object?>(data ?? const <String, Object?>{});
+    final payload = result.data;
+    if (payload is! Map) {
+      throw StateError('Invalid report service response');
+    }
+    return Map<String, dynamic>.from(payload);
   }
 
   String _requiredString(Map<String, dynamic> value, String key) {

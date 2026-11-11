@@ -46,33 +46,55 @@ firebase emulators:exec --config firebase.test.json --only firestore,storage --p
 ```
 
 This is a disposable demo project on ports 8185/9295, independent of production.
-The report signer is in the legacy Functions codebase. Start its Auth, Firestore
-and Functions emulators with
-`firebase emulators:start --config firebase.functions.legacy.json --only auth,firestore,functions`.
+The report signer is in the legacy Functions codebase. Run
+`npm --prefix functions run build` first, then start its Auth, Firestore and
+Functions emulators with
+`firebase emulators:start --config firebase.functions.legacy.json --only auth,firestore,functions --project vetalife-lab3`.
 Flutter's `USE_FIREBASE_EMULATORS` setting targets Auth 9099, Firestore 8080 and
-Functions 5001. Cloudinary requests still reach Cloudinary when using local
-Functions.
+Functions 5001 on `127.0.0.1` by default (use `adb reverse tcp:9099 tcp:9099`,
+`adb reverse tcp:8080 tcp:8080`, and `adb reverse tcp:5001 tcp:5001` when
+running on an Android emulator or USB device, or pass
+`--dart-define=FIREBASE_EMULATOR_HOST=10.0.2.2` if binding emulators on all
+interfaces). Android debug builds use `android/app/src/debug/AndroidManifest.xml`
+and `android/app/src/debug/res/xml/network_security_config.xml` to allow cleartext
+emulator HTTP strictly to `10.0.2.2`, `127.0.0.1`, and `localhost` while keeping
+release builds HTTPS-only. Cloudinary requests still reach Cloudinary when using
+local Functions.
 
-On 2026-11-09 the reviewed Firestore rules were deployed and production readback
-matched the local file, including device rules. Storage rules were not deployed;
-the user approved Cloudinary instead. Firebase readback found no Storage bucket.
-Cloud Functions deployment and Cloudinary credentials remain prerequisites for
-live report uploads:
+On 2026-11-11 the team migrated active Firebase client configuration to the
+dedicated project `vetalife-lab3`, registered Android (`vn.edu.fpt.vetalife`)
+and Web apps, and deployed `firebase/firestore.rules` to `vetalife-lab3`
+(including `users/{uid}/devices`). Earlier 2026-11-09 readback on `vetalife-24f03`
+had billing disabled and no Storage bucket; `vetalife-lab3` is also on Spark,
+so Cloud Functions deployment and production Cloudinary credentials remain
+prerequisites for production report uploads:
 
 ```powershell
-firebase deploy --only firestore:rules --project vetalife-24f03
-firebase functions:secrets:set CLOUDINARY_API_SECRET --project vetalife-24f03
-firebase deploy --config firebase.functions.legacy.json --only functions:meal-ai:createReportUploadSignature,functions:meal-ai:getReportDownloadUrl --project vetalife-24f03
+firebase deploy --only firestore:rules --project vetalife-lab3
+firebase functions:secrets:set CLOUDINARY_API_SECRET --project vetalife-lab3
+firebase deploy --config firebase.functions.legacy.json --only functions:meal-ai:createReportUploadSignature,functions:meal-ai:getReportDownloadUrl --project vetalife-lab3
 ```
 
 Set the non-secret `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, and
 `CLOUDINARY_REPORT_UPLOAD_PRESET` in the Functions environment for the target
-project. In Cloudinary, create a **signed** raw upload preset that allows PDF
-files and uses authenticated delivery; ensure the account raw-file size Usage
-Limit is no more than 10 MiB if that is the required hard cap. Firebase
-Functions deployment may require Blaze billing. Do not put these values in Dart
-defines or commit secrets. This repository has not been given Cloudinary
-credentials, so endpoints are not yet deployed and live upload is not active.
+project (`functions/.env.<project-id>` for production, or ignored
+`functions/.env.local` + `functions/.secret.local` for local emulator testing).
+In Cloudinary:
+
+1. Create a **signed** upload preset with `overwrite=false`, `allowed_formats=pdf`,
+   and `authenticated` delivery type; leave the preset **Asset folder / Folder**
+   empty so the server's `u_<base64urlUid>/reports/<uuid>.pdf` public ID is
+   preserved exactly.
+2. In Cloudinary Console → **Settings → Security**, enable **Allow delivery of
+   PDF and ZIP files** (disabled by default on free accounts; without this,
+   downloading private PDFs fails with HTTP 401/404).
+3. Ensure the account raw-file size Usage Limit is configured (client also
+   enforces the 10 MiB limit).
+
+Firebase Functions deployment requires Blaze billing on `vetalife-lab3`. Do not
+put these values in Dart defines or commit secrets. Production signer endpoints
+remain pending until Blaze billing is approved and configured; use the local
+Firebase emulators (`USE_FIREBASE_EMULATORS=true`) for Spark-compatible testing.
 
 See [readback](../evidence/cloud/firebase-services-readback-2026-11-09.json).
 This deployment is configuration evidence, not a real-device FCM delivery test.
