@@ -53,26 +53,30 @@ lesson prose or verified health guidance.
 
 ## Screen inventory
 
-The original Final UI had 11 screens. The amended main inventory has 14 screens:
-the original eleven plus 01A, 12, and 13. Existing numbering is retained so meal
-logging links are not renumbered by the onboarding addition.
+The original Final UI had 11 screens. The amended main inventory has 18 screens:
+the original eleven plus 01A, 12, 13, and the four Lab 3 cloud feature additions (14, 14A, 15, 16).
+Existing numbering is retained so meal logging links are not renumbered.
 
-| Design screen | Role |
-| --- | --- |
-| 01 Chào mừng | Existing entry screen |
-| 01A Thông tin của bạn | New profile step in flow 1 |
-| 02 Thiết lập mục tiêu | Existing goal choice after profile completion |
-| 03 Trang chủ | Existing top-level destination |
-| 04 Ghi bữa ăn | Existing meal input |
-| 05 Đang phân tích | Existing loading state |
-| 06 Kết quả | Existing meal result |
-| 07 Lỗi kết nối | Existing recoverable error |
-| 08 Nhật ký bữa ăn | Existing journal with entries |
-| 09 Nhật ký trống | Existing empty journal |
-| 10 Tiến trình tuần | Existing weekly progress and learning entry |
-| 11 Bài học nhỏ - Phần 1 | Updated catalogue: 15 source chapters |
-| 12 Bài học nhỏ - Phần 2 | New catalogue: 12 Daily Dozen categories and 3 supplementary entries |
-| 13 Chi tiết bài học | New chapter reader/detail design |
+| Design screen | Role | Figma Node |
+| --- | --- | --- |
+| 01 Chào mừng | Existing entry screen | `6:2` |
+| 01A Thông tin của bạn | New profile step in flow 1 | `166:426` |
+| 02 Thiết lập mục tiêu | Existing goal choice after profile completion | `6:19` |
+| 03 Trang chủ | Existing top-level destination | `6:42` |
+| 04 Ghi bữa ăn | Existing meal input | `6:76` |
+| 05 Đang phân tích | Existing loading state | `6:101` |
+| 06 Kết quả | Existing meal result | `6:118` |
+| 07 Lỗi kết nối | Existing recoverable error | `6:138` |
+| 08 Nhật ký bữa ăn | Existing journal with entries | `6:155` |
+| 09 Nhật ký trống | Existing empty journal | `6:186` |
+| 10 Tiến trình tuần | Existing weekly progress and learning entry | `6:213` |
+| 11 Bài học nhỏ - Phần 1 | Updated catalogue: 15 source chapters | `6:257` |
+| 12 Bài học nhỏ - Phần 2 | New catalogue: 12 Daily Dozen categories and 3 supplementary entries | `166:470` |
+| 13 Chi tiết bài học | New chapter reader/detail design | `166:628` |
+| 14 Thông báo (Notifications) | Lịch sử thông báo & push payloads | [`185:1144`](https://www.figma.com/design/Cc2O3xSmxgjfvDI2hrsY3Q?node-id=185-1144) |
+| 14A Cấp quyền / Hộp thư trống | Android 13+ permission banner & empty state | [`185:1183`](https://www.figma.com/design/Cc2O3xSmxgjfvDI2hrsY3Q?node-id=185-1183) |
+| 15 Báo cáo PDF cá nhân | Giao diện xuất PDF & Cloudinary signed link | [`187:1302`](https://www.figma.com/design/Cc2O3xSmxgjfvDI2hrsY3Q?node-id=187-1302) |
+| 16 Cài đặt đám mây (Settings) | Cài đặt Remote Config & bảo trì tính năng | [`187:1330`](https://www.figma.com/design/Cc2O3xSmxgjfvDI2hrsY3Q?node-id=187-1330) |
 
 ## Personal information
 
