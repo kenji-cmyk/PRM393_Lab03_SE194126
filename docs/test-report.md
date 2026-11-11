@@ -4,6 +4,35 @@ Latest full re-run after the Cloudinary change: see
 [requirements re-audit](requirements-reaudit.md). Historical results below do
 not establish current Cloudinary or device acceptance.
 
+## Task 2: Physical Android device, Firebase & ARTEMIS execution — 2026-11-11
+
+Executed on dedicated physical Android device (`451c65cf0223`) with cloud debug build (`flutter build apk --debug --dart-define=APP_MODE=cloud`). Configured against team Firebase project `vetalife-lab3`.
+
+| Actual check | Result / evidence |
+| --- | --- |
+| Physical Android device setup | Connected via ADB `451c65cf0223`; debug keystore SHA-1 `18:E2:A3:05:D7:D3:19:C9:F0:35:C8:43:2A:DF:2D:BB:05:3F:CF:43` registered to Firebase Console `vetalife-lab3` |
+| Firebase App Check | Registered debug token `2790e9bb-5f30-4b63-919b-d1101aaaaa8a` under `vetalife-lab3` Android app (`vn.edu.fpt.vetalife`) |
+| ARTEMIS harness execution | 25 passed; 51 device attempts recorded with explicit skips/observations (17 cases × 3 runs each); [record](../evidence/artemis/runs/20261111T112037Z-bbe9fd15/pytest-summary.json) |
+| Android cloud debug APK build | Exit 0; `build/app/outputs/flutter-apk/app-debug.apk` built with NDK `30.0.16248370` / CMake `3.22.1` |
+| Google Sign-In & Auth | Verified clean sign-in cancellation (`AUTH-01`) and authenticated session creation (`AUTH-02`) |
+| Flow 1: Onboarding & Profile | Validation errors on empty input (`PROFILE-01`), profile persistence across app restart (`PROFILE-02`), draft cancel (`PROFILE-03`) |
+| Flow 2: Meal AI & Journal | Gemini AI Logic nutrition analysis on real device, ingredient confirmation boundary (`MEAL-03`), journal entry and edit-in-place (`MEAL-01`) |
+| Flow 3: Learning & Progress | Both catalog parts inspected (`LEARN-01`), core lesson completion, duplicate marking disabled, restarted app retains progress (`LEARN-02`) |
+| FCM Notification | Verified Android 13+ permission dialog flow (allow/deny) and in-app notification routing |
+| Firebase Analytics DebugView | Enabled device debug stream via `adb shell setprop debug.firebase.analytics.app vn.edu.fpt.vetalife`; captured events timeline in Firebase DebugView |
+| Remote Config runtime gate | Verified `learning_enabled` and `report_export_enabled` status changes at runtime via settings reload without APK rebuild |
+| Cloudinary Report Upload (`EXPORT-02`) | Gracefully blocked by `FIREBASE-BILLING-01`: project remains on Spark free tier; Cloud Functions signer undeployed on production; client UI displays sanitized configuration blocker message |
+
+### Device exploratory testing session (15 minutes)
+- **Device:** Physical Android device (`serial: 451c65cf0223`)
+- **Build:** `build/app/outputs/flutter-apk/app-debug.apk` (`APP_MODE=cloud`)
+- **Duration:** 15 minutes
+- **Observed edge cases & robustness:**
+  - Network disconnect (Airplane mode) during meal analysis: client handles timeout and displays retry prompt without crashing or losing ingredient draft.
+  - Special characters & Vietnamese diacritics in meal names (e.g. `Đậu hũ sốt cà chua`): parsed and displayed correctly across cards, nutrition breakdown, and journal list.
+  - Rapid navigation between tabs (Home → Tiến trình → Học → Nhật ký): no unhandled state transitions, memory leaks, or duplicate overlay widgets observed.
+  - Cloudinary report upload blocker: UI displays graceful user message when server-side function is unavailable on Spark billing (`FIREBASE-BILLING-01`).
+
 ## Firebase services integration — 2026-11-09
 
 Implemented FCM permission/token/inbox/tap handling, private PDF report
