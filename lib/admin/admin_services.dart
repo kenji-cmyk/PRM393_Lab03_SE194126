@@ -45,6 +45,10 @@ abstract interface class AdminUserService {
   Future<AdminUserDetails> details(String uid);
   Future<AdminActionResult> setDisabled(String uid, bool disabled);
   Future<AdminActionResult> revokeSessions(String uid);
+  Future<AdminActionResult> updateDisplayName(String uid, String displayName);
+  Future<AdminAuditPage> auditLogs({String? pageToken, String? targetUid});
+  Future<AdminJournalPage> journal(String uid, {String? pageToken});
+  Future<AdminStatistics> statistics();
 }
 
 class FirebaseAdminUserService implements AdminUserService {
@@ -52,6 +56,63 @@ class FirebaseAdminUserService implements AdminUserService {
     : _functions =
           functions ?? FirebaseFunctions.instanceFor(region: 'asia-southeast1');
   final FirebaseFunctions _functions;
+
+  @override
+  Future<AdminJournalPage> journal(String uid, {String? pageToken}) async {
+    final data = await _call('adminGetUserJournal', {
+      'uid': uid,
+      'pageSize': 20,
+      'pageToken': ?pageToken,
+    });
+    return AdminJournalPage(
+      meals: (data['meals'] as List)
+          .map(
+            (item) => AdminJournalMeal.fromMap(
+              Map<String, dynamic>.from(item as Map),
+            ),
+          )
+          .toList(),
+      nextPageToken: data['nextPageToken'] as String?,
+    );
+  }
+
+  @override
+  Future<AdminStatistics> statistics() async =>
+      AdminStatistics.fromMap(await _call('adminGetStatistics', {}));
+
+  @override
+  Future<AdminActionResult> updateDisplayName(
+    String uid,
+    String displayName,
+  ) async {
+    final data = await _call('adminUpdateDisplayName', {
+      'uid': uid,
+      'displayName': displayName,
+    });
+    return AdminActionResult(auditWarning: data['auditWarning'] == true);
+  }
+
+  @override
+  Future<AdminAuditPage> auditLogs({
+    String? pageToken,
+    String? targetUid,
+  }) async {
+    final data = await _call('adminListAuditLogs', {
+      'pageSize': 25,
+      'pageToken': ?pageToken,
+      'targetUid': ?targetUid,
+    });
+    return AdminAuditPage(
+      order: data['order'] as String? ?? 'newest',
+      logs: (data['logs'] as List)
+          .map(
+            (item) =>
+                AdminAuditEntry.fromMap(Map<String, dynamic>.from(item as Map)),
+          )
+          .toList(),
+      nextPageToken: data['nextPageToken'] as String?,
+    );
+  }
 
   Future<Map<String, dynamic>> _call(
     String name,

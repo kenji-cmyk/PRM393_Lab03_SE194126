@@ -40,6 +40,7 @@ function setup(overrides = {}) {
     countActivity: async (uid) => { events.push(['count', uid]); return { mealCount: 3, readLessonCount: 2 }; },
     beginAudit: async (data) => { events.push(['audit-start', data]); return 'audit-1'; },
     finishAudit: async (id, data) => { events.push(['audit-finish', id, data]); },
+    loadAuditLogs: async (data) => { events.push(['logs', data]); return { logs: [], nextId: null }; },
     ...Object.fromEntries(Object.entries(overrides).filter(([key]) => key !== 'auth')),
   });
   return { service, users, events };
@@ -175,4 +176,92 @@ test('failed Auth action is audited as failed; successful action survives final 
   const partial = setup({ finishAudit: async () => { throw new Error('audit outage'); } });
   assert.deepEqual(await partial.service.setUserDisabled(request({ uid: 'alice', disabled: true })), { uid: 'alice', disabled: true, auditWarning: true });
   assert.equal(partial.events.filter(([kind]) => kind === 'update').length, 1);
+});
+
+test('display name edits validate strictly and preserve protected account boundaries', async () => {
+  for (const displayName of ['', ' Alice ', 'x'.repeat(101), 'Alice\nBob', null]) {
+    await assert.rejects(setup().service.updateDisplayName(request({ uid: 'alice', displayName })), code('invalid-argument'));
+  }
+  for (const uid of ['admin', 'other-admin']) {
+    const { service, events } = setup();
+    await assert.rejects(service.updateDisplayName(request({ uid, displayName: 'New name' })), code('failed-precondition'));
+    assert.ok(!events.some(([kind]) => kind === 'update'));
+  }
+  const { service, events } = setup();
+  await service.updateDisplayName(request({ uid: 'alice', displayName: 'Tên mới' }));
+  assert.deepEqual(events.slice(-3).map(([kind]) => kind), ['audit-start', 'update', 'audit-finish']);
+  assert.deepEqual(events.find(([kind]) => kind === 'update'), ['update', 'alice', { displayName: 'Tên mới' }]);
+  assert.equal(events.find(([kind]) => kind === 'audit-start')[1].action, 'update-display-name');
+  await assert.rejects(service.updateDisplayName(request({ uid: 'alice', displayName: 'New', admin: true })), code('invalid-argument'));
+});
+
+test('audit pagination binds its cursor to target filter and validates bounded requests', async () => {
+  const { service, events } = setup({ loadAuditLogs: async data => {
+    events.push(['logs', data]); return { logs: [{ id: 'audit-1', status: 'attempted' }], nextId: 'audit-1' };
+  } });
+  const first = await service.listAuditLogs(request({ targetUid: 'alice', pageSize: 1 }));
+  assert.equal(first.logs[0].status, 'attempted');
+  await service.listAuditLogs(request({ targetUid: 'alice', pageToken: first.nextPageToken }));
+  assert.deepEqual(events.at(-1), ['logs', { pageSize: 25, targetUid: 'alice', afterId: 'audit-1' }]);
+  for (const data of [{ pageToken: first.nextPageToken }, { targetUid: 'bob', pageToken: first.nextPageToken },
+    { pageSize: 101 }, { pageSize: 0 }, { targetUid: 'a/b' }, { pageToken: 'bad' }, { status: 'failed' }]) {
+    await assert.rejects(service.listAuditLogs(request(data)), code('invalid-argument'));
+  }
+});
+
+test('new endpoints deny stale roles before reaching logs or modifying names', async () => {
+  const { service, users, events } = setup();
+  users.set('admin', { uid: 'admin', customClaims: {} });
+  await assert.rejects(service.listAuditLogs(request()), code('permission-denied'));
+  await assert.rejects(service.getStatistics(request()), code('permission-denied'));
+  await assert.rejects(service.getUserJournal(request({ uid: 'alice' })), code('permission-denied'));
+  await assert.rejects(service.updateDisplayName(request({ uid: 'alice', displayName: 'New' })), code('permission-denied'));
+  assert.ok(!events.some(([kind]) => ['logs', 'update', 'audit-start'].includes(kind)));
+});
+
+test('journal validates target, page size and UID-bound cursors before data access', async () => {
+  const calls = [];
+  const { service } = setup({ loadUserJournal: async data => {
+    calls.push(data); return { meals: [{ id: 'meal-1', name: 'Rice' }], nextId: 'meal-1' };
+  } });
+  const page = await service.getUserJournal(request({ uid: 'alice' }));
+  assert.equal(page.meals[0].name, 'Rice');
+  await service.getUserJournal(request({ uid: 'alice', pageToken: page.nextPageToken }));
+  assert.deepEqual(calls[1], { uid: 'alice', pageSize: 20, afterId: 'meal-1' });
+  for (const data of [{ uid: 'other-admin', pageToken: page.nextPageToken },
+    { uid: 'alice', pageSize: 51 }, { uid: 'alice', pageSize: 0 }, { uid: 'alice', pageToken: 'bad' }]) {
+    await assert.rejects(service.getUserJournal(request(data)), code('invalid-argument'));
+  }
+  await assert.rejects(service.getUserJournal(request({ uid: 'missing' })), code('not-found'));
+  assert.equal(calls.length, 2);
+});
+
+test('statistics aggregates Auth pages at a fixed clock with explicit complete scope', async () => {
+  const pages = [];
+  const { service } = setup({ now: () => new Date('2026-11-12T00:00:00Z'), auth: {
+    listUsers: async (limit, token) => {
+      pages.push({ limit, token });
+      return token ? { users: [{ uid: 'b', disabled: true, metadata: { creationTime: '2026-10-20T00:00:00Z' } }] }
+        : { users: [{ uid: 'a', emailVerified: true, customClaims: { admin: true },
+          metadata: { creationTime: '2026-11-10T00:00:00Z', lastSignInTime: '2026-11-11T00:00:00Z' } }], pageToken: 'next' };
+    },
+  } });
+  assert.deepEqual(await service.getStatistics(request()), { scannedUsers: 2, isComplete: true,
+    active: 1, disabled: 1, admins: 1, verified: 1, newUsers7d: 1, newUsers30d: 2,
+    signedIn7d: 1, signedIn30d: 1, generatedAt: '2026-11-12T00:00:00.000Z' });
+  assert.equal(pages.length, 2);
+  await assert.rejects(service.getStatistics(request({ uid: 'alice' })), code('invalid-argument'));
+});
+
+test('statistics caps scans and never claims an incomplete sample is global', async () => {
+  let calls = 0;
+  const { service } = setup({ auth: { listUsers: async () => {
+    calls++; return { users: Array.from({ length: 1000 }, (_, index) => ({ uid: String(index) })), pageToken: 'more' };
+  } } });
+  const stats = await service.getStatistics(request());
+  assert.equal(calls, 2);
+  assert.equal(stats.scannedUsers, 2000);
+  assert.equal(stats.isComplete, false);
+  const broken = setup({ auth: { listUsers: async () => { throw new Error('data outage'); } } });
+  await assert.rejects(broken.service.getStatistics(request()), /data outage/);
 });

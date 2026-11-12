@@ -105,4 +105,4 @@ export const getReportDownloadUrl = onCall(
   (request) => safeReportCall('getDownloadUrl', request),
 );
 
-export { adminListUsers, adminGetUser, adminSetUserDisabled, adminRevokeUserSessions } from './admin-functions.js';
+export { adminListUsers, adminGetUser, adminSetUserDisabled, adminRevokeUserSessions, adminUpdateDisplayName, adminListAuditLogs, adminGetUserJournal, adminGetStatistics } from './admin-functions.js';

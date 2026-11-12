@@ -128,3 +128,71 @@ test('adapter supports Admin SDK credential response without writing token to bo
   assert.equal(calls[0].headers.Authorization, 'Bearer secret-token');
   assert.equal(calls[0].body, undefined);
 });
+
+test('filtered audit listing preserves statuses with index-free document ordering and pagination', async () => {
+  const document = (id, status) => ({ name: `${resourceRoot}/adminAuditLogs/${id}`, fields: {
+    actorUid: { stringValue: 'admin' }, targetUid: { stringValue: 'alice' },
+    action: { stringValue: 'update-display-name' }, status: { stringValue: status },
+    createdAt: { timestampValue: '2026-11-12T05:00:00.123456789Z' }, privateData: { stringValue: 'never-return' },
+  } });
+  const { adapter, calls } = setup(ok([{ document: document('b', 'attempted') }, { document: document('a', 'failed') }]));
+  const result = await adapter.loadAuditLogs({ pageSize: 1, targetUid: 'alice' });
+  assert.equal(result.nextId, 'b');
+  assert.equal(result.logs[0].status, 'attempted');
+  assert.equal(result.logs[0].completedAt, null);
+  assert.ok(!JSON.stringify(result).includes('never-return'));
+  const query = calls[0].body.structuredQuery;
+  assert.equal(query.limit, 2);
+  assert.equal(query.where.fieldFilter.value.stringValue, 'alice');
+  assert.deepEqual(query.orderBy.map(item => [item.field.fieldPath, item.direction]), [['__name__', 'ASCENDING']]);
+  const next = setup(url => url.includes(':runQuery') ? ok([{ document: document('a', 'failed') }]) : ok(document('b', 'attempted')));
+  const second = await next.adapter.loadAuditLogs({ pageSize: 1, targetUid: 'alice', afterId: 'b' });
+  assert.equal(second.logs[0].status, 'failed');
+  assert.equal(second.nextId, null);
+  assert.deepEqual(next.calls[1].body.structuredQuery.startAt, { before: false, values: [
+    { referenceValue: `${resourceRoot}/adminAuditLogs/b` },
+  ] });
+});
+
+test('audit cursor rejects missing or mismatched documents before listing', async () => {
+  for (const response of [ok({}, 404), ok({ fields: { targetUid: { stringValue: 'bob' }, createdAt: { timestampValue: now.toISOString() } } })]) {
+    const { adapter, calls } = setup(response);
+    await assert.rejects(adapter.loadAuditLogs({ pageSize: 25, targetUid: 'alice', afterId: 'cursor' }), code('invalid-argument'));
+    assert.equal(calls.length, 1);
+  }
+});
+
+test('journal projects nested draft fields and paginates by eaten time with full timestamp precision', async () => {
+  const document = id => ({ name: `${resourceRoot}/users/alice/meals/${id}`, fields: {
+    draft: { mapValue: { fields: { name: { stringValue: 'Lunch' }, mealType: { stringValue: 'lunch' },
+      eatenAt: { stringValue: '2026-11-12T05:00:00.123456Z' }, notes: { stringValue: 'Note' },
+      ingredients: { arrayValue: { values: [{ mapValue: { fields: {} } }] } } } } },
+    analysis: { stringValue: 'private analysis' }, photo: { stringValue: 'secret photo' },
+  } });
+  const { adapter, calls } = setup(ok([{ document: document('meal-2') }, { document: document('meal-1') }]));
+  const page = await adapter.loadUserJournal({ uid: 'alice', pageSize: 1 });
+  assert.deepEqual(page.meals, [{ id: 'meal-2', name: 'Lunch', mealType: 'lunch',
+    eatenAt: '2026-11-12T05:00:00.123456Z', notes: 'Note', ingredientCount: 1 }]);
+  assert.equal(page.nextId, 'meal-2');
+  assert.equal(calls[0].url, `${root}/users/alice:runQuery`);
+  assert.deepEqual(calls[0].body.structuredQuery.orderBy.map(item => item.field.fieldPath), ['draft.eatenAt', '__name__']);
+  const next = setup(url => url.endsWith(':runQuery') ? ok([]) : ok(document('meal-2')));
+  await next.adapter.loadUserJournal({ uid: 'alice', pageSize: 20, afterId: 'meal-2' });
+  assert.deepEqual(next.calls[1].body.structuredQuery.startAt.values, [
+    { stringValue: '2026-11-12T05:00:00.123456Z' }, { referenceValue: `${resourceRoot}/users/alice/meals/meal-2` },
+  ]);
+});
+
+test('journal errors do not become an empty journal and invalid documents are rejected', async () => {
+  await assert.rejects(setup(ok({}, 404)).adapter.loadUserJournal({ uid: 'alice', pageSize: 20, afterId: 'missing' }), code('invalid-argument'));
+  await assert.rejects(setup(ok({}, 403)).adapter.loadUserJournal({ uid: 'alice', pageSize: 20 }), code('unavailable'));
+  await assert.rejects(setup(ok([{ document: { name: `${resourceRoot}/users/bob/meals/id`, fields: {} } }])).adapter.loadUserJournal({ uid: 'alice', pageSize: 20 }), code('unavailable'));
+});
+
+test('unfiltered audit remains latest first with timestamp and document cursor', async () => {
+  const { adapter, calls } = setup(ok([]));
+  await adapter.loadAuditLogs({ pageSize: 25 });
+  assert.deepEqual(calls[0].body.structuredQuery.orderBy.map(item => [item.field.fieldPath, item.direction]),
+    [['createdAt', 'DESCENDING'], ['__name__', 'DESCENDING']]);
+  assert.equal(calls[0].body.structuredQuery.where, undefined);
+});

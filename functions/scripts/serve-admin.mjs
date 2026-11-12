@@ -12,6 +12,8 @@ const PORT = 5178;
 const methods = {
   adminListUsers: 'listUsers', adminGetUser: 'getUser',
   adminSetUserDisabled: 'setUserDisabled', adminRevokeUserSessions: 'revokeUserSessions',
+  adminUpdateDisplayName: 'updateDisplayName', adminListAuditLogs: 'listAuditLogs',
+  adminGetUserJournal: 'getUserJournal', adminGetStatistics: 'getStatistics',
 };
 const statuses = { unauthenticated: 401, 'permission-denied': 403, 'invalid-argument': 400,
   'not-found': 404, 'failed-precondition': 400, unavailable: 503 };

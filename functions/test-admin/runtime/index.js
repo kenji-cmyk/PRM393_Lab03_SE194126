@@ -5,4 +5,8 @@ export {
   adminGetUser,
   adminSetUserDisabled,
   adminRevokeUserSessions,
+  adminUpdateDisplayName,
+  adminListAuditLogs,
+  adminGetUserJournal,
+  adminGetStatistics,
 } from '../../src/admin-functions.js';

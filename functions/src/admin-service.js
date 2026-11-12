@@ -39,7 +39,7 @@ export function adminUserSummary(user) {
 }
 
 /** Dependencies use Admin SDK adapters in admin-functions.js and fakes in tests. */
-export function createAdminHandlers({ auth, loadProfile, countActivity, beginAudit, finishAudit }) {
+export function createAdminHandlers({ auth, loadProfile, countActivity, beginAudit, finishAudit, loadAuditLogs, loadUserJournal, now = () => new Date() }) {
   async function authorize(request) {
     if (!validUid(request.auth?.uid)) fail('unauthenticated', 'Vui lòng đăng nhập quản trị.');
     let caller;
@@ -95,6 +95,89 @@ export function createAdminHandlers({ auth, loadProfile, countActivity, beginAud
   }
 
   return {
+    async getStatistics(request) {
+      await authorize(request);
+      payload(request, []);
+      const timestamp = now();
+      const stats = { scannedUsers: 0, isComplete: false, active: 0, disabled: 0, admins: 0,
+        verified: 0, newUsers7d: 0, newUsers30d: 0, signedIn7d: 0, signedIn30d: 0,
+        generatedAt: timestamp.toISOString() };
+      let token;
+      let pages = 0;
+      do {
+        const page = await auth.listUsers(Math.min(1000, 2000 - stats.scannedUsers), token);
+        pages++;
+        for (const user of page.users) {
+          stats.scannedUsers++;
+          stats[user.disabled ? 'disabled' : 'active']++;
+          if (user.customClaims?.admin === true) stats.admins++;
+          if (user.emailVerified === true) stats.verified++;
+          for (const [field, prefix] of [['creationTime', 'newUsers'], ['lastSignInTime', 'signedIn']]) {
+            const age = timestamp.getTime() - Date.parse(user.metadata?.[field] ?? '');
+            if (age >= 0 && age <= 30 * 86400000) stats[`${prefix}30d`]++;
+            if (age >= 0 && age <= 7 * 86400000) stats[`${prefix}7d`]++;
+          }
+        }
+        token = page.pageToken;
+      } while (token && stats.scannedUsers < 2000 && pages < 2);
+      stats.isComplete = !token;
+      return stats;
+    },
+
+    async getUserJournal(request) {
+      await authorize(request);
+      const data = payload(request, ['uid', 'pageSize', 'pageToken']);
+      const uid = uidFrom(data);
+      const pageSize = data.pageSize ?? 20;
+      if (!Number.isInteger(pageSize) || pageSize < 1 || pageSize > 50) fail('invalid-argument', 'Kích thước trang nhật ký không hợp lệ.');
+      await findUser(uid);
+      let afterId;
+      if (data.pageToken !== undefined) {
+        try {
+          if (typeof data.pageToken !== 'string' || data.pageToken.length > 2048 || !/^[A-Za-z0-9_-]+$/.test(data.pageToken)) throw new Error();
+          const cursor = JSON.parse(Buffer.from(data.pageToken, 'base64url').toString('utf8'));
+          if (!validUid(cursor.id) || cursor.uid !== uid || Object.keys(cursor).some(key => !['id', 'uid'].includes(key))) throw new Error();
+          afterId = cursor.id;
+        } catch { fail('invalid-argument', 'Trang nhật ký không hợp lệ.'); }
+      }
+      const result = await loadUserJournal({ uid, pageSize, afterId });
+      return { meals: result.meals, nextPageToken: result.nextId
+        ? Buffer.from(JSON.stringify({ uid, id: result.nextId })).toString('base64url') : null };
+    },
+
+    async updateDisplayName(request) {
+      const actorUid = await authorize(request);
+      const data = payload(request, ['uid', 'displayName']);
+      const uid = uidFrom(data);
+      if (typeof data.displayName !== 'string' || !data.displayName.trim() ||
+          data.displayName !== data.displayName.trim() || data.displayName.length > 100 ||
+          /[\u0000-\u001f\u007f]/u.test(data.displayName)) fail('invalid-argument', 'Tên hiển thị phải có từ 1 đến 100 ký tự.');
+      await mutableTarget(actorUid, uid);
+      return mutate(actorUid, uid, 'update-display-name',
+        () => auth.updateUser(uid, { displayName: data.displayName }), { uid });
+    },
+
+    async listAuditLogs(request) {
+      await authorize(request);
+      const data = payload(request, ['pageSize', 'pageToken', 'targetUid']);
+      const pageSize = data.pageSize ?? 25;
+      if (!Number.isInteger(pageSize) || pageSize < 1 || pageSize > 100 ||
+          (data.targetUid !== undefined && !validUid(data.targetUid))) fail('invalid-argument', 'Bộ lọc nhật ký không hợp lệ.');
+      let afterId;
+      if (data.pageToken !== undefined) {
+        try {
+          if (typeof data.pageToken !== 'string' || data.pageToken.length > 2048 || !/^[A-Za-z0-9_-]+$/.test(data.pageToken)) throw new Error();
+          const cursor = JSON.parse(Buffer.from(data.pageToken, 'base64url').toString('utf8'));
+          if (!validUid(cursor.id) || cursor.targetUid !== (data.targetUid ?? null) ||
+              Object.keys(cursor).some(key => !['id', 'targetUid'].includes(key))) throw new Error();
+          afterId = cursor.id;
+        } catch { fail('invalid-argument', 'Trang nhật ký không hợp lệ.'); }
+      }
+      const result = await loadAuditLogs({ pageSize, targetUid: data.targetUid, afterId });
+      return { logs: result.logs, order: data.targetUid ? 'record-id' : 'newest', nextPageToken: result.nextId
+        ? Buffer.from(JSON.stringify({ id: result.nextId, targetUid: data.targetUid ?? null })).toString('base64url') : null };
+    },
+
     async listUsers(request) {
       await authorize(request);
       const data = payload(request, ['pageSize', 'pageToken', 'query']);

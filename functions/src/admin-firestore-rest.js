@@ -1,11 +1,12 @@
 import { randomUUID } from 'node:crypto';
 import { AdminError } from './admin-service.js';
+import { journalMeal } from './admin-journal.js';
 
 const unavailable = () => new AdminError('unavailable', 'Dịch vụ dữ liệu quản trị chưa sẵn sàng. Vui lòng thử lại.');
 const validId = (value) => typeof value === 'string' && value.length > 0 && value.length <= 128 &&
   value === value.trim() && !/[\s/\u0000-\u001f\u007f]/u.test(value);
 const isObject = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
-const auditActions = new Set(['disable-user', 'enable-user', 'revoke-sessions']);
+const auditActions = new Set(['disable-user', 'enable-user', 'revoke-sessions', 'update-display-name']);
 
 /** REST alternative for the loopback admin server; credentials never enter responses. */
 export function createAdminFirestoreRest({ projectId, getAccessToken, fetchImpl = fetch, now = () => new Date(), createUuid = randomUUID }) {
@@ -71,6 +72,73 @@ export function createAdminFirestoreRest({ projectId, getAccessToken, fetchImpl 
   }
 
   return {
+    async loadUserJournal({ uid, pageSize, afterId }) {
+      const userPath = `/users/${checkedUid(uid)}`;
+      const mealResource = `${resourceRoot}/users/${uid}/meals/`;
+      const structuredQuery = {
+        from: [{ collectionId: 'meals' }],
+        orderBy: [{ field: { fieldPath: 'draft.eatenAt' }, direction: 'DESCENDING' },
+          { field: { fieldPath: '__name__' }, direction: 'DESCENDING' }],
+        limit: pageSize + 1,
+      };
+      if (afterId) {
+        const cursor = await request(`${userPath}/meals/${checkedUid(afterId)}`, { allowMissing: true });
+        const eatenAt = cursor?.fields?.draft?.mapValue?.fields?.eatenAt;
+        if (cursor === missingDocument || typeof eatenAt?.stringValue !== 'string') {
+          throw new AdminError('invalid-argument', 'Trang nhật ký không hợp lệ.');
+        }
+        structuredQuery.startAt = { before: false, values: [eatenAt,
+          { referenceValue: `${mealResource}${afterId}` }] };
+      }
+      const rows = await request(`${userPath}:runQuery`, { method: 'POST', body: { structuredQuery } });
+      if (!Array.isArray(rows)) throw unavailable();
+      const documents = rows.filter(row => row.document).map(row => row.document);
+      const meals = documents.slice(0, pageSize).map(doc => {
+        if (typeof doc.name !== 'string' || !doc.name.startsWith(mealResource)) throw unavailable();
+        const fields = doc.fields?.draft?.mapValue?.fields;
+        return journalMeal(doc.name.split('/').at(-1), { draft: {
+          name: fields?.name?.stringValue, mealType: fields?.mealType?.stringValue,
+          eatenAt: fields?.eatenAt?.stringValue, notes: fields?.notes?.stringValue,
+          ingredients: fields?.ingredients?.arrayValue ? fields.ingredients.arrayValue.values ?? [] : undefined,
+        } });
+      });
+      return { meals, nextId: documents.length > pageSize ? meals.at(-1).id : null };
+    },
+    async loadAuditLogs({ pageSize, targetUid, afterId }) {
+      const structuredQuery = {
+        from: [{ collectionId: 'adminAuditLogs' }],
+        orderBy: [{ field: { fieldPath: 'createdAt' }, direction: 'DESCENDING' },
+          { field: { fieldPath: '__name__' }, direction: 'DESCENDING' }],
+        limit: pageSize + 1,
+      };
+      if (targetUid) {
+        checkedUid(targetUid);
+        structuredQuery.where = { fieldFilter: { field: { fieldPath: 'targetUid' }, op: 'EQUAL', value: { stringValue: targetUid } } };
+        structuredQuery.orderBy = [{ field: { fieldPath: '__name__' }, direction: 'ASCENDING' }];
+      }
+      if (afterId) {
+        const cursor = await request(`/adminAuditLogs/${checkedUid(afterId)}`, { allowMissing: true });
+        if (cursor === missingDocument || !cursor?.fields?.createdAt?.timestampValue ||
+            (targetUid && cursor.fields.targetUid?.stringValue !== targetUid)) {
+          throw new AdminError('invalid-argument', 'Trang nhật ký không hợp lệ.');
+        }
+        const reference = { referenceValue: `${resourceRoot}/adminAuditLogs/${afterId}` };
+        structuredQuery.startAt = { before: false, values: targetUid ? [reference] : [cursor.fields.createdAt, reference] };
+      }
+      const rows = await request(':runQuery', { method: 'POST', body: { structuredQuery } });
+      if (!Array.isArray(rows)) throw unavailable();
+      const documents = rows.filter(row => row.document).map(row => row.document);
+      const logs = documents.slice(0, pageSize).map(doc => {
+        const fields = doc.fields;
+        if (typeof doc.name !== 'string' || !doc.name.startsWith(`${resourceRoot}/adminAuditLogs/`) ||
+            !['actorUid', 'targetUid', 'action', 'status'].every(key => typeof fields?.[key]?.stringValue === 'string')) throw unavailable();
+        return { id: doc.name.split('/').at(-1), actorUid: fields.actorUid.stringValue,
+          targetUid: fields.targetUid.stringValue, action: fields.action.stringValue, status: fields.status.stringValue,
+          createdAt: fields.createdAt?.timestampValue ?? null, completedAt: fields.completedAt?.timestampValue ?? null };
+      });
+      return { logs, nextId: documents.length > pageSize ? logs.at(-1).id : null };
+    },
+
     async loadProfile(uid) {
       const document = await request(`/users/${checkedUid(uid)}`, { allowMissing: true });
       if (document === missingDocument) return null;

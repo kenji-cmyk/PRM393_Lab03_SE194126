@@ -5,6 +5,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 import '../theme/app_theme.dart';
 import 'admin_models.dart';
+import 'admin_audit_panel.dart';
+import 'admin_journal_panel.dart';
+import 'admin_statistics_panel.dart';
 import 'admin_services.dart';
 
 class AdminApp extends StatelessWidget {
@@ -249,6 +252,163 @@ class _AdminDashboardState extends State<AdminDashboard> {
   _Action? _pending;
   bool _acting = false;
   String? _notice;
+  int _section = 0;
+  AdminUser? _journalUser;
+  String? _auditTarget;
+  String _localQuery = '';
+  String _statusFilter = 'all';
+  String _roleFilter = 'all';
+  String _verifiedFilter = 'all';
+  String _sort = 'name';
+
+  List<AdminUser> get _visibleUsers {
+    final needle = _localQuery.trim().toLowerCase();
+    final users = (_page?.users ?? const <AdminUser>[])
+        .where(
+          (user) =>
+              (needle.isEmpty ||
+                  '${user.label} ${user.email ?? ''} ${user.uid}'
+                      .toLowerCase()
+                      .contains(needle)) &&
+              (_statusFilter == 'all' ||
+                  user.disabled == (_statusFilter == 'disabled')) &&
+              (_roleFilter == 'all' ||
+                  user.isAdmin == (_roleFilter == 'admin')) &&
+              (_verifiedFilter == 'all' ||
+                  user.emailVerified == (_verifiedFilter == 'verified')),
+        )
+        .toList();
+    users.sort((a, b) {
+      if (_sort == 'name') {
+        return a.label.toLowerCase().compareTo(b.label.toLowerCase());
+      }
+      final av =
+          DateTime.tryParse(
+            (_sort == 'created' ? a.createdAt : a.lastSignInAt) ?? '',
+          )?.millisecondsSinceEpoch ??
+          -1;
+      final bv =
+          DateTime.tryParse(
+            (_sort == 'created' ? b.createdAt : b.lastSignInAt) ?? '',
+          )?.millisecondsSinceEpoch ??
+          -1;
+      return bv.compareTo(av);
+    });
+    return users;
+  }
+
+  void _navigate(int section, {String? targetUid}) {
+    if (_acting) return;
+    setState(() {
+      _section = section;
+      _auditTarget = targetUid;
+    });
+  }
+
+  void _openJournal(AdminUser user) {
+    if (_acting) return;
+    setState(() {
+      _journalUser = user;
+      _section = 3;
+    });
+  }
+
+  Future<void> _editName() async {
+    final user = _selected;
+    if (user == null ||
+        _acting ||
+        user.isAdmin ||
+        user.uid == widget.identity.uid) {
+      return;
+    }
+    var editedName = user.displayName ?? '';
+    final form = GlobalKey<FormState>();
+    final name = await showDialog<String>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Đổi tên hiển thị'),
+        content: SingleChildScrollView(
+          child: SizedBox(
+            width: 380,
+            child: Form(
+              key: form,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(user.email ?? user.uid),
+                  const SizedBox(height: 12),
+                  const Text(
+                    'Tên tài khoản đăng nhập sẽ được cập nhật. Tên trong hồ sơ sức khỏe được quản lý riêng.',
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    key: const ValueKey('admin-display-name'),
+                    initialValue: editedName,
+                    onChanged: (value) => editedName = value,
+                    autofocus: true,
+                    maxLength: 100,
+                    decoration: const InputDecoration(
+                      labelText: 'Tên hiển thị',
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: (value) {
+                      final text = value?.trim() ?? '';
+                      if (text.isEmpty) return 'Vui lòng nhập tên hiển thị.';
+                      if (text.length > 100 ||
+                          RegExp(r'[\x00-\x1f\x7f]').hasMatch(text)) {
+                        return 'Tên không hợp lệ.';
+                      }
+                      return null;
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Hủy'),
+          ),
+          FilledButton(
+            onPressed: () {
+              if (form.currentState!.validate()) {
+                Navigator.pop(context, editedName.trim());
+              }
+            },
+            child: const Text('Xác nhận đổi tên'),
+          ),
+        ],
+      ),
+    );
+    if (!mounted || name == null || name == user.displayName) return;
+    setState(() {
+      _acting = true;
+      _notice = null;
+      _detailError = null;
+    });
+    try {
+      final result = await widget.service.updateDisplayName(user.uid, name);
+      if (!mounted) return;
+      setState(() => _acting = false);
+      await _select(user);
+      if (!mounted) return;
+      setState(
+        () => _notice = result.auditWarning
+            ? 'Tên đã được cập nhật. Nhật ký chưa cập nhật trạng thái cuối; không cần thực hiện lại.'
+            : 'Đã cập nhật tên hiển thị.',
+      );
+      await _load();
+    } catch (error) {
+      if (!mounted || _deny(error)) return;
+      setState(() {
+        _acting = false;
+        _detailError = _message(error);
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -434,7 +594,12 @@ class _AdminDashboardState extends State<AdminDashboard> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Quản lý người dùng',
+                              switch (_section) {
+                                0 => 'Quản lý người dùng',
+                                2 => 'Thống kê hoạt động',
+                                3 => 'Nhật ký bữa ăn người dùng',
+                                _ => 'Nhật ký hệ thống',
+                              },
                               style: Theme.of(context).textTheme.headlineMedium
                                   ?.copyWith(fontWeight: FontWeight.w700),
                             ),
@@ -444,130 +609,164 @@ class _AdminDashboardState extends State<AdminDashboard> {
                               style: TextStyle(color: AppTokens.secondaryText),
                             ),
                             const SizedBox(height: 24),
-                            _stats(),
-                            const SizedBox(height: 24),
-                            Card(
-                              child: Padding(
-                                padding: const EdgeInsets.all(20),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Danh sách tài khoản',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleLarge,
-                                    ),
-                                    const SizedBox(height: 6),
-                                    const Text(
-                                      'Tìm chính xác theo email hoặc UID. Mỗi trang tối đa 25 tài khoản.',
-                                      style: TextStyle(
-                                        color: AppTokens.secondaryText,
+                            if (!desktop) ...[
+                              _navigation(),
+                              const SizedBox(height: 20),
+                            ],
+                            if (_section == 1)
+                              AdminAuditPanel(
+                                key: ValueKey(_auditTarget),
+                                service: widget.service,
+                                onForbidden: widget.onForbidden,
+                                targetUid: _auditTarget,
+                              ),
+                            if (_section == 2)
+                              AdminStatisticsPanel(
+                                service: widget.service,
+                                users: _page?.users ?? const [],
+                                pageNumber: _previous.length + 1,
+                                onForbidden: widget.onForbidden,
+                                onJournal: _openJournal,
+                              ),
+                            if (_section == 3 && _journalUser != null)
+                              AdminJournalPanel(
+                                key: ValueKey(_journalUser!.uid),
+                                user: _journalUser!,
+                                service: widget.service,
+                                onForbidden: widget.onForbidden,
+                                onBack: () => _navigate(0),
+                              ),
+                            if (_section == 0) ...[
+                              _stats(),
+                              const SizedBox(height: 24),
+                              Card(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(20),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Danh sách tài khoản',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleLarge,
                                       ),
-                                    ),
-                                    const SizedBox(height: 16),
-                                    Wrap(
-                                      spacing: 12,
-                                      runSpacing: 12,
-                                      crossAxisAlignment:
-                                          WrapCrossAlignment.center,
-                                      children: [
-                                        SizedBox(
-                                          width: desktop
-                                              ? 380
-                                              : (constraints.maxWidth - 74)
-                                                    .clamp(140, 500)
-                                                    .toDouble(),
-                                          child: TextField(
-                                            key: const ValueKey('admin-search'),
-                                            controller: _search,
-                                            enabled: !_acting,
-                                            decoration: const InputDecoration(
-                                              prefixIcon: Icon(Icons.search),
-                                              labelText: 'Email hoặc UID',
-                                              border: OutlineInputBorder(),
+                                      const SizedBox(height: 6),
+                                      const Text(
+                                        'Tìm chính xác theo email hoặc UID. Mỗi trang tối đa 25 tài khoản.',
+                                        style: TextStyle(
+                                          color: AppTokens.secondaryText,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 16),
+                                      Wrap(
+                                        spacing: 12,
+                                        runSpacing: 12,
+                                        crossAxisAlignment:
+                                            WrapCrossAlignment.center,
+                                        children: [
+                                          SizedBox(
+                                            width: desktop
+                                                ? 380
+                                                : (constraints.maxWidth - 74)
+                                                      .clamp(140, 500)
+                                                      .toDouble(),
+                                            child: TextField(
+                                              key: const ValueKey(
+                                                'admin-search',
+                                              ),
+                                              controller: _search,
+                                              enabled: !_acting,
+                                              decoration: const InputDecoration(
+                                                prefixIcon: Icon(Icons.search),
+                                                labelText: 'Email hoặc UID',
+                                                border: OutlineInputBorder(),
+                                              ),
+                                              onSubmitted: (_) => _find(),
                                             ),
-                                            onSubmitted: (_) => _find(),
                                           ),
-                                        ),
-                                        FilledButton.icon(
-                                          onPressed: _acting || _loading
-                                              ? null
-                                              : _find,
-                                          icon: const Icon(Icons.search),
-                                          label: const Text('Tìm kiếm'),
-                                        ),
-                                        OutlinedButton.icon(
-                                          onPressed: _acting || _loading
-                                              ? null
-                                              : () {
-                                                  _search.clear();
-                                                  _find();
-                                                },
-                                          icon: const Icon(Icons.refresh),
-                                          label: const Text('Làm mới'),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 20),
-                                    if (_loading)
-                                      const Padding(
-                                        padding: EdgeInsets.all(32),
-                                        child: Center(
-                                          child: CircularProgressIndicator(),
-                                        ),
-                                      )
-                                    else if (_error != null)
-                                      _ErrorNotice(
-                                        message: _error!,
-                                        retry: _load,
-                                      )
-                                    else if (_page?.users.isEmpty != false)
-                                      const Padding(
-                                        padding: EdgeInsets.all(24),
-                                        child: Text(
-                                          'Không tìm thấy người dùng phù hợp.',
-                                        ),
-                                      )
-                                    else if (desktop)
-                                      _table()
-                                    else
-                                      ..._page!.users.map(_userCard),
-                                    const SizedBox(height: 16),
-                                    Wrap(
-                                      spacing: 12,
-                                      runSpacing: 8,
-                                      crossAxisAlignment:
-                                          WrapCrossAlignment.center,
-                                      children: [
-                                        Text('Trang ${_previous.length + 1}'),
-                                        OutlinedButton(
-                                          onPressed:
-                                              _previous.isEmpty ||
-                                                  _loading ||
-                                                  _acting
-                                              ? null
-                                              : () => _paginate(false),
-                                          child: const Text('Trang trước'),
-                                        ),
-                                        OutlinedButton(
-                                          onPressed:
-                                              _page?.nextPageToken == null ||
-                                                  _loading ||
-                                                  _acting
-                                              ? null
-                                              : () => _paginate(true),
-                                          child: const Text('Trang tiếp'),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+                                          FilledButton.icon(
+                                            onPressed: _acting || _loading
+                                                ? null
+                                                : _find,
+                                            icon: const Icon(Icons.search),
+                                            label: const Text('Tìm kiếm'),
+                                          ),
+                                          OutlinedButton.icon(
+                                            onPressed: _acting || _loading
+                                                ? null
+                                                : () {
+                                                    _search.clear();
+                                                    _find();
+                                                  },
+                                            icon: const Icon(Icons.refresh),
+                                            label: const Text('Làm mới'),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 20),
+                                      _filters(),
+                                      const SizedBox(height: 16),
+                                      if (_loading)
+                                        const Padding(
+                                          padding: EdgeInsets.all(32),
+                                          child: Center(
+                                            child: CircularProgressIndicator(),
+                                          ),
+                                        )
+                                      else if (_error != null)
+                                        _ErrorNotice(
+                                          message: _error!,
+                                          retry: _load,
+                                        )
+                                      else if (_visibleUsers.isEmpty)
+                                        const Padding(
+                                          padding: EdgeInsets.all(24),
+                                          child: Text(
+                                            'Không tìm thấy người dùng phù hợp.',
+                                          ),
+                                        )
+                                      else if (desktop)
+                                        _table()
+                                      else
+                                        ..._visibleUsers.map(_userCard),
+                                      const SizedBox(height: 16),
+                                      Wrap(
+                                        spacing: 12,
+                                        runSpacing: 8,
+                                        crossAxisAlignment:
+                                            WrapCrossAlignment.center,
+                                        children: [
+                                          Text('Trang ${_previous.length + 1}'),
+                                          OutlinedButton(
+                                            onPressed:
+                                                _previous.isEmpty ||
+                                                    _loading ||
+                                                    _acting
+                                                ? null
+                                                : () => _paginate(false),
+                                            child: const Text('Trang trước'),
+                                          ),
+                                          OutlinedButton(
+                                            onPressed:
+                                                _page?.nextPageToken == null ||
+                                                    _loading ||
+                                                    _acting
+                                                ? null
+                                                : () => _paginate(true),
+                                            child: const Text('Trang tiếp'),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                            if (_selected != null) ...[
-                              const SizedBox(height: 24),
-                              _detailsCard(),
+                              if (_selected != null) ...[
+                                const SizedBox(height: 24),
+                                _detailsCard(),
+                              ],
                             ],
                             const SizedBox(height: 20),
                             const Text(
@@ -602,12 +801,18 @@ class _AdminDashboardState extends State<AdminDashboard> {
           children: [
             Icon(Icons.eco, color: Color(0xFFB5DC95), size: 28),
             SizedBox(width: 10),
-            Text(
-              'VetaLife',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
+            Expanded(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'VetaLife',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ),
           ],
@@ -622,20 +827,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
           ),
         ),
         const SizedBox(height: 48),
-        Container(
-          padding: const EdgeInsets.all(14),
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: .12),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: const Row(
-            children: [
-              Icon(Icons.people_outline, color: Colors.white),
-              SizedBox(width: 12),
-              Text('Người dùng', style: TextStyle(color: Colors.white)),
-            ],
-          ),
-        ),
+        _navigation(dark: true),
         const Spacer(),
         const Icon(Icons.verified_user_outlined, color: Color(0xFFB5DC95)),
         const SizedBox(height: 12),
@@ -683,6 +875,119 @@ class _AdminDashboardState extends State<AdminDashboard> {
           label: const Text('Đăng xuất'),
         ),
       ],
+    ),
+  );
+
+  Widget _navigation({bool dark = false}) => Wrap(
+    spacing: 8,
+    runSpacing: 8,
+    children: [
+      for (final item in [
+        (0, Icons.people_outline, 'Người dùng'),
+        (2, Icons.bar_chart_outlined, 'Thống kê'),
+        (1, Icons.history, 'Nhật ký quản trị'),
+      ])
+        TextButton.icon(
+          style: TextButton.styleFrom(
+            foregroundColor: dark ? Colors.white : AppTokens.primary,
+            backgroundColor: _section == item.$1
+                ? (dark
+                      ? Colors.white.withValues(alpha: .12)
+                      : AppTokens.primaryContainer)
+                : null,
+          ),
+          onPressed: _acting ? null : () => _navigate(item.$1),
+          icon: Icon(item.$2),
+          label: Text(item.$3),
+        ),
+    ],
+  );
+
+  Widget _filters() => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const Text(
+        'Lọc và sắp xếp trong trang hiện tại',
+        style: TextStyle(fontWeight: FontWeight.w600),
+      ),
+      const SizedBox(height: 12),
+      Wrap(
+        spacing: 12,
+        runSpacing: 12,
+        children: [
+          SizedBox(
+            width: 260,
+            child: TextFormField(
+              key: const ValueKey('admin-local-search'),
+              initialValue: _localQuery,
+              enabled: !_acting,
+              decoration: const InputDecoration(
+                labelText: 'Lọc tên, email hoặc UID',
+                border: OutlineInputBorder(),
+              ),
+              onChanged: (value) => setState(() => _localQuery = value),
+            ),
+          ),
+          _filter('Trạng thái', _statusFilter, {
+            'all': 'Tất cả trạng thái',
+            'active': 'Đang hoạt động',
+            'disabled': 'Đã khóa',
+          }, (v) => _statusFilter = v),
+          _filter('Vai trò', _roleFilter, {
+            'all': 'Tất cả vai trò',
+            'admin': 'Admin',
+            'user': 'Người dùng',
+          }, (v) => _roleFilter = v),
+          _filter('Email', _verifiedFilter, {
+            'all': 'Mọi email',
+            'verified': 'Đã xác minh',
+            'unverified': 'Chưa xác minh',
+          }, (v) => _verifiedFilter = v),
+          _filter('Sắp xếp', _sort, {
+            'name': 'Tên A–Z',
+            'created': 'Mới đăng ký',
+            'signin': 'Đăng nhập gần nhất',
+          }, (v) => _sort = v),
+        ],
+      ),
+      const SizedBox(height: 12),
+      Text(
+        'Hiển thị ${_visibleUsers.length}/${_page?.users.length ?? 0} tài khoản của trang này. Thống kê phía trên tính trên toàn trang đã tải.',
+        style: const TextStyle(color: AppTokens.secondaryText, fontSize: 12),
+      ),
+    ],
+  );
+
+  Widget _filter(
+    String label,
+    String value,
+    Map<String, String> options,
+    void Function(String) assign,
+  ) => SizedBox(
+    width: 200,
+    child: DropdownButtonFormField<String>(
+      key: ValueKey(
+        'admin-filter-${switch (label) {
+          'Trạng thái' => 'status',
+          'Vai trò' => 'role',
+          'Email' => 'verified',
+          _ => 'sort',
+        }}',
+      ),
+      initialValue: value,
+      isExpanded: true,
+      decoration: InputDecoration(
+        labelText: label,
+        border: const OutlineInputBorder(),
+      ),
+      items: options.entries
+          .map((e) => DropdownMenuItem(value: e.key, child: Text(e.value)))
+          .toList(),
+      onChanged: _acting
+          ? null
+          : (v) {
+              if (v != null) setState(() => assign(v));
+            },
     ),
   );
 
@@ -769,7 +1074,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
           DataColumn(label: Text('Trạng thái')),
           DataColumn(label: Text('Chi tiết')),
         ],
-        rows: _page!.users
+        rows: _visibleUsers
             .map(
               (user) => DataRow(
                 cells: [
@@ -791,9 +1096,24 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   DataCell(Text(user.isAdmin ? 'Admin' : 'Người dùng')),
                   DataCell(_status(user)),
                   DataCell(
-                    TextButton(
-                      onPressed: _acting ? null : () => _select(user),
-                      child: const Text('Xem'),
+                    SizedBox(
+                      width: 144,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          TextButton(
+                            onPressed: _acting ? null : () => _select(user),
+                            child: const Text('Xem'),
+                          ),
+                          IconButton(
+                            tooltip: 'Xem nhật ký bữa ăn',
+                            onPressed: _acting
+                                ? null
+                                : () => _openJournal(user),
+                            icon: const Icon(Icons.restaurant_menu),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],
@@ -829,6 +1149,11 @@ class _AdminDashboardState extends State<AdminDashboard> {
             TextButton(
               onPressed: _acting ? null : () => _select(user),
               child: const Text('Xem'),
+            ),
+            TextButton.icon(
+              onPressed: _acting ? null : () => _openJournal(user),
+              icon: const Icon(Icons.restaurant_menu),
+              label: const Text('Xem nhật ký bữa ăn'),
             ),
           ],
         ),
@@ -921,6 +1246,13 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   OutlinedButton.icon(
                     onPressed: _acting || _detailsLoading || _details == null
                         ? null
+                        : _editName,
+                    icon: const Icon(Icons.edit_outlined),
+                    label: const Text('Đổi tên hiển thị'),
+                  ),
+                  OutlinedButton.icon(
+                    onPressed: _acting || _detailsLoading || _details == null
+                        ? null
                         : () => setState(
                             () => _pending = user.disabled
                                 ? _Action.enable
@@ -942,6 +1274,19 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   ),
                 ],
               ),
+            const SizedBox(height: 12),
+            FilledButton.icon(
+              onPressed: _acting ? null : () => _openJournal(user),
+              icon: const Icon(Icons.restaurant_menu),
+              label: const Text('Xem nhật ký bữa ăn'),
+            ),
+            TextButton.icon(
+              onPressed: _acting
+                  ? null
+                  : () => _navigate(1, targetUid: user.uid),
+              icon: const Icon(Icons.history),
+              label: const Text('Xem nhật ký tài khoản'),
+            ),
             if (_pending != null) ...[
               const SizedBox(height: 16),
               Container(

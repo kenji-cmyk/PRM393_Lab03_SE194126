@@ -8,12 +8,20 @@ Firebase đang dùng là **vetalife-24f03**. Lối vào là `lib/admin_main.dart
 
 - Đăng nhập Google và kiểm tra custom claim Boolean `admin: true`.
 - Danh sách tài khoản có phân trang; tìm chính xác email hoặc UID.
+- Lọc trạng thái, vai trò, xác minh email; tìm nhanh tên/email/UID và sắp xếp trong trang hiện tại.
 - Xem thông tin tài khoản, hồ sơ, số bữa ăn và số bài học đã đánh dấu đọc.
+- Xem nhật ký bữa ăn của từng tài khoản: tên món, loại bữa, thời gian ăn, số thành phần và ghi chú, có phân trang.
+- Trang Thống kê có số tài khoản hoạt động/khóa/admin/xác minh email, tài khoản mới và đăng nhập trong 7/30 ngày. Quét tối đa 2.000 tài khoản và hiển thị rõ khi chưa bao phủ hết.
+- Bảng hoạt động của các tài khoản trong trang đang tải: số bữa ăn, bài học và lỗi tải riêng từng dòng; tải theo yêu cầu.
+- Sửa tên hiển thị tài khoản Authentication (1–100 ký tự); tên trong hồ sơ sức khỏe được hiển thị riêng.
 - Xác nhận trước khi khóa/mở tài khoản hoặc thu hồi phiên đăng nhập.
 - Chặn thao tác với tài khoản của chính admin và các admin khác.
 - Ghi nhật ký thao tác server trong `adminAuditLogs`, không chứa nội dung hồ sơ.
+- Trang nhật ký quản trị có phân trang, làm mới và lọc theo UID người dùng, hiển thị người thực hiện và trạng thái thao tác.
 
-Thẻ tổng quan là số liệu **trang hiện tại**, không phải tổng toàn bộ Firebase.
+Thẻ tổng quan trong trang Người dùng là số liệu **trang hiện tại**, không phải tổng toàn bộ Firebase.
+Các bộ lọc và sắp xếp danh sách cũng chỉ áp dụng cho trang đã tải; tìm chính xác
+email/UID dùng API để tra tài khoản ngoài trang hiện tại.
 Dashboard không xóa tài khoản hoặc sửa nội dung sức khỏe của người dùng.
 Thu hồi phiên chặn việc làm mới phiên; ID token đã cấp có thể còn hiệu lực đến
 khi hết hạn đối với các dịch vụ không kiểm tra revocation. Các API admin kiểm
@@ -81,7 +89,7 @@ Sau khi người vận hành chuẩn bị billing/IAM và chọn hosting site ri
 
 ```powershell
 flutter.bat build web -t lib/admin_main.dart --output build/admin-web
-firebase.cmd deploy --config firebase.admin.json --project vetalife-24f03 --only functions:adminListUsers,functions:adminGetUser,functions:adminSetUserDisabled,functions:adminRevokeUserSessions
+firebase.cmd deploy --config firebase.admin.json --project vetalife-24f03 --only functions:adminListUsers,functions:adminGetUser,functions:adminSetUserDisabled,functions:adminRevokeUserSessions,functions:adminUpdateDisplayName,functions:adminListAuditLogs,functions:adminGetUserJournal,functions:adminGetStatistics
 
 # Tạo/chọn hosting site dành riêng cho admin và gắn target trước khi deploy.
 firebase.cmd target:apply hosting admin YOUR_ADMIN_HOSTING_SITE --project vetalife-24f03
@@ -91,12 +99,24 @@ firebase.cmd deploy --config firebase.admin.json --project vetalife-24f03 --only
 Bản public phải build **không có** `ADMIN_FUNCTIONS_HOST`, để gọi Functions HTTPS
 đã triển khai thay vì loopback. Thêm domain site admin vào authorized domains của
 Firebase Authentication trước khi thử đăng nhập. Target `admin` tránh ghi đè
-hosting người dùng. Config dùng codebase `meal-ai` hiện có nhưng chỉ deploy bốn
+hosting người dùng. Config dùng codebase `meal-ai` hiện có nhưng chỉ deploy tám
 API admin trong lệnh trên; chúng không dùng Gemini/Cloudinary secrets. CLI có thể
 yêu cầu các parameter không bí mật của entry Functions chung; không deploy các
 Functions meal/report ngoài phạm vi cần thiết.
 
+Lịch sử quản trị lọc theo UID dùng chỉ mục đơn mặc định và phân trang theo mã
+bản ghi, tránh phụ thuộc composite index chưa triển khai. Lịch sử toàn hệ thống
+vẫn sắp theo thời gian mới nhất. Nhật ký bữa ăn là mục riêng, sắp theo thời gian ăn.
+
 ## Kiểm thử và giới hạn
+
+Bản mở rộng nhật ký/thống kê: 22 widget tests admin đạt (bao gồm bộ lọc, đổi tên,
+nhật ký bữa ăn, thống kê, màn hình 360px và bảng desktop); 80 backend tests đạt.
+Kiểm tra chỉ đọc Firebase thật đã đạt cho API thống kê, nhật ký bữa ăn và lịch sử
+quản trị lọc theo UID của tài khoản admin. Không sửa dữ liệu trong kiểm tra này.
+Kết nối browser automation hiện lỗi môi trường; chưa xác minh tương tác đăng nhập
+và bố cục trực tiếp trên trình duyệt. Chưa triển khai API mới lên Firebase;
+server local đã dùng các API mới trực tiếp.
 
 ```powershell
 flutter.bat analyze
