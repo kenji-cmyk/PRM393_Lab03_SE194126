@@ -64,8 +64,179 @@ class _Reports implements ReportService {
   }
 }
 
+SavedReport _saved(String id) => SavedReport(
+  report: UploadedReport(
+    path: 'users/owner/reports/$id',
+    storageUri: 'firestore://users/owner/reports/$id',
+  ),
+  createdAt: DateTime.utc(2026, 11, 12, 8, 30),
+  sizeBytes: 4096,
+);
+
+class _ArchiveReports extends _Reports implements ReportArchive {
+  int listings = 0;
+  bool failHistory = false;
+  List<SavedReport> reports = [_saved('one')];
+  final List<Completer<List<SavedReport>>> queuedHistory = [];
+  Completer<Uint8List>? pendingDownload;
+  ReportStorageException? uploadFailure;
+
+  @override
+  Future<UploadedReport> upload(
+    Uint8List bytes,
+    void Function(double) progress,
+  ) async {
+    if (uploadFailure != null) throw uploadFailure!;
+    return super.upload(bytes, progress);
+  }
+
+  @override
+  Future<List<SavedReport>> listRecent() async {
+    listings++;
+    if (failHistory) throw StateError('offline');
+    if (queuedHistory.isNotEmpty) return queuedHistory.removeAt(0).future;
+    return reports;
+  }
+
+  @override
+  Future<Uint8List> download(UploadedReport report) async {
+    downloads++;
+    return pendingDownload == null ? bytes : pendingDownload!.future;
+  }
+}
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+  test(
+    'uncertain save preserves safe storage explanation and refreshes archive',
+    () async {
+      const explanation =
+          'Chưa xác nhận được lưu báo cáo. Yêu cầu đã gửi có thể vẫn được lưu.';
+      final service = _ArchiveReports()
+        ..uploadFailure = const ReportStorageException(explanation);
+      final vm = ReportViewModel(
+        service: service,
+        snapshot: () async => _data(),
+        isPreview: false,
+      );
+      await vm.generate();
+      await Future<void>.delayed(Duration.zero);
+      expect(vm.errorMessage, explanation);
+      expect(vm.uploaded, isNull);
+      expect(vm.canOpen, isFalse);
+      expect(service.listings, 1);
+      expect(vm.history, hasLength(1));
+      vm.dispose();
+    },
+  );
+  test('cloud archive loads, reports load errors separately and refreshes after save', () async {
+    final service = _ArchiveReports();
+    final vm = ReportViewModel(
+      service: service,
+      snapshot: () async => _data(),
+      isPreview: false,
+    );
+    await vm.loadHistory();
+    expect(vm.history.single.report.path, endsWith('/one'));
+    service.failHistory = true;
+    await vm.loadHistory();
+    expect(vm.historyError, isNotNull);
+    expect(vm.errorMessage, isNull);
+    expect(vm.history.length, 1);
+    service.failHistory = false;
+    service.reports = [_saved('two')];
+    await vm.generate();
+    await Future<void>.delayed(Duration.zero);
+    expect(vm.history.single.report.path, endsWith('/two'));
+    expect(vm.historyError, isNull);
+    expect(service.listings, 3);
+    vm.dispose();
+  });
+  test(
+    'preview does not request cloud archive even when service supports it',
+    () async {
+      final service = _ArchiveReports();
+      final vm = ReportViewModel(
+        service: service,
+        snapshot: () async => _data(),
+        isPreview: true,
+      );
+      await vm.loadHistory();
+      await vm.generate();
+      expect(vm.supportsHistory, isFalse);
+      expect(service.listings, 0);
+      vm.dispose();
+    },
+  );
+  test(
+    'newer archive response wins and disposal clears late private results',
+    () async {
+      final first = Completer<List<SavedReport>>();
+      final second = Completer<List<SavedReport>>();
+      final service = _ArchiveReports()..queuedHistory.addAll([first, second]);
+      final vm = ReportViewModel(
+        service: service,
+        snapshot: () async => _data(),
+        isPreview: false,
+      );
+      final oldRequest = vm.loadHistory();
+      final newRequest = vm.loadHistory();
+      second.complete([_saved('new')]);
+      await newRequest;
+      first.complete([_saved('old')]);
+      await oldRequest;
+      expect(vm.history.single.report.path, endsWith('/new'));
+      final late = Completer<List<SavedReport>>();
+      service.queuedHistory.add(late);
+      final pending = vm.loadHistory();
+      vm.dispose();
+      late.complete([_saved('private')]);
+      await pending;
+      expect(vm.history, isEmpty);
+    },
+  );
+  test(
+    'opening saved PDF blocks generation and ignores download after disposal',
+    () async {
+      final service = _ArchiveReports()
+        ..pendingDownload = Completer<Uint8List>();
+      final vm = ReportViewModel(
+        service: service,
+        snapshot: () async => _data(),
+        isPreview: false,
+      );
+      await vm.loadHistory();
+      final opening = vm.openSaved(vm.history.single);
+      expect(vm.isOpening, isTrue);
+      await vm.generate();
+      await vm.openSaved(vm.history.single);
+      expect(service.uploads, 0);
+      expect(service.downloads, 1);
+      vm.dispose();
+      service.pendingDownload!.complete(service.bytes);
+      await opening;
+      expect(service.opened, 0);
+    },
+  );
+  test('cloud cancellation states possible late save and discards late upload success', () async {
+    final service = _ArchiveReports()..pending = Completer<UploadedReport>();
+    final vm = ReportViewModel(
+      service: service,
+      snapshot: () async => _data(),
+      isPreview: false,
+    );
+    final operation = vm.generate();
+    await Future<void>.delayed(Duration.zero);
+    await vm.cancel();
+    expect(vm.message, contains('có thể vẫn được lưu'));
+    service.pending!.complete(
+      const UploadedReport(path: 'late', storageUri: 'late'),
+    );
+    await operation;
+    expect(vm.uploaded, isNull);
+    expect(vm.canOpen, isFalse);
+    vm.dispose();
+  });
   test('preview generates and opens locally without cloud upload', () async {
     final service = _Reports();
     final vm = ReportViewModel(

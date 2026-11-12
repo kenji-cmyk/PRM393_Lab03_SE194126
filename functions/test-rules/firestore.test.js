@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { before, beforeEach, after, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { initializeTestEnvironment, assertFails, assertSucceeds } from '@firebase/rules-unit-testing';
-import { collection, deleteDoc, doc, getDoc, getDocs, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore';
+import { Bytes, collection, deleteDoc, doc, getDoc, getDocs, serverTimestamp, setDoc, updateDoc, writeBatch } from 'firebase/firestore';
 
 // An emulator is mandatory. Do not allow this suite to target a real project.
 const emulatorAddress = process.env.FIRESTORE_EMULATOR_HOST;
@@ -235,4 +235,119 @@ test('only all 30 known lesson IDs can be recorded, with strict identity and tim
     {...lessonProgress(), readAt: '2026-11-04T03:30:00.000'},
     {...lessonProgress(), updatedAt: '2026-11-04T03:30:00.000Z'},
   ]) await assertFails(setDoc(progressDoc(db), value));
+});
+
+const REPORT_ID = 'abcdefghijklmnopqrst';
+const CHUNK_BYTES = 262144;
+const MAX_REPORT_BYTES = 5 * 1024 * 1024;
+const reportDocument = (db, uid = 'alice', id = REPORT_ID) => doc(db, 'users', uid, 'reports', id);
+const chunkDocument = (db, uid = 'alice', id = REPORT_ID, index = '0') =>
+  doc(db, 'users', uid, 'reports', id, 'chunks', index);
+const reportMetadata = (sizeBytes = 7, id = REPORT_ID) => ({
+  id, version: 1, contentType: 'application/pdf', sizeBytes, chunkSize: CHUNK_BYTES,
+  chunkCount: Math.ceil(sizeBytes / CHUNK_BYTES), createdAt: serverTimestamp(),
+});
+const reportChunk = (index, length) => ({ index, data: Bytes.fromUint8Array(new Uint8Array(length)) });
+
+function reportBatch(db, { uid = 'alice', id = REPORT_ID, sizeBytes = 7, metadata = {}, chunks } = {}) {
+  const batch = writeBatch(db);
+  batch.set(reportDocument(db, uid, id), { ...reportMetadata(sizeBytes, id), ...metadata });
+  if (chunks === undefined) {
+    for (let index = 0; index < Math.ceil(sizeBytes / CHUNK_BYTES); index++) {
+      batch.set(chunkDocument(db, uid, id, String(index)),
+        reportChunk(index, Math.min(CHUNK_BYTES, sizeBytes - index * CHUNK_BYTES)));
+    }
+  } else {
+    for (const [chunkId, chunk] of Object.entries(chunks)) batch.set(chunkDocument(db, uid, id, chunkId), chunk);
+  }
+  return batch;
+}
+
+test('owner atomically saves private PDF manifests and bytes and lists their archive', async () => {
+  const db = contextFor('alice').firestore();
+  await assertSucceeds(reportBatch(db).commit());
+  const metadata = await assertSucceeds(getDoc(reportDocument(db)));
+  assert.equal(metadata.data().contentType, 'application/pdf');
+  assert.equal((await assertSucceeds(getDoc(chunkDocument(db)))).data().data.toUint8Array().length, 7);
+  assert.equal((await assertSucceeds(getDocs(collection(db, 'users/alice/reports')))).size, 1);
+  assert.equal((await assertSucceeds(getDocs(collection(db, `users/alice/reports/${REPORT_ID}/chunks`)))).size, 1);
+});
+
+test('PDF metadata and bytes remain private for cross-user and anonymous clients', async () => {
+  await assertSucceeds(reportBatch(contextFor('alice').firestore()).commit());
+  for (const uid of ['bob', null]) {
+    const db = contextFor(uid).firestore();
+    await assertFails(getDoc(reportDocument(db)));
+    await assertFails(getDocs(collection(db, 'users/alice/reports')));
+    await assertFails(getDoc(chunkDocument(db)));
+    await assertFails(getDocs(collection(db, `users/alice/reports/${REPORT_ID}/chunks`)));
+    await assertFails(reportBatch(db, { id: 'ABCDEFGHIJKLMNOPQRST' }).commit());
+    await assertFails(updateDoc(reportDocument(db), { sizeBytes: 8 }));
+    await assertFails(deleteDoc(reportDocument(db)));
+    await assertFails(setDoc(chunkDocument(db, 'alice', REPORT_ID, '1'), reportChunk(1, 7)));
+  }
+});
+
+test('report schema bounds, ID, chunk count, content type and server timestamps are enforced', async () => {
+  const db = contextFor('alice').firestore();
+  for (const metadata of [
+    { id: 'different-document-id' }, { version: 2 }, { version: '1' },
+    { contentType: 'text/plain' }, { sizeBytes: 4 }, { sizeBytes: MAX_REPORT_BYTES + 1 },
+    { sizeBytes: 7.5 }, { chunkSize: CHUNK_BYTES - 1 }, { chunkCount: 0 },
+    { chunkCount: 2 }, { chunkCount: 21 }, { chunkCount: 1.5 },
+    { createdAt: '2026-11-12T00:00:00Z' }, { ownerUid: 'alice' },
+  ]) await assertFails(reportBatch(db, { metadata }).commit());
+  await assertFails(reportBatch(db, { id: 'short' }).commit());
+  await assertFails(reportBatch(db, { id: 'abcdefghijklmnopqrs_' }).commit());
+  const value = reportMetadata();
+  delete value.contentType;
+  await assertFails(setDoc(reportDocument(db), value));
+});
+
+test('PDF chunks require exact identity, byte payload and expected last chunk length', async () => {
+  const db = contextFor('alice').firestore();
+  for (const chunks of [
+    { '0': reportChunk(1, 7) }, { '01': reportChunk(0, 7) },
+    { '0': reportChunk(-1, 7) }, { '0': reportChunk(20, 7) },
+    { '0': { index: '0', data: Bytes.fromUint8Array(new Uint8Array(7)) } },
+    { '0': { index: 0, data: 'not-bytes' } },
+    { '0': { ...reportChunk(0, 7), extra: true } },
+    { '0': reportChunk(0, 0) }, { '0': reportChunk(0, 6) }, { '0': reportChunk(0, 8) },
+  ]) await assertFails(reportBatch(db, { chunks }).commit());
+  await assertFails(reportBatch(db, { sizeBytes: CHUNK_BYTES + 7, chunks: {
+    '0': reportChunk(0, CHUNK_BYTES - 1), '1': reportChunk(1, 7),
+  } }).commit());
+  await assertFails(reportBatch(db, { sizeBytes: CHUNK_BYTES + 7, chunks: {
+    '0': reportChunk(0, CHUNK_BYTES), '1': reportChunk(1, 8),
+  } }).commit());
+  await assertSucceeds(reportBatch(db, { sizeBytes: CHUNK_BYTES + 7 }).commit());
+});
+
+test('reports require an existing profile and chunks cannot precede their manifest', async () => {
+  const db = contextFor('new-user').firestore();
+  await assertFails(reportBatch(db, { uid: 'new-user' }).commit());
+  const owner = contextFor('alice').firestore();
+  await assertFails(setDoc(chunkDocument(owner), reportChunk(0, 7)));
+});
+
+test('PDF archive is immutable and late chunks cannot be appended in another request', async () => {
+  const db = contextFor('alice').firestore();
+  // A user can create an incomplete own manifest; clients must fail closed when
+  // reading missing chunks. Such metadata cannot be used to write bytes later.
+  await assertSucceeds(setDoc(reportDocument(db), reportMetadata()));
+  await assertFails(setDoc(chunkDocument(db), reportChunk(0, 7)));
+  await assertFails(updateDoc(reportDocument(db), { sizeBytes: 8, createdAt: serverTimestamp() }));
+  await assertFails(deleteDoc(reportDocument(db)));
+  const otherId = 'ABCDEFGHIJKLMNOPQRST';
+  await assertSucceeds(reportBatch(db, { id: otherId }).commit());
+  await assertFails(updateDoc(chunkDocument(db, 'alice', otherId), { data: Bytes.fromUint8Array(new Uint8Array(7)) }));
+  await assertFails(deleteDoc(chunkDocument(db, 'alice', otherId)));
+});
+
+test('maximum private PDF is 20 chunks and a single bounded batch', async () => {
+  const db = contextFor('alice').firestore();
+  await assertSucceeds(reportBatch(db, { sizeBytes: MAX_REPORT_BYTES }).commit());
+  assert.equal((await getDocs(collection(db, `users/alice/reports/${REPORT_ID}/chunks`))).size, 20);
+  const last = await getDoc(chunkDocument(db, 'alice', REPORT_ID, '19'));
+  assert.equal(last.data().data.toUint8Array().length, CHUNK_BYTES);
 });

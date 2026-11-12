@@ -1,0 +1,379 @@
+{
+  "session": "20261109T025803Z-961bc24e",
+  "live_opt_in": false,
+  "pytest_exit_status": 0,
+  "results": [
+    {
+      "case": "test_artemis_smoke.py::test_firebase_behavior",
+      "nodeid": "test_artemis_smoke.py::test_firebase_behavior[run1-NOTIFY-01]",
+      "outcome": "skipped",
+      "seconds": 0.001
+    },
+    {
+      "case": "test_artemis_smoke.py::test_firebase_behavior",
+      "nodeid": "test_artemis_smoke.py::test_firebase_behavior[run1-CONFIG-01]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_artemis_smoke.py::test_firebase_behavior",
+      "nodeid": "test_artemis_smoke.py::test_firebase_behavior[run1-CONFIG-02]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_artemis_smoke.py::test_firebase_behavior",
+      "nodeid": "test_artemis_smoke.py::test_firebase_behavior[run1-ANALYTICS-01]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_artemis_smoke.py::test_firebase_behavior",
+      "nodeid": "test_artemis_smoke.py::test_firebase_behavior[run2-NOTIFY-01]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_artemis_smoke.py::test_firebase_behavior",
+      "nodeid": "test_artemis_smoke.py::test_firebase_behavior[run2-CONFIG-01]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_artemis_smoke.py::test_firebase_behavior",
+      "nodeid": "test_artemis_smoke.py::test_firebase_behavior[run2-CONFIG-02]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_artemis_smoke.py::test_firebase_behavior",
+      "nodeid": "test_artemis_smoke.py::test_firebase_behavior[run2-ANALYTICS-01]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_artemis_smoke.py::test_firebase_behavior",
+      "nodeid": "test_artemis_smoke.py::test_firebase_behavior[run3-NOTIFY-01]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_artemis_smoke.py::test_firebase_behavior",
+      "nodeid": "test_artemis_smoke.py::test_firebase_behavior[run3-CONFIG-01]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_artemis_smoke.py::test_firebase_behavior",
+      "nodeid": "test_artemis_smoke.py::test_firebase_behavior[run3-CONFIG-02]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_artemis_smoke.py::test_firebase_behavior",
+      "nodeid": "test_artemis_smoke.py::test_firebase_behavior[run3-ANALYTICS-01]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_auth.py::test_google_auth",
+      "nodeid": "test_auth.py::test_google_auth[run1-AUTH-01]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_auth.py::test_google_auth",
+      "nodeid": "test_auth.py::test_google_auth[run1-AUTH-02]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_auth.py::test_google_auth",
+      "nodeid": "test_auth.py::test_google_auth[run2-AUTH-01]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_auth.py::test_google_auth",
+      "nodeid": "test_auth.py::test_google_auth[run2-AUTH-02]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_auth.py::test_google_auth",
+      "nodeid": "test_auth.py::test_google_auth[run3-AUTH-01]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_auth.py::test_google_auth",
+      "nodeid": "test_auth.py::test_google_auth[run3-AUTH-02]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_detail.py::test_learning_flow",
+      "nodeid": "test_detail.py::test_learning_flow[run1-LEARN-01]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_detail.py::test_learning_flow",
+      "nodeid": "test_detail.py::test_learning_flow[run1-LEARN-02]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_detail.py::test_learning_flow",
+      "nodeid": "test_detail.py::test_learning_flow[run2-LEARN-01]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_detail.py::test_learning_flow",
+      "nodeid": "test_detail.py::test_learning_flow[run2-LEARN-02]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_detail.py::test_learning_flow",
+      "nodeid": "test_detail.py::test_learning_flow[run3-LEARN-01]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_detail.py::test_learning_flow",
+      "nodeid": "test_detail.py::test_learning_flow[run3-LEARN-02]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_export.py::test_pdf_export",
+      "nodeid": "test_export.py::test_pdf_export[run1-EXPORT-01]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_export.py::test_pdf_export",
+      "nodeid": "test_export.py::test_pdf_export[run1-EXPORT-02]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_export.py::test_pdf_export",
+      "nodeid": "test_export.py::test_pdf_export[run2-EXPORT-01]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_export.py::test_pdf_export",
+      "nodeid": "test_export.py::test_pdf_export[run2-EXPORT-02]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_export.py::test_pdf_export",
+      "nodeid": "test_export.py::test_pdf_export[run3-EXPORT-01]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_export.py::test_pdf_export",
+      "nodeid": "test_export.py::test_pdf_export[run3-EXPORT-02]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_flows.py::test_meal_flow",
+      "nodeid": "test_flows.py::test_meal_flow[run1-MEAL-01]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_flows.py::test_meal_flow",
+      "nodeid": "test_flows.py::test_meal_flow[run1-MEAL-02]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_flows.py::test_meal_flow",
+      "nodeid": "test_flows.py::test_meal_flow[run1-MEAL-03]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_flows.py::test_meal_flow",
+      "nodeid": "test_flows.py::test_meal_flow[run2-MEAL-01]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_flows.py::test_meal_flow",
+      "nodeid": "test_flows.py::test_meal_flow[run2-MEAL-02]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_flows.py::test_meal_flow",
+      "nodeid": "test_flows.py::test_meal_flow[run2-MEAL-03]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_flows.py::test_meal_flow",
+      "nodeid": "test_flows.py::test_meal_flow[run3-MEAL-01]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_flows.py::test_meal_flow",
+      "nodeid": "test_flows.py::test_meal_flow[run3-MEAL-02]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_flows.py::test_meal_flow",
+      "nodeid": "test_flows.py::test_meal_flow[run3-MEAL-03]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_navigation.py::test_flow_navigation",
+      "nodeid": "test_navigation.py::test_flow_navigation[run1]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_navigation.py::test_flow_navigation",
+      "nodeid": "test_navigation.py::test_flow_navigation[run2]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_navigation.py::test_flow_navigation",
+      "nodeid": "test_navigation.py::test_flow_navigation[run3]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_profile.py::test_onboarding_profile",
+      "nodeid": "test_profile.py::test_onboarding_profile[run1-PROFILE-01]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_profile.py::test_onboarding_profile",
+      "nodeid": "test_profile.py::test_onboarding_profile[run1-PROFILE-02]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_profile.py::test_onboarding_profile",
+      "nodeid": "test_profile.py::test_onboarding_profile[run1-PROFILE-03]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_profile.py::test_onboarding_profile",
+      "nodeid": "test_profile.py::test_onboarding_profile[run2-PROFILE-01]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_profile.py::test_onboarding_profile",
+      "nodeid": "test_profile.py::test_onboarding_profile[run2-PROFILE-02]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_profile.py::test_onboarding_profile",
+      "nodeid": "test_profile.py::test_onboarding_profile[run2-PROFILE-03]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_profile.py::test_onboarding_profile",
+      "nodeid": "test_profile.py::test_onboarding_profile[run3-PROFILE-01]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_profile.py::test_onboarding_profile",
+      "nodeid": "test_profile.py::test_onboarding_profile[run3-PROFILE-02]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    },
+    {
+      "case": "test_profile.py::test_onboarding_profile",
+      "nodeid": "test_profile.py::test_onboarding_profile[run3-PROFILE-03]",
+      "outcome": "skipped",
+      "seconds": 0.0
+    }
+  ],
+  "by_case": {
+    "test_artemis_smoke.py::test_firebase_behavior": {
+      "attempts": 12,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 12,
+      "pass_rate": null,
+      "mean_seconds": null,
+      "needs_investigation": true
+    },
+    "test_auth.py::test_google_auth": {
+      "attempts": 6,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 6,
+      "pass_rate": null,
+      "mean_seconds": null,
+      "needs_investigation": true
+    },
+    "test_detail.py::test_learning_flow": {
+      "attempts": 6,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 6,
+      "pass_rate": null,
+      "mean_seconds": null,
+      "needs_investigation": true
+    },
+    "test_export.py::test_pdf_export": {
+      "attempts": 6,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 6,
+      "pass_rate": null,
+      "mean_seconds": null,
+      "needs_investigation": true
+    },
+    "test_flows.py::test_meal_flow": {
+      "attempts": 9,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 9,
+      "pass_rate": null,
+      "mean_seconds": null,
+      "needs_investigation": true
+    },
+    "test_navigation.py::test_flow_navigation": {
+      "attempts": 3,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 3,
+      "pass_rate": null,
+      "mean_seconds": null,
+      "needs_investigation": true
+    },
+    "test_profile.py::test_onboarding_profile": {
+      "attempts": 9,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 9,
+      "pass_rate": null,
+      "mean_seconds": null,
+      "needs_investigation": true
+    }
+  },
+  "note": "Skipped runs are not passes; no device evidence for skipped cases."
+}

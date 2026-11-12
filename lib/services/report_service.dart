@@ -32,10 +32,10 @@ class ReportData {
 class UploadedReport {
   const UploadedReport({required this.path, required this.storageUri});
 
-  /// Cloudinary public ID scoped to the authenticated Firebase user.
+  /// Storage path scoped to the authenticated Firebase user.
   final String path;
 
-  /// A non-secret locator; opening the report requires a fresh signed URL.
+  /// A non-secret locator; opening the report requires owner authentication.
   final String storageUri;
 }
 
@@ -50,15 +50,35 @@ abstract interface class ReportService {
   Future<void> open(Uint8List bytes);
 }
 
+class SavedReport {
+  const SavedReport({
+    required this.report,
+    required this.createdAt,
+    required this.sizeBytes,
+  });
+
+  final UploadedReport report;
+  final DateTime createdAt;
+  final int sizeBytes;
+}
+
+abstract interface class ReportArchive {
+  Future<List<SavedReport>> listRecent();
+}
+
+class ReportStorageException implements Exception {
+  const ReportStorageException(this.message);
+  final String message;
+}
+
 class ReportCancelled implements Exception {
   const ReportCancelled();
 }
 
-typedef ReportCallable =
-    Future<Map<String, dynamic>> Function(
-      String name, [
-      Map<String, Object?>? data,
-    ]);
+typedef ReportCallable = Future<Map<String, dynamic>> Function(
+  String name, [
+  Map<String, Object?>? data,
+]);
 
 /// No Firebase instance is touched in preview mode.
 class PdfReportService implements ReportService {

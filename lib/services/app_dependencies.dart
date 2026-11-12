@@ -17,12 +17,13 @@ import 'lesson_progress_repository.dart';
 import 'firestore_lesson_progress_repository.dart';
 import 'app_telemetry.dart';
 import 'report_service.dart';
+import 'firestore_report_service.dart';
 
 /// Composition boundary; widgets never import Firebase SDKs.
 abstract final class AppDependencies {
   static FirebaseAppTelemetry? _telemetry;
   static AppTelemetry get telemetry => _telemetry ?? const NoopAppTelemetry();
-  static ReportService reportsFor(String uid) => PdfReportService(
+  static ReportService reportsFor(String uid) => FirestoreReportService(
     uid: uid,
     currentUserId: () => FirebaseAuth.instance.currentUser?.uid,
   );

@@ -50,20 +50,20 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyBUuNVkbrez8ZacgQuh9NSw-Q35iil6AaA',
-    appId: '1:1040707043721:web:0005ba1c2217ccb769a158',
-    messagingSenderId: '1040707043721',
-    projectId: 'vetalife-lab3',
-    authDomain: 'vetalife-lab3.firebaseapp.com',
-    storageBucket: 'vetalife-lab3.firebasestorage.app',
-    measurementId: 'G-89LY24T62Y',
+    apiKey: 'AIzaSyABxNZRKO6HFOHp5AagG9HV7pKbboN1eiI',
+    appId: '1:455537300059:web:74e2fcd06bfd330291257e',
+    messagingSenderId: '455537300059',
+    projectId: 'vetalife-24f03',
+    authDomain: 'vetalife-24f03.firebaseapp.com',
+    storageBucket: 'vetalife-24f03.firebasestorage.app',
+    measurementId: 'G-RME28TPS02',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCokThWhT_QSIXqejGmve8_htYGGoOKDzY',
-    appId: '1:1040707043721:android:cc12edc6282daa7569a158',
-    messagingSenderId: '1040707043721',
-    projectId: 'vetalife-lab3',
-    storageBucket: 'vetalife-lab3.firebasestorage.app',
+    apiKey: 'AIzaSyDtdAKzQ7HaFZnTl9hwpjH1TPy39izcaoM',
+    appId: '1:455537300059:android:6bf4a62f2e23bb6b91257e',
+    messagingSenderId: '455537300059',
+    projectId: 'vetalife-24f03',
+    storageBucket: 'vetalife-24f03.firebasestorage.app',
   );
 }

@@ -1,0 +1,32 @@
+{
+  "project": "vetalife-24f03",
+  "checkedOn": "2026-11-12",
+  "credentialsPrinted": false,
+  "configuration": {
+    "credentialsValid": true,
+    "uploadPresetExists": true,
+    "uploadPresetSignedOnly": true,
+    "pdfAllowed": true,
+    "projectParametersFile": "functions/.env.vetalife-24f03",
+    "localParametersFile": "functions/.env.local",
+    "localSecretFile": "functions/.secret.local",
+    "secretRemovedFromSharedEnv": true,
+    "configurationFilesIgnoredByGit": true
+  },
+  "syntheticLiveTest": {
+    "personalDataUsed": false,
+    "signedUploadHttpStatus": 200,
+    "ownerPathMatches": true,
+    "authenticatedDelivery": true,
+    "signedDownloadHttpStatus": 200,
+    "pdfContentValid": true,
+    "unsignedDownloadHttpStatus": 401,
+    "syntheticFileDeleted": true
+  },
+  "firebase": {
+    "billingEnabled": false,
+    "productionReportFunctionsDeployed": false,
+    "secretManagerUpdated": false,
+    "blockingStep": "Enable appropriate Firebase billing before deploying report Functions. No billing change was made."
+  }
+}

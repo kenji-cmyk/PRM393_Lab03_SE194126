@@ -51,6 +51,22 @@ device attempts were skipped**, not passed. The official SDK commit is pinned;
 see [E2E setup](e2e_test/README.md). Device runs and final report/slides/video
 are not complete.
 
+## Admin dashboard
+
+The separate Flutter Web entry `lib/admin_main.dart` provides admin-only user
+search, account/profile/activity details, disable/enable and session revocation.
+The server checks live Firebase Auth admin claims on every operation. See
+[admin dashboard setup](docs/admin-dashboard.md) for the local server using
+`vetalife-24f03`, trusted role provisioning, emulator checks and deployment steps.
+
+## Private reports without billing
+
+The active cloud report flow stores PDFs privately in Firestore under each
+authenticated user, with a 5 MiB limit and a recent-report list. It requires no
+Cloudinary signer, deployed Functions or billing upgrade. See
+[Firestore report storage](docs/firestore-reports.md) for rules, quotas and tests.
+Earlier Cloudinary deployment notes describe an optional legacy backend.
+
 ## Run flows 1, 2 and 3
 
 ```powershell

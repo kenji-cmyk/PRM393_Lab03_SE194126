@@ -26,17 +26,17 @@
     "platforms": {
       "android": {
         "default": {
-          "projectId": "vetalife-lab3",
-          "appId": "1:1040707043721:android:cc12edc6282daa7569a158",
+          "projectId": "vetalife-24f03",
+          "appId": "1:455537300059:android:6bf4a62f2e23bb6b91257e",
           "fileOutput": "android/app/google-services.json"
         }
       },
       "dart": {
         "lib/firebase_options.dart": {
-          "projectId": "vetalife-lab3",
+          "projectId": "vetalife-24f03",
           "configurations": {
-            "android": "1:1040707043721:android:cc12edc6282daa7569a158",
-            "web": "1:1040707043721:web:0005ba1c2217ccb769a158"
+            "android": "1:455537300059:android:6bf4a62f2e23bb6b91257e",
+            "web": "1:455537300059:web:74e2fcd06bfd330291257e"
           }
         }
       }

@@ -61,6 +61,57 @@ service cloud.firestore {
         // Marking read uses one stable document; no client delete is exposed.
       }
 
+      match /reports/{reportId} {
+        function validReport(data) {
+          return reportId.matches('^[A-Za-z0-9]{20}$')
+            && data.keys().hasAll([
+              'id', 'version', 'contentType', 'sizeBytes', 'chunkSize', 'chunkCount', 'createdAt'
+            ])
+            && data.keys().hasOnly([
+              'id', 'version', 'contentType', 'sizeBytes', 'chunkSize', 'chunkCount', 'createdAt'
+            ])
+            && data.id == reportId
+            && data.version is int && data.version == 1
+            && data.contentType == 'application/pdf'
+            && data.sizeBytes is int && data.sizeBytes >= 5 && data.sizeBytes <= 5242880
+            && data.chunkSize is int && data.chunkSize == 262144
+            && data.chunkCount is int && data.chunkCount >= 1 && data.chunkCount <= 20
+            && data.sizeBytes > (data.chunkCount - 1) * data.chunkSize
+            && data.sizeBytes <= data.chunkCount * data.chunkSize
+            && data.createdAt == request.time;
+        }
+
+        allow read: if owns(uid);
+        allow create: if owns(uid)
+          && exists(/databases/$(database)/documents/users/$(uid))
+          && validReport(request.resource.data);
+        // PDF manifests and bytes are immutable. A new export receives a new ID.
+
+        match /chunks/{chunkId} {
+          function validChunk(data) {
+            let report = getAfter(/databases/$(database)/documents/users/$(uid)/reports/$(reportId)).data;
+            let ids = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+              '10', '11', '12', '13', '14', '15', '16', '17', '18', '19'];
+            return validReport(report)
+              && data.keys().hasAll(['index', 'data'])
+              && data.keys().hasOnly(['index', 'data'])
+              && data.index is int && data.index >= 0 && data.index < report.chunkCount
+              && chunkId == ids[data.index]
+              && data.data is bytes
+              && data.data.size() == (data.index == report.chunkCount - 1
+                ? report.sizeBytes - data.index * report.chunkSize
+                : report.chunkSize);
+          }
+
+          allow read: if owns(uid);
+          // getAfter requires the manifest's server timestamp to be the same
+          // request time, so chunks cannot be appended to an older report.
+          allow create: if owns(uid)
+            && exists(/databases/$(database)/documents/users/$(uid))
+            && validChunk(request.resource.data);
+        }
+      }
+
       match /meals/{mealId} {
         function validMeal(data) {
           return data.keys().hasAll(['id', 'draft', 'analysis', 'savedAt', 'updatedAt'])

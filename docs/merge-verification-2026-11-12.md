@@ -33,3 +33,19 @@ Android build emitted SDK manager, Java native-access and Kotlin plugin migratio
 warnings, but completed successfully. Live Firebase/Cloudinary acceptance and
 device/model ARTEMIS execution were not performed. Existing local document and
 evidence changes were preserved. No remote push or deployment was performed.
+
+## Additional verification requested after integration
+
+- Re-ran interactive widget and PDF contract checks on commit `d9e91b4`:
+  `flutter.bat test test/widget/flow_test.dart test/widget/meal_flow_test.dart test/widget/learning_flow_test.dart test/widget/firebase_features_test.dart test/unit/pdf_report_service_test.dart --reporter expanded`.
+  Result: **29 passed**, exit 0. Covers profile validation/retry, meal analysis
+  and save with fakes, journal, learning, layout, feature gates and PDF contracts.
+- Attempted `node tool/run_meal_ai_live_check.cjs --include-ocr`, including an
+  elevated retry. It stopped at Firebase CLI project access before AI/OCR calls.
+  Read-only diagnostics confirmed `vetalife-lab3` is absent from accessible
+  projects and App Check lookup receives HTTP **403: caller lacks permission**.
+  This is an access blocker, not a successful live test.
+- Flutter device discovery found Windows, Chrome and Edge; ADB found no Android
+  device, and the emulator AVD list was empty. Android device E2E remains blocked.
+- In-app browser bootstrap failed twice with a tool transport error
+  (`sandboxPolicy` missing); no browser UI result is claimed.

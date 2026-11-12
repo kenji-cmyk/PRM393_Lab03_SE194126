@@ -1,0 +1,35 @@
+{
+  "project": "vetalife-24f03",
+  "checkedAt": "2026-11-11T23:20:45.7922901Z",
+  "target": "single connected Android CPH2799",
+  "notificationPermissionGranted": true,
+  "fcmAcceptedMessages": 3,
+  "background": {
+    "appHistoryPersisted": true,
+    "httpStatus": 200,
+    "androidNotificationRecordPresent": true
+  },
+  "terminated": {
+    "androidNotificationRecordPresent": true,
+    "httpStatus": 200,
+    "appHistoryPersisted": true,
+    "processConfirmedStoppedBeforeSend": true,
+    "forcedStopUsed": false
+  },
+  "foreground": {
+    "appWindowFocusedBeforeSend": true,
+    "appHistoryPersisted": true,
+    "httpStatus": 200,
+    "expectedPresentation": "in-app snackbar, not system notification",
+    "androidNotificationRecordCount": 1,
+    "presentationVerified": false,
+    "note": "Message received and persisted. A system notification record was also observed; foreground-only snackbar behavior was not visually verified because UI automation could not obtain idle state."
+  },
+  "notificationChannel": {
+    "importance": 3,
+    "headsUpBannerVerified": false,
+    "id": "fcm_fallback_notification_channel"
+  },
+  "notificationTapRoutingTested": false,
+  "registrationTokenPrinted": false
+}

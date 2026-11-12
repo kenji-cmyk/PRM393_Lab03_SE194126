@@ -9,11 +9,11 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-$projectId = 'vetalife-lab3'
+$projectId = 'vetalife-24f03'
 $appId = if ($Platform -eq 'android') {
-    '1:1040707043721:android:cc12edc6282daa7569a158'
+    '1:455537300059:android:6bf4a62f2e23bb6b91257e'
 } else {
-    '1:1040707043721:web:0005ba1c2217ccb769a158'
+    '1:455537300059:web:74e2fcd06bfd330291257e'
 }
 $firebaseCommand = Get-Command firebase.cmd -ErrorAction Stop
 $previousExperiments = $env:FIREBASE_CLI_EXPERIMENTS

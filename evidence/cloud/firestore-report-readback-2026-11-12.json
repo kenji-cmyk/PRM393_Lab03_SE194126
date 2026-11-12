@@ -1,0 +1,42 @@
+{
+  "project": "vetalife-24f03",
+  "checkedAt": "2026-11-11T23:07:19.409Z",
+  "rulesMatchLocal": true,
+  "privateReportRulesPresent": true,
+  "chunkPayloadIndexExempt": true,
+  "billingEnabled": false,
+  "verification": {
+    "flutterAnalyze": "passed",
+    "flutterTestsPassed": 200,
+    "flutterLiveTestsSkipped": 2,
+    "firestoreRulesTestsPassed": 21,
+    "androidCloudBuild": "passed"
+  },
+  "devicePdfExport": "save success and history entry observed on device",
+  "indexReadback": {
+    "usesAncestorConfig": false,
+    "indexCount": 0,
+    "note": "REST omits default false booleans and empty repeated fields; explicit indexConfig returned with no indexes."
+  },
+  "deviceApkInstalled": true,
+  "deviceAppLaunched": true,
+  "deviceScreenObservation": {
+    "cloudSaveSuccessVisible": true,
+    "historyEntryVisible": true,
+    "pdfOpenButtonVisible": true,
+    "technicalCloudinaryPathVisible": false
+  },
+  "recentReportMetadataReadback": {
+    "exists": true,
+    "sizeBytes": 14944,
+    "chunkCount": 1,
+    "contentType": "application/pdf"
+  },
+  "storedPdfByteVerification": {
+    "readOnly": true,
+    "byteCount": 14944,
+    "chunkCount": 1,
+    "validPdfHeaderAndTrailer": true
+  },
+  "nativeViewerVerification": "not performed: device locked"
+}
